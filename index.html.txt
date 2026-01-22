@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Loja Steam Offline</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>🎮 Loja Steam Offline</h1>
+  </header>
+
+  <main>
+    <section class="jogo">
+      <img src="https://via.placeholder.com/200x300" alt="Capa do Jogo">
+      <h2>Nome do Jogo</h2>
+      <button class="comprar">Comprar</button>
+      <button class="teste">Quero Testar Antes</button>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2026 Loja Steam Offline | Contato | Afiliados</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
