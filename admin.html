@@ -1,43 +1,23 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="UTF-8">
-    <title>Painel Admin</title>
-    <style>
-        body { background: #003366; font-family: sans-serif; padding: 50px; color: white; text-align: center; }
-        .box { background: white; color: #333; padding: 30px; border-radius: 10px; max-width: 400px; margin: auto; }
-        input { width: 100%; padding: 10px; margin: 10px 0; box-sizing: border-box; }
-        button { width: 100%; padding: 15px; background: #007BFF; color: white; border: none; cursor: pointer; font-weight: bold; }
-    </style>
-</head>
-<body>
-    <div class="box">
-        <h2>Cadastrar Jogo</h2>
-        <input type="text" id="nome" placeholder="Nome do Jogo">
-        <input type="number" id="preco" placeholder="Preço (Ex: 29.90)">
-        <input type="text" id="capa" placeholder="Link da Imagem">
-        <button onclick="salvar()">PUBLICAR AGORA</button>
+<head><meta charset="UTF-8"><title>Admin</title></head>
+<body style="background:#003366; color:white; font-family:sans-serif; text-align:center; padding:50px;">
+    <div style="background:white; color:black; padding:20px; border-radius:10px; display:inline-block;">
+        <h2>Novo Jogo</h2>
+        <input id="n" placeholder="Nome"><br>
+        <input id="p" type="number" placeholder="Preço"><br>
+        <input id="i" placeholder="Link da Imagem"><br><br>
+        <button onclick="s()" style="background:#007BFF; color:white; padding:10px 20px; border:none; cursor:pointer;">SALVAR</button>
     </div>
-
     <script>
-        async function salvar() {
-            const URL = "https://grogiwbccvnbyjgxvafw.supabase.co/rest/v1/jogos";
-            const KEY = "sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14";
-            
-            const item = { 
-                nome: document.getElementById('nome').value, 
-                preco: parseFloat(document.getElementById('preco').value), 
-                imagem_url: document.getElementById('capa').value 
-            };
-
-            const res = await fetch(URL, {
+        async function s() {
+            const d = { nome: document.getElementById('n').value, preco: parseFloat(document.getElementById('p').value), imagem_url: document.getElementById('i').value };
+            await fetch("https://grogiwbccvnbyjgxvafw.supabase.co/rest/v1/jogos", {
                 method: 'POST',
-                headers: { 'apikey': KEY, 'Authorization': `Bearer ${KEY}`, 'Content-Type': 'application/json' },
-                body: JSON.stringify(item)
+                headers: { 'apikey': "sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14", 'Authorization': "Bearer sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14", 'Content-Type': 'application/json' },
+                body: JSON.stringify(d)
             });
-
-            if(res.ok) { alert("Sucesso!"); location.reload(); }
-            else { alert("Erro ao salvar."); }
+            alert("Salvo!");
         }
     </script>
 </body>
