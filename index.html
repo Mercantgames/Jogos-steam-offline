@@ -3,131 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sua Loja Gamer | Contas Steam Offline</title>
+    <title>Sua Loja Gamer | Oficial</title>
     <style>
-        /* Cores da Marca: Prata e Azul */
-        :root {
-            --cor-fundo: #E5E4E2;
-            --cor-primaria: #003366; /* Azul Escuro */
-            --cor-destaque: #007BFF; /* Azul Brilhante */
-            --cor-card: #ffffff;
-        }
-
-        body { 
-            background-color: var(--cor-fundo); 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            margin: 0; 
-            color: #333; 
-        }
-
-        /* Banner Superior */
+        body { background: #E5E4E2; font-family: 'Segoe UI', sans-serif; margin: 0; }
+        
+        /* Header Robusto em Azul */
         header { 
-            background: var(--cor-primaria); 
+            background: #003366; 
             color: white; 
-            padding: 40px 20px; 
+            padding: 60px 20px; 
             text-align: center; 
-            border-bottom: 5px solid var(--cor-destaque);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            border-bottom: 8px solid #007BFF;
         }
 
-        /* Barra de Pesquisa Estilizada */
-        .search-box {
-            max-width: 500px;
-            margin: -25px auto 40px;
+        /* Barra de Busca que você viu na imagem */
+        .search-container {
+            max-width: 600px;
+            margin: -30px auto 40px;
             padding: 0 20px;
         }
-
         #busca {
             width: 100%;
-            padding: 15px 25px;
-            border-radius: 50px;
+            padding: 20px;
+            border-radius: 10px;
             border: none;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            font-size: 16px;
-            outline: none;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            font-size: 18px;
         }
 
-        /* Grid de Jogos (A Vitrine) */
+        /* Grid que preenche o site */
         .vitrine {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 30px;
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
         }
 
-        /* Card de Jogo Profissional */
+        /* Card estilo Loja de Elite */
         .card {
-            background: var(--cor-card);
-            border-radius: 12px;
-            border: 2px solid var(--cor-primaria);
+            background: white;
+            border-radius: 15px;
+            border: 3px solid #003366;
             overflow: hidden;
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            position: relative;
+            transition: 0.4s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
+        .card:hover { transform: scale(1.05); border-color: #007BFF; }
 
-        .card:hover {
-            transform: translateY(-10px);
-            border-color: var(--cor-destaque);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
-        }
+        .card img { width: 100%; height: 360px; object-fit: cover; }
 
-        /* Capa Vertical Grande (Padrão Steam) */
-        .card img {
-            width: 100%;
-            height: 330px;
-            object-fit: cover;
-            border-bottom: 2px solid #eee;
-        }
+        .card-info { padding: 20px; text-align: center; }
+        .card-info h3 { margin: 0; font-size: 20px; color: #333; }
+        .preco { color: #007BFF; font-size: 26px; font-weight: bold; margin: 15px 0; }
 
-        .card-body {
-            padding: 15px;
-            text-align: center;
-            flex-grow: 1;
-        }
-
-        .card-body h3 {
-            margin: 0 0 10px;
-            font-size: 18px;
-            color: var(--cor-primaria);
-            height: 45px;
-            overflow: hidden;
-        }
-
-        .preco-tag {
-            font-size: 24px;
-            font-weight: bold;
-            color: var(--cor-destaque);
-            margin-bottom: 15px;
-        }
-
-        /* Botão WhatsApp */
-        .btn-compra {
+        .btn-whats {
             background: #25D366;
             color: white;
             text-decoration: none;
-            padding: 12px;
-            border-radius: 8px;
-            font-weight: bold;
+            padding: 15px;
+            border-radius: 10px;
             display: block;
-            transition: 0.3s;
-            text-transform: uppercase;
-            font-size: 14px;
-        }
-
-        .btn-compra:hover {
-            background: #128C7E;
-            filter: brightness(1.1);
-        }
-
-        footer {
-            text-align: center;
-            padding: 40px;
-            color: var(--cor-primaria);
             font-weight: bold;
+            text-transform: uppercase;
         }
     </style>
 </head>
@@ -135,67 +74,54 @@
 
 <header>
     <h1>MINHA LOJA DE JOGOS</h1>
-    <p>Contas Steam Offline - Ativação Imediata</p>
+    <p>O melhor em Contas Steam Offline</p>
 </header>
 
-<div class="search-box">
-    <input type="text" id="busca" placeholder="O que você quer jogar hoje?" onkeyup="filtrar()">
+<div class="search-container">
+    <input type="text" id="busca" placeholder="Qual jogo você procura?">
 </div>
 
-<div id="vitrine" class="vitrine">
+<div class="vitrine">
+    <div class="card">
+        <img src="https://shared.akamai.steamstatic.com/store_images/api/v2/1196590/library_600x900_2x.jpg">
+        <div class="card-info">
+            <h3>Resident Evil 4</h3>
+            <div class="preco">R$ 29,90</div>
+            <a href="#" class="btn-whats">🛒 Comprar Agora</a>
+        </div>
     </div>
 
-<footer>
-    © 2026 Minha Loja Gamer - Todos os direitos reservados.
+    <div class="card">
+        <img src="https://shared.akamai.steamstatic.com/store_images/api/v2/1245620/library_600x900_2x.jpg">
+        <div class="card-info">
+            <h3>Elden Ring</h3>
+            <div class="preco">R$ 34,90</div>
+            <a href="#" class="btn-whats">🛒 Comprar Agora</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <img src="https://shared.akamai.steamstatic.com/store_images/api/v2/1446780/library_600x900_2x.jpg">
+        <div class="card-info">
+            <h3>Monster Hunter Wilds</h3>
+            <div class="preco">R$ 39,90</div>
+            <a href="#" class="btn-whats">🛒 Comprar Agora</a>
+        </div>
+    </div>
+    
+    <div class="card">
+        <img src="https://shared.akamai.steamstatic.com/store_images/api/v2/2050650/library_600x900_2x.jpg">
+        <div class="card-info">
+            <h3>Resident Evil Village</h3>
+            <div class="preco">R$ 25,00</div>
+            <a href="#" class="btn-whats">🛒 Comprar Agora</a>
+        </div>
+    </div>
+</div>
+
+<footer style="text-align: center; padding: 60px; color: #003366; font-weight: bold;">
+    © 2026 Loja Gamer Offline - Todos os direitos reservados.
 </footer>
-
-<script>
-    const URL_API = "https://grogiwbccvnbyjgxvafw.supabase.co/rest/v1/jogos?select=*";
-    const API_KEY = "sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14";
-    const SEU_WHATSAPP = "5511999999999"; // Coloque seu número aqui
-
-    let db_jogos = [];
-
-    async function carregarDados() {
-        try {
-            const res = await fetch(URL_API, {
-                headers: { 'apikey': API_KEY, 'Authorization': `Bearer ${API_KEY}` }
-            });
-            db_jogos = await res.json();
-            exibirJogos(db_jogos);
-        } catch (erro) {
-            document.getElementById('vitrine').innerHTML = "<h2>Erro ao carregar os jogos.</h2>";
-        }
-    }
-
-    function exibirJogos(lista) {
-        const vitrine = document.getElementById('vitrine');
-        vitrine.innerHTML = '';
-
-        lista.forEach(j => {
-            const msgWhats = encodeURIComponent(`Olá! Quero comprar o jogo: ${j.nome}`);
-            const link = `https://wa.me/${SEU_WHATSAPP}?text=${msgWhats}`;
-
-            vitrine.innerHTML += `
-                <div class="card">
-                    <img src="${j.imagem_url}" onerror="this.src='https://via.placeholder.com/300x450?text=Capa+Indisponivel'">
-                    <div class="card-body">
-                        <h3>${j.nome}</h3>
-                        <div class="preco-tag">R$ ${parseFloat(j.preco).toFixed(2)}</div>
-                        <a href="${link}" target="_blank" class="btn-compra">🛒 Comprar Agora</a>
-                    </div>
-                </div>`;
-        });
-    }
-
-    function filtrar() {
-        const termo = document.getElementById('busca').value.toLowerCase();
-        const resultado = db_jogos.filter(j => j.nome.toLowerCase().includes(termo));
-        exibirJogos(resultado);
-    }
-
-    carregarDados();
-</script>
 
 </body>
 </html>
