@@ -5,25 +5,24 @@
     <title>Painel Administrativo | Gestão</title>
     <style>
         body { display: flex; margin: 0; background: #F0F2F5; font-family: sans-serif; }
-        .sidebar { width: 250px; background: #007BFF; color: white; height: 100vh; padding: 25px; position: fixed; }
+        .sidebar { width: 250px; background: #003366; color: white; height: 100vh; padding: 25px; position: fixed; }
         .main { margin-left: 280px; padding: 40px; width: 100%; }
         .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); max-width: 500px; }
         input { width: 100%; padding: 12px; margin: 10px 0 20px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-        .btn-add { background: #007BFF; color: white; border: none; padding: 15px; border-radius: 8px; width: 100%; font-size: 16px; font-weight: bold; cursor: pointer; }
+        .btn-add { background: #007BFF; color: white; border: none; padding: 15px; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
-    <div class="sidebar"><h2>Admin Loja</h2><p>🏠 Dashboard</p><p>➕ Adicionar Jogo</p></div>
+    <div class="sidebar"><h2>Admin Loja</h2><p>➕ Novo Jogo</p></div>
     <div class="main">
         <div class="card">
-            <h2>Novo Jogo</h2>
+            <h2>Cadastrar Jogo</h2>
             <label>Nome do Jogo</label><input type="text" id="nome" placeholder="Ex: Elden Ring">
-            <label>Preço (R$)</label><input type="number" id="preco" placeholder="29.90">
-            <label>URL da Imagem</label><input type="text" id="capa" placeholder="Link da imagem da Steam">
-            <button class="btn-add" onclick="salvar()">PUBLICAR NA LOJA</button>
+            <label>Preço</label><input type="number" id="preco" placeholder="29.90">
+            <label>URL da Imagem (Capa Vertical)</label><input type="text" id="capa">
+            <button class="btn-add" onclick="salvar()">PUBLICAR AGORA</button>
         </div>
     </div>
-
     <script>
         const SB_URL = "https://grogiwbccvnbyjgxvafw.supabase.co";
         const SB_KEY = "sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14";
@@ -34,19 +33,13 @@
                 preco: parseFloat(document.getElementById('preco').value),
                 imagem_url: document.getElementById('capa').value
             };
-
             const res = await fetch(`${SB_URL}/rest/v1/jogos`, {
                 method: 'POST',
-                headers: {
-                    'apikey': SB_KEY,
-                    'Authorization': `Bearer ${SB_KEY}`,
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`, 'Content-Type': 'application/json' },
                 body: JSON.stringify(jogo)
             });
-
-            if(res.ok) { alert("✅ Jogo publicado com sucesso!"); location.reload(); }
-            else { alert("❌ Erro ao salvar. Verifique se criou a tabela no SQL Editor."); }
+            if(res.ok) { alert("✅ Sucesso! Jogo salvo."); location.reload(); }
+            else { alert("❌ Erro ao salvar. Verifique se a tabela existe no Supabase."); }
         }
     </script>
 </body>
