@@ -2,42 +2,41 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Painel Admin</title>
+    <title>Admin - Cadastro</title>
     <style>
-        body { background: #003366; font-family: sans-serif; display: flex; justify-content: center; padding: 50px; }
-        .card { background: white; padding: 30px; border-radius: 10px; width: 100%; max-width: 400px; }
-        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; box-sizing: border-box; }
-        button { width: 100%; padding: 15px; background: #007BFF; color: white; border: none; font-weight: bold; cursor: pointer; }
+        body { background: #003366; font-family: sans-serif; padding: 40px; color: white; }
+        .box { background: white; color: #333; padding: 20px; border-radius: 8px; max-width: 400px; margin: auto; }
+        input { width: 100%; padding: 10px; margin: 10px 0; box-sizing: border-box; }
+        button { width: 100%; padding: 15px; background: #007BFF; color: white; border: none; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h2>Cadastrar Jogo</h2>
-        <input type="text" id="nome" placeholder="Nome do Jogo">
-        <input type="number" id="preco" placeholder="Preço (ex: 29.90)">
-        <input type="text" id="img" placeholder="URL da Imagem (Capa Vertical)">
-        <button onclick="salvar()">PUBLICAR NA LOJA</button>
+    <div class="box">
+        <h2>Novo Jogo</h2>
+        <input type="text" id="n" placeholder="Nome do Jogo">
+        <input type="number" id="p" placeholder="Preço (Ex: 29.90)">
+        <input type="text" id="i" placeholder="Link da Imagem">
+        <button onclick="add()">SALVAR JOGO</button>
     </div>
 
     <script>
-        const URL = "https://grogiwbccvnbyjgxvafw.supabase.co/rest/v1/jogos";
-        const KEY = "sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14";
-
-        async function salvar() {
-            const dados = { 
-                nome: document.getElementById('nome').value, 
-                preco: parseFloat(document.getElementById('preco').value), 
-                imagem_url: document.getElementById('img').value 
+        async function add() {
+            const jogo = { 
+                nome: document.getElementById('n').value, 
+                preco: parseFloat(document.getElementById('p').value), 
+                imagem_url: document.getElementById('i').value 
             };
-
-            const res = await fetch(URL, {
+            const res = await fetch("https://grogiwbccvnbyjgxvafw.supabase.co/rest/v1/jogos", {
                 method: 'POST',
-                headers: { 'apikey': KEY, 'Authorization': `Bearer ${KEY}`, 'Content-Type': 'application/json' },
-                body: JSON.stringify(dados)
+                headers: { 
+                    'apikey': "sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14",
+                    'Authorization': "Bearer sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14",
+                    'Content-Type': 'application/json' 
+                },
+                body: JSON.stringify(jogo)
             });
-
-            if(res.ok) { alert("✅ Jogo salvo!"); location.reload(); }
-            else { alert("❌ Erro ao salvar."); }
+            if(res.ok) { alert("Cadastrado!"); location.reload(); }
+            else { alert("Erro ao salvar!"); }
         }
     </script>
 </body>
