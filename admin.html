@@ -1,45 +1,43 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html>
 <head>
     <meta charset="UTF-8">
-    <title>Painel Administrativo | Gestão</title>
+    <title>Painel Admin</title>
     <style>
-        body { display: flex; margin: 0; background: #F0F2F5; font-family: sans-serif; }
-        .sidebar { width: 250px; background: #003366; color: white; height: 100vh; padding: 25px; position: fixed; }
-        .main { margin-left: 280px; padding: 40px; width: 100%; }
-        .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); max-width: 500px; }
-        input { width: 100%; padding: 12px; margin: 10px 0 20px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-        .btn-add { background: #007BFF; color: white; border: none; padding: 15px; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; }
+        body { background: #003366; font-family: sans-serif; display: flex; justify-content: center; padding: 50px; }
+        .card { background: white; padding: 30px; border-radius: 10px; width: 100%; max-width: 400px; }
+        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; box-sizing: border-box; }
+        button { width: 100%; padding: 15px; background: #007BFF; color: white; border: none; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
-    <div class="sidebar"><h2>Admin Loja</h2><p>➕ Novo Jogo</p></div>
-    <div class="main">
-        <div class="card">
-            <h2>Cadastrar Jogo</h2>
-            <label>Nome do Jogo</label><input type="text" id="nome" placeholder="Ex: Elden Ring">
-            <label>Preço</label><input type="number" id="preco" placeholder="29.90">
-            <label>URL da Imagem (Capa Vertical)</label><input type="text" id="capa">
-            <button class="btn-add" onclick="salvar()">PUBLICAR AGORA</button>
-        </div>
+    <div class="card">
+        <h2>Cadastrar Jogo</h2>
+        <input type="text" id="nome" placeholder="Nome do Jogo">
+        <input type="number" id="preco" placeholder="Preço (ex: 29.90)">
+        <input type="text" id="img" placeholder="URL da Imagem (Capa Vertical)">
+        <button onclick="salvar()">PUBLICAR NA LOJA</button>
     </div>
+
     <script>
-        const SB_URL = "https://grogiwbccvnbyjgxvafw.supabase.co";
-        const SB_KEY = "sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14";
+        const URL = "https://grogiwbccvnbyjgxvafw.supabase.co/rest/v1/jogos";
+        const KEY = "sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14";
 
         async function salvar() {
-            const jogo = {
-                nome: document.getElementById('nome').value,
-                preco: parseFloat(document.getElementById('preco').value),
-                imagem_url: document.getElementById('capa').value
+            const dados = { 
+                nome: document.getElementById('nome').value, 
+                preco: parseFloat(document.getElementById('preco').value), 
+                imagem_url: document.getElementById('img').value 
             };
-            const res = await fetch(`${SB_URL}/rest/v1/jogos`, {
+
+            const res = await fetch(URL, {
                 method: 'POST',
-                headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`, 'Content-Type': 'application/json' },
-                body: JSON.stringify(jogo)
+                headers: { 'apikey': KEY, 'Authorization': `Bearer ${KEY}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify(dados)
             });
-            if(res.ok) { alert("✅ Sucesso! Jogo salvo."); location.reload(); }
-            else { alert("❌ Erro ao salvar. Verifique se a tabela existe no Supabase."); }
+
+            if(res.ok) { alert("✅ Jogo salvo!"); location.reload(); }
+            else { alert("❌ Erro ao salvar."); }
         }
     </script>
 </body>
