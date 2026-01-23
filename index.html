@@ -1,46 +1,43 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loja Gamer Premium</title>
+    <title>Loja de Jogos</title>
     <style>
         body { background: #E5E4E2; font-family: sans-serif; margin: 0; }
-        nav { background: #003366; color: white; padding: 20px; text-align: center; font-weight: bold; font-size: 22px; }
-        .container { max-width: 1100px; margin: 40px auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; padding: 20px; }
-        .card { background: white; border: 2px solid #003366; border-radius: 8px; overflow: hidden; text-align: center; transition: 0.3s; }
-        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
-        .card img { width: 100%; height: 320px; object-fit: cover; }
-        .info { padding: 15px; }
-        .price { font-size: 24px; color: #007BFF; font-weight: bold; margin: 10px 0; }
-        .btn { background: #003366; color: white; padding: 10px; display: block; text-decoration: none; border-radius: 5px; font-weight: bold; }
+        nav { background: #003366; color: white; padding: 20px; text-align: center; font-size: 24px; font-weight: bold; }
+        .vitrine { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; padding: 20px; }
+        .card { background: white; border: 3px solid #007BFF; border-radius: 10px; text-align: center; overflow: hidden; }
+        .card img { width: 100%; height: 280px; object-fit: cover; }
+        .card h3 { margin: 10px; font-size: 18px; }
+        .price { color: #007BFF; font-size: 22px; font-weight: bold; margin-bottom: 10px; }
     </style>
 </head>
 <body>
     <nav>MINHA LOJA DE JOGOS</nav>
-    <div class="container" id="vitrine"></div>
+    <div id="lista" class="vitrine">Carregando...</div>
 
     <script>
-        const URL = "https://grogiwbccvnbyjgxvafw.supabase.co/rest/v1/jogos?select=*";
-        const KEY = "sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14";
-
-        async function carregar() {
-            const res = await fetch(URL, { headers: { 'apikey': KEY, 'Authorization': `Bearer ${KEY}` } });
-            const jogos = await res.json();
-            const vitrine = document.getElementById('vitrine');
-            jogos.forEach(j => {
-                vitrine.innerHTML += `
+        async function buscar() {
+            const res = await fetch("https://grogiwbccvnbyjgxvafw.supabase.co/rest/v1/jogos?select=*", {
+                headers: { 
+                    'apikey': "sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14",
+                    'Authorization': "Bearer sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14" 
+                }
+            });
+            const dados = await res.json();
+            const lista = document.getElementById('lista');
+            lista.innerHTML = '';
+            dados.forEach(j => {
+                lista.innerHTML += `
                     <div class="card">
                         <img src="${j.imagem_url}">
-                        <div class="info">
-                            <h3>${j.nome}</h3>
-                            <div class="price">R$ ${j.preco.toFixed(2)}</div>
-                            <a href="https://wa.me/SEUNUMERO" class="btn">COMPRAR AGORA</a>
-                        </div>
+                        <h3>${j.nome}</h3>
+                        <div class="price">R$ ${j.preco.toFixed(2)}</div>
                     </div>`;
             });
         }
-        carregar();
+        buscar();
     </script>
 </body>
 </html>
