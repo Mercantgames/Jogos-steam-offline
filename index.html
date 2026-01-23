@@ -3,125 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sua Loja Gamer | Oficial</title>
+    <title>MercantGames | Contas Steam Offline</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { background: #E5E4E2; font-family: 'Segoe UI', sans-serif; margin: 0; }
-        
-        /* Header Robusto em Azul */
-        header { 
-            background: #003366; 
-            color: white; 
-            padding: 60px 20px; 
-            text-align: center; 
-            border-bottom: 8px solid #007BFF;
+        :root {
+            --prata: #E5E4E2;
+            --azul-escuro: #003366;
+            --azul-brilhante: #007BFF;
+            --branco: #ffffff;
         }
 
-        /* Barra de Busca que você viu na imagem */
-        .search-container {
-            max-width: 600px;
-            margin: -30px auto 40px;
-            padding: 0 20px;
-        }
-        #busca {
-            width: 100%;
-            padding: 20px;
-            border-radius: 10px;
-            border: none;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            font-size: 18px;
-        }
+        body { background: var(--prata); font-family: 'Segoe UI', sans-serif; margin: 0; }
 
-        /* Grid que preenche o site */
-        .vitrine {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 30px;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
+        /* Topo e Navegação */
+        header { background: var(--azul-escuro); color: white; padding: 20px; text-align: center; }
+        .nav-abas { background: #002244; display: flex; justify-content: center; gap: 20px; padding: 10px; }
+        .nav-abas a { color: white; text-decoration: none; font-weight: bold; font-size: 14px; text-transform: uppercase; }
+        .nav-abas a:hover { color: var(--azul-brilhante); }
+
+        /* Espaço do Banner */
+        .banner { 
+            width: 100%; 
+            height: 350px; 
+            background: linear-gradient(rgba(0,51,102,0.7), rgba(0,51,102,0.7)), url('https://images.alphacoders.com/131/1311543.jpg'); 
+            background-size: cover; 
+            background-position: center;
+            display: flex; align-items: center; justify-content: center; color: white;
+            flex-direction: column;
         }
 
-        /* Card estilo Loja de Elite */
-        .card {
-            background: white;
-            border-radius: 15px;
-            border: 3px solid #003366;
-            overflow: hidden;
-            transition: 0.4s;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        /* Categorias */
+        .categorias { display: flex; justify-content: center; gap: 15px; padding: 20px; flex-wrap: wrap; }
+        .cat-btn { background: var(--azul-escuro); color: white; padding: 8px 20px; border-radius: 20px; text-decoration: none; font-size: 13px; }
+
+        /* Seções da Loja */
+        .secao-titulo { max-width: 1200px; margin: 40px auto 20px; padding: 0 20px; border-left: 5px solid var(--azul-brilhante); color: var(--azul-escuro); }
+
+        .grid-jogos { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); 
+            gap: 25px; max-width: 1200px; margin: 0 auto; padding: 20px; 
         }
-        .card:hover { transform: scale(1.05); border-color: #007BFF; }
 
-        .card img { width: 100%; height: 360px; object-fit: cover; }
+        .card { background: white; border-radius: 10px; border: 2px solid var(--azul-escuro); overflow: hidden; transition: 0.3s; position: relative; }
+        .card:hover { transform: translateY(-10px); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+        .card img { width: 100%; height: 320px; object-fit: cover; }
+        .info { padding: 15px; text-align: center; }
+        .preco { font-size: 22px; font-weight: bold; color: var(--azul-brilhante); margin: 10px 0; }
 
-        .card-info { padding: 20px; text-align: center; }
-        .card-info h3 { margin: 0; font-size: 20px; color: #333; }
-        .preco { color: #007BFF; font-size: 26px; font-weight: bold; margin: 15px 0; }
-
-        .btn-whats {
-            background: #25D366;
-            color: white;
-            text-decoration: none;
-            padding: 15px;
-            border-radius: 10px;
-            display: block;
-            font-weight: bold;
-            text-transform: uppercase;
+        /* Botão Flutuante WhatsApp */
+        .whats-float { 
+            position: fixed; bottom: 20px; right: 20px; background: #25D366; color: white; 
+            width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; 
+            justify-content: center; font-size: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 1000;
         }
+
+        /* Rodapé Completo */
+        footer { background: var(--azul-escuro); color: white; padding: 50px 20px; margin-top: 50px; }
+        .footer-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; }
+        .footer-box h4 { border-bottom: 2px solid var(--azul-brilhante); padding-bottom: 10px; }
+        .footer-box p, .footer-box a { color: #ccc; text-decoration: none; font-size: 14px; display: block; margin: 8px 0; }
+        .politicas { background: #001a33; text-align: center; padding: 20px; font-size: 12px; color: #888; }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>MINHA LOJA DE JOGOS</h1>
-    <p>O melhor em Contas Steam Offline</p>
+    <h1>MERCANTGAMES</h1>
 </header>
 
-<div class="search-container">
-    <input type="text" id="busca" placeholder="Qual jogo você procura?">
+<div class="nav-abas">
+    <a href="#lancamentos">Lançamentos</a>
+    <a href="#mais-vendidos">Mais Vendidos</a>
+    <a href="#atemporais">Jogos Atemporais</a>
 </div>
 
-<div class="vitrine">
-    <div class="card">
-        <img src="https://shared.akamai.steamstatic.com/store_images/api/v2/1196590/library_600x900_2x.jpg">
-        <div class="card-info">
-            <h3>Resident Evil 4</h3>
-            <div class="preco">R$ 29,90</div>
-            <a href="#" class="btn-whats">🛒 Comprar Agora</a>
-        </div>
-    </div>
+<div class="banner">
+    <h2 style="font-size: 40px; margin: 0;">OFERTAS DE VERÃO</h2>
+    <p>Ativação imediata via Steam Offline</p>
+</div>
 
-    <div class="card">
-        <img src="https://shared.akamai.steamstatic.com/store_images/api/v2/1245620/library_600x900_2x.jpg">
-        <div class="card-info">
-            <h3>Elden Ring</h3>
-            <div class="preco">R$ 34,90</div>
-            <a href="#" class="btn-whats">🛒 Comprar Agora</a>
-        </div>
-    </div>
+<div class="categorias">
+    <a href="#" class="cat-btn">Ação</a>
+    <a href="#" class="cat-btn">RPG</a>
+    <a href="#" class="cat-btn">Terror</a>
+    <a href="#" class="cat-btn">Simulação</a>
+    <a href="#" class="cat-btn">Esportes</a>
+</div>
 
+<div class="secao-titulo" id="lancamentos"><h2>🚀 LANÇAMENTOS</h2></div>
+<div class="grid-jogos">
     <div class="card">
         <img src="https://shared.akamai.steamstatic.com/store_images/api/v2/1446780/library_600x900_2x.jpg">
-        <div class="card-info">
+        <div class="info">
             <h3>Monster Hunter Wilds</h3>
             <div class="preco">R$ 39,90</div>
-            <a href="#" class="btn-whats">🛒 Comprar Agora</a>
+            <a href="#" class="cat-btn" style="background:#25D366; border:none;">COMPRAR</a>
         </div>
     </div>
-    
-    <div class="card">
-        <img src="https://shared.akamai.steamstatic.com/store_images/api/v2/2050650/library_600x900_2x.jpg">
-        <div class="card-info">
-            <h3>Resident Evil Village</h3>
-            <div class="preco">R$ 25,00</div>
-            <a href="#" class="btn-whats">🛒 Comprar Agora</a>
+    </div>
+
+<footer>
+    <div class="footer-grid">
+        <div class="footer-box">
+            <h4>MERCANTGAMES</h4>
+            <p>Sua loja de confiança para jogos de PC. Atendimento rápido e suporte 24h para ativações.</p>
+        </div>
+        <div class="footer-box">
+            <h4>POLÍTICAS</h4>
+            <a href="#">Termos de Uso</a>
+            <a href="#">Política de Reembolso</a>
+            <a href="#">Como Instalar</a>
+            <a href="#">Privacidade</a>
+        </div>
+        <div class="footer-box">
+            <h4>CONTATO</h4>
+            <p><i class="fab fa-whatsapp"></i> (11) 99999-9999</p>
+            <p><i class="far fa-envelope"></i> suporte@mercantgames.com</p>
         </div>
     </div>
+</footer>
+
+<div class="politicas">
+    © 2026 MERCANTGAMES - CNPJ: 00.000.000/0001-00. O uso deste site implica na aceitação dos termos.
 </div>
 
-<footer style="text-align: center; padding: 60px; color: #003366; font-weight: bold;">
-    © 2026 Loja Gamer Offline - Todos os direitos reservados.
-</footer>
+<a href="https://wa.me/5511999999999" class="whats-float" target="_blank">
+    <i class="fab fa-whatsapp"></i>
+</a>
 
 </body>
 </html>
