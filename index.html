@@ -3,22 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loja Gamer | Contas Steam Offline</title>
+    <title>Sua Loja Gamer | Premium</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { background-color: #E5E4E2; font-family: 'Segoe UI', sans-serif; margin: 0; }
-        header { background: #007BFF; color: white; padding: 25px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        .container { max-width: 1200px; margin: 40px auto; padding: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
-        .game-card { background: white; border: 5px solid #007BFF; border-radius: 15px; overflow: hidden; transition: 0.3s; text-align: center; padding-bottom: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .game-card img { width: 100%; height: 380px; object-fit: cover; }
-        .price { font-size: 28px; color: #007BFF; font-weight: bold; margin: 15px 0; }
-        .btn-buy { background: #007BFF; color: white; border: none; padding: 12px 30px; border-radius: 50px; cursor: pointer; text-decoration: none; font-weight: bold; font-size: 18px; display: inline-block; }
-        footer { text-align: center; padding: 40px; color: #666; font-size: 12px; }
+        :root { --azul-drex: #003366; --azul-claro: #007BFF; --prata: #E5E4E2; }
+        body { background-color: var(--prata); font-family: 'Poppins', sans-serif; margin: 0; color: #333; }
+        
+        /* Navbar Estilo Drex */
+        nav { background: var(--azul-drex); padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; color: white; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .logo { font-size: 24px; font-weight: bold; color: #fff; text-transform: uppercase; }
+
+        /* Banner de Destaque */
+        .hero { background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.alphacoders.com/131/1311035.jpeg'); background-size: cover; background-position: center; height: 300px; display: flex; align-items: center; justify-content: center; color: white; text-align: center; margin-bottom: 40px; }
+
+        /* Container de Jogos */
+        .container { max-width: 1250px; margin: auto; padding: 20px; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 25px; }
+
+        /* Card Estilo Profissional */
+        .game-card { background: white; border-radius: 10px; overflow: hidden; transition: 0.4s; border: 1px solid #ddd; position: relative; }
+        .game-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,51,102,0.2); border-color: var(--azul-claro); }
+        .game-card img { width: 100%; height: 320px; object-fit: cover; }
+        .game-info { padding: 15px; text-align: center; }
+        .game-title { font-size: 16px; font-weight: 600; margin: 10px 0; height: 40px; overflow: hidden; }
+        .price-tag { color: var(--azul-claro); font-size: 22px; font-weight: 800; margin-bottom: 15px; }
+        
+        .btn-comprar { background: var(--azul-drex); color: white; text-decoration: none; padding: 10px; display: block; border-radius: 5px; font-weight: bold; transition: 0.3s; }
+        .btn-comprar:hover { background: var(--azul-claro); }
+
+        /* Botão Whats Flutuante (Estilo Elos) */
+        .btn-whats { position: fixed; bottom: 30px; right: 30px; background: #25d366; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 10000; text-decoration: none; }
     </style>
 </head>
 <body>
-    <header><h1>🎮 JOGOS STEAM OFFLINE</h1></header>
-    <div class="container" id="vitrine"></div>
-    <footer>© 2026 Sua Loja Profissional | <a href="/admin.html" style="color: #007BFF;">Painel Admin</a></footer>
+
+    <nav>
+        <div class="logo">MINHA LOJA GAMES</div>
+        <div>
+            <span style="margin-right: 20px;"><i class="fas fa-search"></i></span>
+            <span><i class="fas fa-user-circle"></i></span>
+        </div>
+    </nav>
+
+    <div class="hero">
+        <div>
+            <h1>JOGOS OFFLINE COM ACESSO VITALÍCIO</h1>
+            <p>Entrega imediata via WhatsApp ou E-mail</p>
+        </div>
+    </div>
+
+    <div class="container" id="vitrine">
+        </div>
+
+    <a href="https://wa.me/SEUNUMERO" class="btn-whats" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
 
     <script>
         const SB_URL = "https://grogiwbccvnbyjgxvafw.supabase.co";
@@ -34,9 +72,11 @@
                 vitrine.innerHTML += `
                     <div class="game-card">
                         <img src="${j.imagem_url}">
-                        <h3>${j.nome}</h3>
-                        <div class="price">R$ ${j.preco.toFixed(2)}</div>
-                        <a href="https://wa.me/SEUNUMERO" class="btn-buy">COMPRAR AGORA</a>
+                        <div class="game-info">
+                            <div class="game-title">${j.nome}</div>
+                            <div class="price-tag">R$ ${j.preco.toFixed(2)}</div>
+                            <a href="https://wa.me/SEUNUMERO?text=Tenho+interesse+no+jogo+${j.nome}" class="btn-comprar">COMPRAR</a>
+                        </div>
                     </div>`;
             });
         }
