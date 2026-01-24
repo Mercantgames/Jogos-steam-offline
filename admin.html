@@ -3,139 +3,190 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editar Produto | MercantGames</title>
+    <title>Painel Administrativo | MercantGames</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --azul: #003366; --prata: #E5E4E2; --bg: #f6f6f7; --border: #d2d2d2; }
-        body { margin: 0; font-family: -apple-system, sans-serif; background: var(--bg); display: flex; color: #303030; }
-        
-        .sidebar { width: 240px; background: #ebebeb; height: 100vh; border-right: 1px solid var(--border); padding: 10px; shrink: 0; }
-        .sidebar-item { padding: 10px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; font-size: 14px; color: #4a4a4a; }
-        .sidebar-item.active { background: #dfdfdf; font-weight: bold; color: #000; }
+        :root { --azul: #003366; --prata: #E5E4E2; --bg: #f6f6f7; --border: #d2d2d2; --branco: #ffffff; }
+        body { margin: 0; font-family: -apple-system, sans-serif; background: var(--bg); display: flex; height: 100vh; overflow: hidden; color: #303030; }
 
-        .container { flex: 1; padding: 20px 60px; overflow-y: auto; height: 100vh; box-sizing: border-box; }
-        .header-action { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        
-        /* Grid Principal */
+        /* Sidebar Estilo Shopify */
+        .sidebar { width: 240px; background: #ebebeb; border-right: 1px solid var(--border); padding: 10px; shrink: 0; display: flex; flex-direction: column; }
+        .sidebar-item { padding: 10px 12px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; font-size: 14px; margin-bottom: 2px; color: #4a4a4a; font-weight: 500; transition: 0.2s; }
+        .sidebar-item i { margin-right: 10px; width: 18px; text-align: center; color: #5c5c5c; }
+        .sidebar-item.active { background: #dfdfdf; color: #000; }
+
+        /* Área de Conteúdo */
+        .container { flex: 1; padding: 20px 40px; overflow-y: auto; }
+        .aba { display: none; }
+        .aba.active { display: block; animation: fadeIn 0.2s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .btn-save { background: var(--azul); color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+
+        /* Grid de Layout */
         .product-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
-        .card { background: #fff; border-radius: 8px; border: 1px solid var(--border); padding: 20px; margin-bottom: 20px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
-        .card-header { font-size: 14px; font-weight: 600; margin-bottom: 15px; display: block; }
+        .card { background: var(--branco); border-radius: 8px; padding: 20px; border: 1px solid var(--border); margin-bottom: 20px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .card-header { font-size: 14px; font-weight: 600; margin-bottom: 15px; display: block; color: var(--azul); }
 
         input, textarea, select { width: 100%; padding: 10px; border: 1px solid #bbb; border-radius: 6px; margin-top: 5px; font-size: 14px; box-sizing: border-box; }
         
-        /* Campos Lado a Lado */
-        .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+        /* Tabelas */
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
+        th { background: #f8f8f8; padding: 12px; text-align: left; font-size: 13px; color: #666; border-bottom: 1px solid var(--border); }
+        td { padding: 12px; border-bottom: 1px solid #eee; font-size: 14px; }
 
         /* SEO Preview */
-        .seo-preview { border-top: 1px solid #eee; padding-top: 15px; margin-top: 15px; }
-        .seo-title { color: #1a0dab; font-size: 18px; text-decoration: none; display: block; }
-        .seo-url { color: #006621; font-size: 14px; }
-        .seo-desc { color: #545454; font-size: 13px; line-height: 1.4; }
+        .seo-preview { border-top: 1px solid #eee; padding-top: 15px; margin-top: 10px; }
+        .seo-title { color: #1a0dab; font-size: 18px; display: block; }
+        .seo-desc { color: #545454; font-size: 13px; }
 
-        .btn-save { background: var(--azul); color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; }
-        .media-box { border: 2px dashed #ccc; padding: 30px; text-align: center; border-radius: 8px; background: #fafafa; cursor: pointer; }
+        /* Banners */
+        .banner-img { width: 100px; height: 50px; object-fit: cover; border-radius: 4px; border: 1px solid #ddd; margin: 5px; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <div class="sidebar">
-        <div style="font-weight: bold; padding: 10px; color: var(--azul);">MERCANT GAMES</div>
-        <div class="sidebar-item"><i class="fas fa-home"></i> Início</div>
-        <div class="sidebar-item"><i class="fas fa-shopping-cart"></i> Pedidos</div>
-        <div class="sidebar-item active"><i class="fas fa-tag"></i> Produtos</div>
+        <div style="font-weight: bold; padding: 15px; color: var(--azul); font-size: 18px;">MERCANT GAMES</div>
+        <div class="sidebar-item" id="nav-vendas" onclick="mudarAba('vendas')"><i class="fas fa-chart-line"></i> Pedidos / Vendas</div>
+        <div class="sidebar-item active" id="nav-produtos" onclick="mudarAba('produtos')"><i class="fas fa-tag"></i> Adicionar Produto</div>
+        <div class="sidebar-item" id="nav-estoque" onclick="mudarAba('estoque')"><i class="fas fa-boxes"></i> Ver Estoque</div>
+        <div class="sidebar-item" id="nav-clientes" onclick="mudarAba('clientes')"><i class="fas fa-users"></i> Clientes</div>
+        <div class="sidebar-item" id="nav-config" onclick="mudarAba('config')"><i class="fas fa-paint-brush"></i> Personalizar Loja</div>
     </div>
 
     <div class="container">
-        <div class="header-action">
-            <h2>📦 Adicionar produto</h2>
-            <button class="btn-save" onclick="salvarCompleto()">Salvar produto</button>
-        </div>
-
-        <div class="product-layout">
-            <div class="main-content">
-                <div class="card">
-                    <label class="card-header">Título</label>
-                    <input type="text" id="p_nome" placeholder="Ex: Elden Ring - Deluxe Edition PC" oninput="updateSEO()">
-                    
-                    <label class="card-header" style="margin-top:20px;">Descrição</label>
-                    <textarea id="p_desc" style="height: 150px;" oninput="updateSEO()"></textarea>
-                </div>
-
-                <div class="card">
-                    <label class="card-header">Mídia</label>
-                    <div class="media-box" onclick="document.getElementById('p_file').click()">
-                        <i class="fas fa-plus"></i><br>Fazer upload
-                        <input type="file" id="p_file" hidden accept="image/*">
+        
+        <div id="aba-produtos" class="aba active">
+            <div class="header-top"><h2>📦 Adicionar produto</h2><button class="btn-save" onclick="salvarJogo()">Salvar produto</button></div>
+            <div class="product-layout">
+                <div class="left-col">
+                    <div class="card"><label class="card-header">Título</label><input type="text" id="p_nome" oninput="updateSEO()"><label class="card-header" style="margin-top:15px;">Descrição</label><textarea id="p_desc" style="height:120px;" oninput="updateSEO()"></textarea></div>
+                    <div class="card"><label class="card-header">Mídia</label><input type="file" id="p_file" accept="image/*"></div>
+                    <div class="card">
+                        <label class="card-header">SEO (Busca Google)</label>
+                        <div class="seo-preview"><span class="seo-title" id="seo-prev-title">Título do Produto</span><span class="seo-desc" id="seo-prev-desc">Descrição do produto no Google...</span></div>
                     </div>
                 </div>
-
-                <div class="card">
-                    <label class="card-header">Preços</label>
-                    <div class="row-2">
-                        <div>
-                            <label style="font-size:12px;">Preço de venda</label>
-                            <input type="number" id="p_preco" placeholder="R$ 0,00">
-                        </div>
-                        <div>
-                            <label style="font-size:12px;">Preço comparativo (De:)</label>
-                            <input type="number" id="p_preco_antigo" placeholder="R$ 0,00">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <label class="card-header">Visualização da listagem nos mecanismos de pesquisa</label>
-                    <div class="seo-preview">
-                        <span class="seo-title" id="seo-prev-title">Título do Produto</span>
-                        <span class="seo-url">mercantgames.com.br/products/game</span>
-                        <span class="seo-desc" id="seo-prev-desc">Adicione uma descrição para ver como o Google exibirá seu jogo para os clientes.</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="side-content">
-                <div class="card">
-                    <label class="card-header">Status do produto</label>
-                    <select id="p_status">
-                        <option value="Ativo">Ativo</option>
-                        <option value="Arquivado">Arquivado</option>
-                        <option value="Rascunho">Rascunho</option>
-                    </select>
-                </div>
-
-                <div class="card">
-                    <label class="card-header">Organização</label>
-                    <label style="font-size:12px;">Categoria</label>
-                    <select id="p_cat">
-                        <option>Lançamentos</option>
-                        <option>Promoções</option>
-                    </select>
-                    
-                    <label style="font-size:12px; margin-top:15px; display:block;">Tags (Palavras-chave)</label>
-                    <input type="text" id="p_tags" placeholder="rpg, aventura, pc">
-                </div>
-
-                <div class="card">
-                    <label class="card-header">Estoque</label>
-                    <label style="font-size:12px;">SKU (Código da Unidade de Manutenção de Estoque)</label>
-                    <input type="text" id="p_sku" placeholder="MG-001">
+                <div class="right-col">
+                    <div class="card"><label class="card-header">Preço</label><input type="number" id="p_preco" placeholder="R$ 0,00"><label style="font-size:12px;margin-top:10px;display:block;">Preço comparativo</label><input type="number" id="p_preco_antigo" placeholder="R$ 0,00"></div>
+                    <div class="card"><label class="card-header">Organização</label><select id="p_cat"><option>Lançamentos</option><option>Promoção</option></select><input type="text" id="p_tags" placeholder="Tags SEO" style="margin-top:10px;"></div>
                 </div>
             </div>
         </div>
+
+        <div id="aba-estoque" class="aba">
+            <div class="header-top"><h2>📦 Estoque Atual</h2></div>
+            <div class="card"><table><thead><tr><th>Capa</th><th>Nome</th><th>Preço</th><th>Ação</th></tr></thead><tbody id="corpo-produtos"></tbody></table></div>
+        </div>
+
+        <div id="aba-vendas" class="aba">
+            <div class="header-top"><h2>🛒 Pedidos Realizados</h2></div>
+            <div class="card"><table><thead><tr><th>ID</th><th>Cliente</th><th>Produto</th><th>Total</th><th>Status</th></tr></thead><tbody id="lista-pedidos"></tbody></table></div>
+        </div>
+
+        <div id="aba-clientes" class="aba">
+            <div class="header-top"><h2>👥 Base de Clientes</h2></div>
+            <div class="card"><table><thead><tr><th>Nome</th><th>WhatsApp</th><th>Total Gasto</th></tr></thead><tbody id="lista-clientes"></tbody></table></div>
+        </div>
+
+        <div id="aba-config" class="aba">
+            <div class="header-top"><h2>🎨 Personalizar Loja</h2><button class="btn-save" onclick="salvarConfig()">Salvar Loja</button></div>
+            <div class="product-layout">
+                <div class="left-col">
+                    <div class="card"><label class="card-header">Banners (Vários)</label><input type="file" onchange="uploadBanner(this)"><div id="preview-banners" style="margin-top:15px; display:flex; flex-wrap:wrap;"></div></div>
+                </div>
+                <div class="right-col">
+                    <div class="card"><label class="card-header">Identidade</label><input type="text" id="cfg_nome" placeholder="Nome da Loja"><label style="margin-top:10px;display:block;">Cor da Loja</label><input type="color" id="cfg_cor" style="height:45px;"></div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <script>
-        function updateSEO() {
-            const nome = document.getElementById('p_nome').value;
-            const desc = document.getElementById('p_desc').value;
-            document.getElementById('seo-prev-title').innerText = nome || "Título do Produto";
-            document.getElementById('seo-prev-desc').innerText = desc || "Adicione uma descrição para ver como o Google exibirá seu jogo.";
+        const URL_SB = "https://grogiwbccvnbyjgxvafw.supabase.co";
+        const KEY_SB = "sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14";
+        const HEADERS = { 'apikey': KEY_SB, 'Authorization': `Bearer ${KEY_SB}`, 'Content-Type': 'application/json' };
+        let bannersLista = [];
+
+        function mudarAba(id) {
+            document.querySelectorAll('.aba').forEach(a => a.classList.remove('active'));
+            document.querySelectorAll('.sidebar-item').forEach(s => s.classList.remove('active'));
+            document.getElementById('aba-' + id).classList.add('active');
+            document.getElementById('nav-' + id).classList.add('active');
+            if(id === 'vendas') carregarVendas();
+            if(id === 'estoque') listarProdutos();
+            if(id === 'clientes') carregarClientes();
+            if(id === 'config') carregarConfig();
         }
 
-        async function salvarCompleto() {
-            // Aqui entra a lógica de salvar no Supabase que já temos pronta.
-            alert("Salvando com SEO e Preço Comparativo!");
+        function updateSEO() {
+            document.getElementById('seo-prev-title').innerText = document.getElementById('p_nome').value || "Título do Produto";
+            document.getElementById('seo-prev-desc').innerText = document.getElementById('p_desc').value || "Descrição no Google...";
         }
+
+        async function subirStorage(file) {
+            const name = `${Date.now()}_${file.name}`;
+            const res = await fetch(`${URL_SB}/storage/v1/object/capas/${name}`, { method: 'POST', headers: {'apikey': KEY_SB, 'Authorization': `Bearer ${KEY_SB}`}, body: file });
+            return res.ok ? `${URL_SB}/storage/v1/object/public/capas/${name}` : null;
+        }
+
+        async function carregarVendas() {
+            const res = await fetch(`${URL_SB}/rest/v1/vendas`, { headers: HEADERS });
+            const dados = await res.json();
+            document.getElementById('lista-pedidos').innerHTML = dados.map(v => `<tr><td>#${v.id}</td><td>${v.cliente_nome}</td><td>${v.produto_nome}</td><td>R$ ${v.valor}</td><td>${v.status}</td></tr>`).join('');
+        }
+
+        async function listarProdutos() {
+            const res = await fetch(`${URL_SB}/rest/v1/jogos`, { headers: HEADERS });
+            const dados = await res.json();
+            document.getElementById('corpo-produtos').innerHTML = dados.map(p => `<tr><td><img src="${p.url_da_imagem}" width="40"></td><td>${p.nome}</td><td>R$ ${p.preco}</td><td><button onclick="deletarProd(${p.id})">❌</button></td></tr>`).join('');
+        }
+
+        async function salvarJogo() {
+            const url = await subirStorage(document.getElementById('p_file').files[0]);
+            await fetch(`${URL_SB}/rest/v1/jogos`, { method: 'POST', headers: HEADERS, body: JSON.stringify({
+                nome: document.getElementById('p_nome').value, preco: document.getElementById('p_preco').value,
+                preco_antigo: document.getElementById('p_preco_antigo').value, descricao: document.getElementById('p_desc').value,
+                tags: document.getElementById('p_tags').value, url_da_imagem: url
+            })});
+            alert("Salvo!");
+        }
+
+        async function uploadBanner(input) {
+            const url = await subirStorage(input.files[0]);
+            if(url) { bannersLista.push(url); renderBanners(); }
+        }
+
+        function renderBanners() {
+            document.getElementById('preview-banners').innerHTML = bannersLista.map((b, i) => `<img src="${b}" class="banner-img" onclick="bannersLista.splice(${i},1);renderBanners()">`).join('');
+        }
+
+        async function carregarConfig() {
+            const res = await fetch(`${URL_SB}/rest/v1/configuracoes?id=eq.1`, { headers: HEADERS });
+            const [cfg] = await res.json();
+            if(cfg) {
+                document.getElementById('cfg_nome').value = cfg.loja_nome;
+                document.getElementById('cfg_cor').value = cfg.cor_principal;
+                bannersLista = cfg.banners || [];
+                renderBanners();
+            }
+        }
+
+        async function salvarConfig() {
+            await fetch(`${URL_SB}/rest/v1/configuracoes?id=eq.1`, { method: 'PATCH', headers: HEADERS, body: JSON.stringify({ loja_nome: document.getElementById('cfg_nome').value, cor_principal: document.getElementById('cfg_cor').value, banners: bannersLista })});
+            alert("Loja atualizada!");
+        }
+
+        async function carregarClientes() {
+            const res = await fetch(`${URL_SB}/rest/v1/clientes`, { headers: HEADERS });
+            const dados = await res.json();
+            document.getElementById('lista-clientes').innerHTML = dados.map(c => `<tr><td>${c.nome}</td><td>${c.whatsapp}</td><td>R$ ${c.total_comprado}</td></tr>`).join('');
+        }
+
+        window.onload = carregarVendas;
     </script>
 </body>
 </html>
