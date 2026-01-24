@@ -6,50 +6,33 @@
     <title id="site-title">MercantGames</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* Variáveis que serão alteradas pelo Banco de Dados */
         :root { --cor-principal: #003366; --prata: #E5E4E2; }
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: #121212; color: white; overflow-x: hidden; }
         
-        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: #121212; color: white; }
-        
-        /* Header Dinâmico */
-        header { 
-            background: var(--cor-principal); 
-            padding: 20px; 
-            text-align: center; 
-            border-bottom: 3px solid var(--prata); 
-        }
+        header { background: var(--cor-principal); padding: 20px; text-align: center; border-bottom: 3px solid var(--prata); transition: 0.5s; }
 
-        /* Banner/Slider Dinâmico */
-        .slider-container { width: 100%; height: 400px; overflow: hidden; position: relative; }
-        .slide { 
-            width: 100%; height: 100%; 
-            background-size: cover; 
-            background-position: center; 
-            display: none; 
-            animation: fade 1s;
-        }
-        .slide.active { display: block; }
+        /* Slider Blindado */
+        .slider-container { width: 100%; height: 450px; background: #1a1a1a; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        .slide { position: absolute; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; transition: opacity 1s ease-in-out; }
+        .slide.active { opacity: 1; }
+        .no-banner { color: #666; font-style: italic; }
 
-        @keyframes fade { from { opacity: 0.4 } to { opacity: 1 } }
-
-        .vitrine { padding: 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
-        .card { background: #1e1e1e; border-radius: 10px; padding: 15px; border: 1px solid #333; text-align: center; }
-        .card img { width: 100%; border-radius: 8px; }
-        .btn-comprar { 
-            background: var(--cor-principal); 
-            color: white; border: none; padding: 10px; width: 100%; 
-            border-radius: 5px; cursor: pointer; margin-top: 10px; font-weight: bold; 
-        }
+        .vitrine { padding: 40px; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 25px; max-width: 1200px; margin: 0 auto; }
+        .card { background: #1e1e1e; border-radius: 12px; padding: 15px; border: 1px solid #333; text-align: center; transition: 0.3s; }
+        .card:hover { transform: translateY(-5px); border-color: var(--cor-principal); }
+        .card img { width: 100%; height: 280px; object-fit: cover; border-radius: 8px; margin-bottom: 15px; }
+        .btn-comprar { background: var(--cor-principal); color: white; border: none; padding: 12px; width: 100%; border-radius: 6px; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
 
     <header>
-        <h1 id="loja-nome">Carregando...</h1>
+        <h1 id="loja-nome">MercantGames</h1>
     </header>
 
     <div class="slider-container" id="slider">
-        </div>
+        <div class="no-banner">Carregando banners...</div>
+    </div>
 
     <div class="vitrine" id="vitrine-jogos">
         </div>
@@ -59,59 +42,77 @@
         const KEY = "sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14";
         const HEAD = { 'apikey': KEY, 'Authorization': `Bearer ${KEY}` };
 
-        // Função que faz a loja refletir o que está no painel
-        async function carregarIdentidade() {
-            const res = await fetch(`${URL}/rest/v1/configuracoes?id=eq.1`, { headers: HEAD });
-            const [cfg] = await res.json();
+        async function sincronizarLoja() {
+            try {
+                const res = await fetch(`${URL}/rest/v1/configuracoes?id=eq.1`, { headers: HEAD });
+                const [cfg] = await res.json();
 
-            if(cfg) {
-                // Atualiza Nome e Título
-                document.getElementById('loja-nome').innerText = cfg.loja_nome;
-                document.title = cfg.loja_nome;
+                if (cfg) {
+                    console.log("Dados recebidos:", cfg);
+                    
+                    // 1. Atualiza Nome
+                    document.getElementById('loja-nome').innerText = cfg.loja_nome || "MercantGames";
+                    document.title = cfg.loja_nome || "MercantGames";
 
-                // Atualiza a Cor Principal
-                document.documentElement.style.setProperty('--cor-principal', cfg.cor_principal);
+                    // 2. Atualiza Cor
+                    if (cfg.cor_principal) {
+                        document.documentElement.style.setProperty('--cor-principal', cfg.cor_principal);
+                    }
 
-                // Atualiza os Banners (Slider)
-                const slider = document.getElementById('slider');
-                if(cfg.banners && cfg.banners.length > 0) {
-                    slider.innerHTML = cfg.banners.map((url, i) => `
-                        <div class="slide ${i === 0 ? 'active' : ''}" style="background-image: url('${url}')"></div>
-                    `).join('');
-                    iniciarSlider();
+                    // 3. Atualiza Banners (Múltiplos)
+                    const slider = document.getElementById('slider');
+                    if (cfg.banners && cfg.banners.length > 0) {
+                        slider.innerHTML = cfg.banners.map((url, i) => `
+                            <div class="slide ${i === 0 ? 'active' : ''}" style="background-image: url('${url}')"></div>
+                        `).join('');
+                        iniciarGiro(cfg.banners.length);
+                    } else {
+                        slider.innerHTML = "<div class='no-banner'>Nenhum banner cadastrado.</div>";
+                    }
                 }
+            } catch (err) {
+                console.error("Erro ao carregar configs:", err);
             }
         }
 
         async function carregarJogos() {
-            const res = await fetch(`${URL}/rest/v1/jogos`, { headers: HEAD });
-            const jogos = await res.json();
-            const vitrine = document.getElementById('vitrine-jogos');
-            vitrine.innerHTML = jogos.map(j => `
-                <div class="card">
-                    <img src="${j.url_da_imagem}">
-                    <h3>${j.nome}</h3>
-                    <p style="color: #27ae60; font-weight: bold;">R$ ${j.preco}</p>
-                    <button class="btn-comprar">COMPRAR AGORA</button>
-                </div>
-            `).join('');
+            try {
+                const res = await fetch(`${URL}/rest/v1/jogos`, { headers: HEAD });
+                const jogos = await res.json();
+                const vitrine = document.getElementById('vitrine-jogos');
+                
+                if (jogos.length === 0) {
+                    vitrine.innerHTML = "<p>Nenhum jogo disponível no momento.</p>";
+                    return;
+                }
+
+                vitrine.innerHTML = jogos.map(j => `
+                    <div class="card">
+                        <img src="${j.url_da_imagem}" onerror="this.src='https://via.placeholder.com/280x400?text=Sem+Foto'">
+                        <h3 style="margin: 10px 0;">${j.nome}</h3>
+                        <p style="color: #2ecc71; font-size: 1.2rem; font-weight: bold; margin: 10px 0;">R$ ${j.preco}</p>
+                        <button class="btn-comprar">COMPRAR AGORA</button>
+                    </div>
+                `).join('');
+            } catch (err) {
+                console.error("Erro ao carregar jogos:", err);
+            }
         }
 
-        // Lógica simples de giro do banner
-        function iniciarSlider() {
+        function iniciarGiro(total) {
             let atual = 0;
             const slides = document.querySelectorAll('.slide');
-            if(slides.length <= 1) return;
+            if (total <= 1) return;
             
             setInterval(() => {
                 slides[atual].classList.remove('active');
-                atual = (atual + 1) % slides.length;
+                atual = (atual + 1) % total;
                 slides[atual].classList.add('active');
-            }, 5000); // Muda a cada 5 segundos
+            }, 5000);
         }
 
         window.onload = () => {
-            carregarIdentidade();
+            sincronizarLoja();
             carregarJogos();
         };
     </script>
