@@ -1,153 +1,25 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MercantGames | O Império dos Jogos Offline</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        :root {
-            --prata: #E5E4E2;
-            --azul-escuro: #003366;
-            --azul-claro: #007BFF;
-            --bg-card: #ffffff;
-        }
+async function carregarMercantGames() {
+    const URL = "https://grogiwbccvnbyjgxvafw.supabase.co/rest/v1/jogos";
+    const KEY = "sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14";
 
-        body { background: var(--prata); font-family: 'Poppins', sans-serif; margin: 0; overflow-x: hidden; }
-
-        /* HEADER E NAVEGAÇÃO */
-        header { background: var(--azul-escuro); color: white; padding: 15px 0; text-align: center; border-bottom: 4px solid var(--azul-claro); }
-        .logo { font-size: 35px; font-weight: 900; letter-spacing: -1px; }
+    try {
+        const res = await fetch(URL, { headers: { 'apikey': KEY, 'Authorization': `Bearer ${KEY}` } });
+        const jogos = await res.json();
         
-        .nav-abas { background: #001a33; display: flex; justify-content: center; gap: 30px; padding: 12px; position: sticky; top: 0; z-index: 100; }
-        .nav-abas a { color: white; text-decoration: none; font-size: 13px; font-weight: 600; text-transform: uppercase; transition: 0.3s; }
-        .nav-abas a:hover { color: var(--azul-claro); }
+        const vitrine = document.querySelector('.grid-jogos');
+        vitrine.innerHTML = ""; // Limpa os exemplos e foca no automático
 
-        /* BANNER IMPACTANTE */
-        .hero-banner { 
-            width: 100%; height: 400px; 
-            background: linear-gradient(to right, rgba(0,51,102,0.9), rgba(0,0,0,0.3)), url('https://images.alphacoders.com/133/1338423.png'); 
-            background-size: cover; background-position: center;
-            display: flex; align-items: center; justify-content: center; color: white; text-align: center;
-        }
-        .hero-content h2 { font-size: 45px; margin: 0; text-shadow: 2px 2px 10px rgba(0,0,0,0.5); }
-
-        /* CATEGORIAS */
-        .cat-bar { display: flex; justify-content: center; gap: 10px; padding: 25px; flex-wrap: wrap; }
-        .cat-item { background: white; border: 1px solid var(--azul-escuro); color: var(--azul-escuro); padding: 8px 25px; border-radius: 5px; text-decoration: none; font-weight: bold; transition: 0.3s; }
-        .cat-item:hover { background: var(--azul-escuro); color: white; }
-
-        /* SEÇÕES DE JOGOS */
-        .section-title { max-width: 1200px; margin: 40px auto 20px; padding: 0 20px; font-size: 24px; color: var(--azul-escuro); font-weight: 800; text-transform: uppercase; }
-        
-        .grid-jogos { 
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); 
-            gap: 25px; max-width: 1200px; margin: 0 auto; padding: 20px; 
-        }
-
-        /* CARD ESTILO DREX */
-        .game-card { 
-            background: var(--bg-card); border-radius: 8px; overflow: hidden; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: 0.4s; position: relative;
-        }
-        .game-card:hover { transform: translateY(-10px); }
-        .game-card img { width: 100%; height: 350px; object-fit: cover; }
-        
-        .game-info { padding: 15px; text-align: center; }
-        .game-info h3 { margin: 0 0 10px; font-size: 18px; color: #333; height: 50px; overflow: hidden; }
-        .game-price { font-size: 26px; font-weight: 800; color: var(--azul-claro); margin-bottom: 15px; }
-        
-        .btn-buy { 
-            background: #25D366; color: white; text-decoration: none; 
-            padding: 12px; display: block; border-radius: 5px; font-weight: bold; 
-            transition: 0.3s; text-transform: uppercase;
-        }
-        .btn-buy:hover { background: #128C7E; transform: scale(1.05); }
-
-        /* RODAPÉ COMPLETO */
-        footer { background: var(--azul-escuro); color: white; padding: 60px 20px 20px; margin-top: 80px; }
-        .footer-content { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; }
-        .footer-col h4 { font-size: 18px; border-left: 4px solid var(--azul-claro); padding-left: 10px; margin-bottom: 20px; }
-        .footer-col a, .footer-col p { color: #bdc3c7; text-decoration: none; display: block; margin-bottom: 10px; font-size: 14px; }
-        
-        .whatsapp-fixo { 
-            position: fixed; bottom: 30px; right: 30px; background: #25D366; 
-            width: 65px; height: 65px; border-radius: 50%; display: flex; 
-            align-items: center; justify-content: center; font-size: 35px; color: white; 
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 1000;
-        }
-
-        .copyright { text-align: center; padding-top: 40px; border-top: 1px solid #002b55; margin-top: 40px; font-size: 12px; color: #7f8c8d; }
-    </style>
-</head>
-<body>
-
-<header>
-    <div class="logo">MERCANTGAMES</div>
-</header>
-
-<div class="nav-abas">
-    <a href="#lancamentos">Lançamentos</a>
-    <a href="#vendidos">Mais Vendidos</a>
-    <a href="#atemporais">Atalhos Steam</a>
-    <a href="#politicas">Políticas</a>
-</div>
-
-<section class="hero-banner">
-    <div class="hero-content">
-        <h2>DOMINE O JOGO</h2>
-        <p>Ativação Segura | Suporte Premium | Melhores Preços</p>
-    </div>
-</section>
-
-<div class="cat-bar">
-    <a href="#" class="cat-item">AÇÃO</a>
-    <a href="#" class="cat-item">AVENTURA</a>
-    <a href="#" class="cat-item">TERROR</a>
-    <a href="#" class="cat-item">SIMULAÇÃO</a>
-    <a href="#" class="cat-item">RPG</a>
-</div>
-
-<div class="section-title" id="lancamentos">🚀 ÚLTIMOS LANÇAMENTOS</div>
-<div class="grid-jogos">
-    <div class="game-card">
-        <img src="https://shared.akamai.steamstatic.com/store_images/api/v2/1196590/library_600x900_2x.jpg">
-        <div class="game-info">
-            <h3>Resident Evil 4 Remake</h3>
-            <div class="game-price">R$ 29,90</div>
-            <a href="https://wa.me/5511999999999" class="btn-buy"><i class="fab fa-whatsapp"></i> Comprar Agora</a>
-        </div>
-    </div>
-    </div>
-
-<footer id="politicas">
-    <div class="footer-content">
-        <div class="footer-col">
-            <h4>MERCANTGAMES</h4>
-            <p>Especialistas em ativações Steam Offline. Qualidade e preço justo em um só lugar.</p>
-        </div>
-        <div class="footer-col">
-            <h4>INSTITUCIONAL</h4>
-            <a href="#">Quem Somos</a>
-            <a href="#">Termos de Uso</a>
-            <a href="#">Política de Privacidade</a>
-            <a href="#">Política de Reembolso</a>
-        </div>
-        <div class="footer-col">
-            <h4>SUPORTE</h4>
-            <a href="#">Como Instalar</a>
-            <a href="#">Dúvidas Frequentes</a>
-            <a href="#">Contato</a>
-        </div>
-    </div>
-    <div class="copyright">
-        © 2026 MERCANTGAMES. Todos os direitos reservados.
-    </div>
-</footer>
-
-<a href="https://wa.me/5511999999999" class="whatsapp-fixo" target="_blank">
-    <i class="fab fa-whatsapp"></i>
-</a>
-
-</body>
-</html>
+        jogos.forEach(jogo => {
+            vitrine.innerHTML += `
+                <div class="game-card">
+                    <img src="${jogo.url_da_imagem}">
+                    <div class="game-info">
+                        <h3>${jogo.nome}</h3>
+                        <div class="game-price">R$ ${parseFloat(jogo.preco).toFixed(2)}</div>
+                        <a href="https://wa.me/5511999999999" class="btn-buy">🛒 Comprar Agora</a>
+                    </div>
+                </div>`;
+        });
+    } catch (e) { console.log("Erro ao carregar vitrine automática."); }
+}
+carregarMercantGames();
