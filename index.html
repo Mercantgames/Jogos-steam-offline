@@ -1,25 +1,31 @@
-async function carregarMercantGames() {
-    const URL = "https://grogiwbccvnbyjgxvafw.supabase.co/rest/v1/jogos";
-    const KEY = "sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14";
+<div class="grid-jogos"></div>
 
-    try {
-        const res = await fetch(URL, { headers: { 'apikey': KEY, 'Authorization': `Bearer ${KEY}` } });
-        const jogos = await res.json();
+<script>
+async function carregarMercantGames() { 
+    const URL = "https://grogiwbccvnbyjgxvafw.supabase.co/rest/v1/jogos"; 
+    const KEY = "sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14"; 
+    
+    try { 
+        const res = await fetch(URL, { 
+            headers: { 'apikey': KEY, 'Authorization': `Bearer ${KEY}` } 
+        }); 
+        const jogos = await res.json(); 
+        const vitrine = document.querySelector('.grid-jogos'); 
         
-        const vitrine = document.querySelector('.grid-jogos');
-        vitrine.innerHTML = ""; // Limpa os exemplos e foca no automático
+        vitrine.innerHTML = ""; // Limpa a tela antes de carregar
 
-        jogos.forEach(jogo => {
+        jogos.forEach(jogo => { 
             vitrine.innerHTML += `
-                <div class="game-card">
-                    <img src="${jogo.url_da_imagem}">
-                    <div class="game-info">
-                        <h3>${jogo.nome}</h3>
-                        <div class="game-price">R$ ${parseFloat(jogo.preco).toFixed(2)}</div>
-                        <a href="https://wa.me/5511999999999" class="btn-buy">🛒 Comprar Agora</a>
-                    </div>
-                </div>`;
-        });
-    } catch (e) { console.log("Erro ao carregar vitrine automática."); }
-}
+                <div class="game-card" style="border: 2px solid #003366; padding: 15px; border-radius: 10px; background: #fff; text-align: center;">
+                    <img src="${jogo.url_da_imagem}" style="width: 100%; border-radius: 5px;">
+                    <h3 style="color: #003366;">${jogo.nome}</h3>
+                    <p style="font-weight: bold;">R$ ${parseFloat(jogo.preco).toFixed(2)}</p>
+                    <a href="https://wa.me/5511999999999" style="background: #003366; color: white; padding: 10px; display: block; text-decoration: none; border-radius: 5px;">🛒 Comprar Agora</a>
+                </div>`; 
+        }); 
+    } catch (e) { 
+        console.log("Erro ao carregar vitrine."); 
+    } 
+} 
 carregarMercantGames();
+</script>
