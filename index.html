@@ -1,90 +1,8 @@
-<style>
-    /* Estilo da Grade da MercantGames */
-    .loja-container {
-        max-width: 1200px;
-        margin: 40px auto;
-        padding: 20px;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    .grid-jogos {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* Organiza as colunas sozinho */
-        gap: 25px;
-        padding: 20px;
-    }
-
-    .game-card {
-        background: #FFFFFF;
-        border: 2px solid #E5E4E2; /* Prata */
-        border-radius: 12px;
-        overflow: hidden;
-        transition: transform 0.3s, box-shadow 0.3s;
-        display: flex;
-        flex-direction: column;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    }
-
-    .game-card:hover {
-        transform: translateY(-10px);
-        border-color: #003366; /* Azul Mercant */
-        box-shadow: 0 10px 25px rgba(0, 51, 102, 0.2);
-    }
-
-    /* O SEGREDO: Limita a imagem para não cobrir tudo */
-    .game-card img {
-        width: 100%;
-        height: 300px; /* Altura padrão de capa de jogo */
-        object-fit: cover; /* Corta a imagem sem esticar */
-        background: #f0f0f0;
-    }
-
-    .game-info {
-        padding: 15px;
-        text-align: center;
-        flex-grow: 1;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-    }
-
-    .game-info h3 {
-        color: #003366; /* Azul */
-        font-size: 1.1rem;
-        margin: 10px 0;
-        text-transform: uppercase;
-    }
-
-    .game-price {
-        font-size: 1.3rem;
-        font-weight: bold;
-        color: #333;
-        margin-bottom: 15px;
-    }
-
-    .btn-buy {
-        background: #003366; /* Azul */
-        color: #E5E4E2; /* Prata */
-        text-decoration: none;
-        padding: 12px;
-        border-radius: 6px;
-        font-weight: bold;
-        transition: background 0.3s;
-    }
-
-    .btn-buy:hover {
-        background: #00509E;
-        color: #FFFFFF;
-    }
-</style>
-
-<div class="loja-container">
-    <div id="vitrine" class="grid-jogos">
-        </div>
-</div>
+<div id="vitrine" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; padding: 20px; max-width: 1200px; margin: auto;">
+    </div>
 
 <script>
-async function carregarMercantGames() {
+async function carregarLoja() {
     const URL = "https://grogiwbccvnbyjgxvafw.supabase.co/rest/v1/jogos";
     const KEY = "sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14";
 
@@ -97,18 +15,25 @@ async function carregarMercantGames() {
 
         jogos.forEach(jogo => {
             vitrine.innerHTML += `
-                <div class="game-card">
-                    <img src="${jogo.url_da_imagem}" alt="${jogo.nome}">
-                    <div class="game-info">
-                        <h3>${jogo.nome}</h3>
-                        <div class="game-price">R$ ${parseFloat(jogo.preco).toFixed(2)}</div>
-                        <a href="https://wa.me/5511999999999?text=Quero comprar o jogo ${jogo.nome}" class="btn-buy" target="_blank">🛒 COMPRAR</a>
+                <div style="background: white; border: 2px solid #E5E4E2; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 4px 10px rgba(0,0,0,0.1); font-family: sans-serif;">
+                    
+                    <div style="width: 100%; height: 280px; overflow: hidden; background: #f0f0f0;">
+                        <img src="${jogo.url_da_imagem}" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+
+                    <div style="padding: 15px; text-align: center;">
+                        <h3 style="color: #003366; font-size: 16px; margin: 5px 0; text-transform: uppercase;">${jogo.nome}</h3>
+                        <div style="font-size: 20px; font-weight: bold; color: #333; margin: 10px 0;">R$ ${parseFloat(jogo.preco).toFixed(2)}</div>
+                        <a href="https://wa.me/5511999999999?text=Olá! Quero o jogo: ${jogo.nome}" 
+                           style="background: #003366; color: #E5E4E2; text-decoration: none; padding: 10px; display: block; border-radius: 6px; font-weight: bold; font-size: 14px;">
+                           🛒 COMPRAR AGORA
+                        </a>
                     </div>
                 </div>`;
         });
     } catch (e) {
-        console.error("Erro ao carregar loja:", e);
+        console.error("Erro:", e);
     }
 }
-carregarMercantGames();
+carregarLoja();
 </script>
