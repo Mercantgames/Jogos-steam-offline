@@ -3,83 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MercantGames | Store</title>
+    <title>MercantGames | Store Profissional</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --main: #003366; --bg-dark: #05070a; --panel: #0d1117; --text-gray: #8b949e; }
-        body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg-dark); color: white; }
+        :root { --main: #003366; --bg-dark: #05070a; --panel: #0d1117; --accent: #39d353; --text-gray: #8b949e; }
+        body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg-dark); color: white; overflow-x: hidden; }
 
-        /* HEADER ESTILO DREX */
-        header { background: #000; padding: 15px 6%; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--main); }
-        .logo { font-size: 22px; font-weight: 900; color: #fff; text-transform: uppercase; letter-spacing: 2px; }
-
-        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
-        .grid-jogos { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
-
-        /* CARD DO JOGO */
-        .game-card { background: var(--panel); border-radius: 4px; overflow: hidden; border: 1px solid #21262d; cursor: pointer; transition: 0.2s; }
-        .game-card:hover { border-color: var(--main); transform: translateY(-3px); }
-        .game-card img { width: 100%; height: 280px; object-fit: cover; }
-        .game-card-body { padding: 12px; }
-        .game-name { font-size: 14px; font-weight: 600; height: 35px; overflow: hidden; }
-        .game-price { color: #39d353; font-weight: bold; font-size: 18px; margin-top: 8px; }
-
-        /* --- PÁGINA DO PRODUTO (O QUE VOCÊ QUERIA) --- */
-        #pagina-produto { display: none; padding-top: 20px; }
-        .product-header { display: grid; grid-template-columns: 1fr 350px; gap: 30px; }
+        /* HEADER DREX STYLE */
+        header { background: #000; padding: 10px 6%; display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid var(--main); sticky; top: 0; z-index: 100; }
+        .logo { font-size: 20px; font-weight: 900; color: #fff; text-transform: uppercase; cursor: pointer; }
         
-        .product-left img { width: 100%; border-radius: 8px; border: 1px solid #30363d; }
+        .search-bar { flex: 1; max-width: 500px; margin: 0 20px; position: relative; }
+        .search-bar input { width: 100%; background: #161b22; border: 1px solid #30363d; padding: 10px 15px; border-radius: 6px; color: white; outline: none; }
+        .search-bar i { position: absolute; right: 15px; top: 12px; color: var(--text-gray); }
+
+        .header-icons { display: flex; align-items: center; gap: 20px; }
+        .cart-icon { position: relative; cursor: pointer; font-size: 1.2rem; }
+        .cart-count { position: absolute; top: -8px; right: -10px; background: var(--main); color: white; font-size: 10px; padding: 2px 6px; border-radius: 50%; }
+
+        /* BANNER */
+        .hero-banner { width: 100%; height: 350px; background-size: cover; background-position: center; position: relative; display: flex; align-items: flex-end; }
+        .hero-overlay { position: absolute; inset: 0; background: linear-gradient(0deg, var(--bg-dark) 0%, transparent 100%); }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
         
-        /* BOX DE COMPRA LATERAL */
-        .buy-card { background: var(--panel); border-radius: 8px; padding: 25px; border: 1px solid #30363d; position: sticky; top: 100px; }
-        .buy-card .price { font-size: 32px; font-weight: 800; color: #fff; display: block; margin-bottom: 20px; }
-        .btn-comprar { background: var(--main); color: white; width: 100%; padding: 15px; border: none; border-radius: 5px; font-weight: 800; cursor: pointer; text-transform: uppercase; }
-        .btn-comprar:hover { filter: brightness(1.2); }
+        /* VITRINE */
+        .grid-jogos { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; margin-top: 20px; }
+        .game-card { background: var(--panel); border-radius: 6px; overflow: hidden; border: 1px solid #21262d; cursor: pointer; transition: 0.2s; }
+        .game-card:hover { border-color: var(--main); transform: translateY(-5px); }
+        .game-card img { width: 100%; height: 260px; object-fit: cover; }
+        .card-info { padding: 12px; }
+        .price { color: var(--accent); font-weight: bold; font-size: 1.1rem; }
 
-        /* ABAS DE INFORMAÇÃO */
-        .tabs-container { margin-top: 40px; background: var(--panel); border-radius: 8px; border: 1px solid #30363d; overflow: hidden; }
-        .tabs-nav { display: flex; background: #161b22; border-bottom: 1px solid #30363d; }
-        .tab-link { padding: 15px 30px; cursor: pointer; color: var(--text-gray); font-weight: bold; border-right: 1px solid #30363d; }
-        .tab-link.active { background: var(--panel); color: #fff; border-top: 3px solid var(--main); }
-        .tab-content { padding: 30px; line-height: 1.8; color: #c9d1d9; }
+        /* PÁGINA DO PRODUTO */
+        #detalhe-produto { display: none; padding-top: 20px; animation: fadeIn 0.3s; }
+        .prod-grid { display: grid; grid-template-columns: 1fr 380px; gap: 30px; }
+        .prod-left img { width: 100%; border-radius: 8px; border: 1px solid #30363d; }
+        
+        .buy-card { background: var(--panel); border-radius: 8px; padding: 25px; border: 1px solid #30363d; position: sticky; top: 20px; }
+        .buy-card h1 { font-size: 24px; margin: 0 0 15px 0; }
+        .big-price { font-size: 32px; font-weight: 800; display: block; margin-bottom: 20px; }
+        .btn-buy { background: var(--main); color: white; width: 100%; padding: 15px; border: none; border-radius: 4px; font-weight: 800; cursor: pointer; }
 
-        .btn-voltar { color: var(--main); cursor: pointer; font-weight: bold; margin-bottom: 20px; display: inline-block; }
+        .tabs-box { margin-top: 30px; background: var(--panel); border: 1px solid #30363d; border-radius: 8px; }
+        .tab-nav { display: flex; background: #161b22; border-bottom: 1px solid #30363d; }
+        .tab-link { padding: 15px 25px; cursor: pointer; font-size: 13px; font-weight: bold; color: var(--text-gray); }
+        .tab-link.active { color: white; border-bottom: 2px solid var(--main); background: var(--panel); }
+        .tab-body { padding: 25px; line-height: 1.6; color: #c9d1d9; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @media (max-width: 900px) { .prod-grid { grid-template-columns: 1fr; } .hero-banner { height: 200px; } }
     </style>
 </head>
 <body>
 
-    <header><div class="logo">MERCANT GAMES</div></header>
+    <header>
+        <div class="logo" onclick="irParaHome()">MERCANT GAMES</div>
+        <div class="search-bar">
+            <input type="text" id="busca" placeholder="Procurar jogos..." oninput="filtrar()">
+            <i class="fas fa-search"></i>
+        </div>
+        <div class="header-icons">
+            <div class="cart-icon"><i class="fas fa-shopping-cart"></i><span class="cart-count" id="cont-carrinho">0</span></div>
+            <i class="fas fa-user-circle" style="font-size: 1.4rem; cursor: pointer;"></i>
+        </div>
+    </header>
 
-    <div class="container" id="vitrine-principal">
-        <h2 style="border-left: 5px solid var(--main); padding-left: 15px;">Destaques</h2>
-        <div class="grid-jogos" id="lista-jogos"></div>
+    <div id="view-home">
+        <div class="hero-banner" id="banner-topo" style="background-image: url('https://via.placeholder.com/1200x350')">
+            <div class="hero-overlay"></div>
+            <div class="container"><h1 id="texto-banner" style="position:relative; z-index:1">OS MELHORES PREÇOS</h1></div>
+        </div>
+        <div class="container">
+            <div class="grid-jogos" id="vitrine"></div>
+        </div>
     </div>
 
-    <div class="container" id="pagina-produto">
-        <div class="btn-voltar" onclick="voltarLoja()"><i class="fas fa-arrow-left"></i> VOLTAR PARA A VITRINE</div>
-        
-        <div class="product-header">
-            <div class="product-left">
-                <img id="p-foto" src="">
-                
-                <div class="tabs-container">
-                    <div class="tabs-nav">
-                        <div class="tab-link active">DESCRIÇÃO DO PRODUTO</div>
-                        <div class="tab-link">REQUISITOS</div>
+    <div id="detalhe-produto" class="container">
+        <div style="margin-bottom: 20px; cursor: pointer; color: var(--main);" onclick="irParaHome()"><i class="fas fa-chevron-left"></i> Voltar</div>
+        <div class="prod-grid">
+            <div class="prod-left">
+                <img id="p-img" src="">
+                <div class="tabs-box">
+                    <div class="tab-nav">
+                        <div class="tab-link active">DESCRIÇÃO</div>
+                        <div class="tab-link">COMO ATIVAR</div>
                     </div>
-                    <div class="tab-content" id="p-desc"></div>
+                    <div class="tab-body" id="p-desc"></div>
                 </div>
             </div>
-
-            <div class="product-right">
+            <div class="prod-right">
                 <div class="buy-card">
-                    <h1 id="p-nome" style="font-size: 24px; margin-top: 0;"></h1>
-                    <span class="price" id="p-preco"></span>
-                    <button class="btn-comprar" onclick="alert('Indo para o pagamento...')">Comprar Agora</button>
-                    <ul style="margin-top: 20px; padding: 0; list-style: none; font-size: 13px; color: var(--text-gray);">
-                        <li><i class="fas fa-bolt"></i> Entrega Digital Imediata</li>
-                        <li><i class="fas fa-check-circle"></i> Garantia Vitalícia</li>
-                    </ul>
+                    <h1 id="p-nome"></h1>
+                    <span class="big-price" id="p-preco"></span>
+                    <button class="btn-buy" onclick="adicionarCarrinho()">ADICIONAR AO CARRINHO</button>
+                    <div style="margin-top: 20px; font-size: 12px; color: var(--text-gray);">
+                        <p><i class="fas fa-check"></i> Envio Imediato</p>
+                        <p><i class="fas fa-lock"></i> Pagamento Seguro</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -89,41 +110,60 @@
         const SB_URL = "https://grogiwbccvnbyjgxvafw.supabase.co";
         const SB_KEY = "sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14";
         const HEADERS = { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}` };
-        let DB_JOGOS = [];
+        let JOGOS = [];
+        let carrinho = 0;
 
-        async function carregar() {
+        async function init() {
+            const resCfg = await fetch(`${SB_URL}/rest/v1/configuracoes?id=eq.1`, { headers: HEADERS });
+            const [cfg] = await resCfg.json();
+            if(cfg && cfg.banners.length > 0) document.getElementById('banner-topo').style.backgroundImage = `url('${cfg.banners[0]}')`;
+
             const res = await fetch(`${SB_URL}/rest/v1/jogos`, { headers: HEADERS });
-            DB_JOGOS = await res.json();
-            
-            document.getElementById('lista-jogos').innerHTML = DB_JOGOS.map((j, i) => `
-                <div class="game-card" onclick="verProduto(${i})">
+            JOGOS = await res.json();
+            renderizar(JOGOS);
+        }
+
+        function renderizar(lista) {
+            document.getElementById('vitrine').innerHTML = lista.map((j, i) => `
+                <div class="game-card" onclick="verProduto(${JOGOS.indexOf(j)})">
                     <img src="${j.url_da_imagem}">
-                    <div class="game-card-body">
-                        <div class="game-name">${j.nome}</div>
-                        <div class="game-price">R$ ${j.preco}</div>
+                    <div class="card-info">
+                        <div style="font-size: 14px; margin-bottom: 5px; height: 34px; overflow: hidden;">${j.nome}</div>
+                        <div class="price">R$ ${j.preco}</div>
                     </div>
                 </div>
             `).join('');
         }
 
-        function verProduto(i) {
-            const j = DB_JOGOS[i];
-            document.getElementById('vitrine-principal').style.display = 'none';
-            document.getElementById('pagina-produto').style.display = 'block';
-            
+        function filtrar() {
+            const termo = document.getElementById('busca').value.toLowerCase();
+            const filtrados = JOGOS.filter(j => j.nome.toLowerCase().includes(termo));
+            renderizar(filtrados);
+        }
+
+        function verProduto(idx) {
+            const j = JOGOS[idx];
+            document.getElementById('view-home').style.display = 'none';
+            document.getElementById('detalhe-produto').style.display = 'block';
             document.getElementById('p-nome').innerText = j.nome;
             document.getElementById('p-preco').innerText = "R$ " + j.preco;
-            document.getElementById('p-desc').innerText = j.descricao || "Nenhuma informação adicional.";
-            document.getElementById('p-foto').src = j.url_da_imagem;
+            document.getElementById('p-desc').innerText = j.descricao || "Descrição indisponível.";
+            document.getElementById('p-img').src = j.url_da_imagem;
             window.scrollTo(0,0);
         }
 
-        function voltarLoja() {
-            document.getElementById('vitrine-principal').style.display = 'block';
-            document.getElementById('pagina-produto').style.display = 'none';
+        function irParaHome() {
+            document.getElementById('view-home').style.display = 'block';
+            document.getElementById('detalhe-produto').style.display = 'none';
         }
 
-        window.onload = carregar;
+        function adicionarCarrinho() {
+            carrinho++;
+            document.getElementById('cont-carrinho').innerText = carrinho;
+            alert("Produto adicionado ao carrinho!");
+        }
+
+        window.onload = init;
     </script>
 </body>
 </html>
