@@ -2,105 +2,43 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="site-title">MercantGames</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Loja MercantGames</title>
     <style>
-        :root { --cor-principal: #003366; --bg: #121212; }
-        body { margin: 0; font-family: sans-serif; background: var(--bg); color: white; }
-        
-        header { background: var(--cor-principal); padding: 20px; text-align: center; border-bottom: 2px solid #333; }
-
-        /* Vitrine Corrigida - Agora ela força a exibição */
-        .vitrine { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); 
-            gap: 20px; 
-            padding: 40px; 
-            max-width: 1200px; 
-            margin: 0 auto;
-        }
-
-        .card { 
-            background: #1e1e1e; 
-            border-radius: 10px; 
-            padding: 15px; 
-            text-align: center; 
-            border: 1px solid #333;
-        }
-
-        .card img { 
-            width: 100%; 
-            height: 300px; 
-            object-fit: cover; 
-            border-radius: 5px; 
-            background: #252525;
-        }
-
-        .preco { color: #2ecc71; font-size: 1.4rem; font-weight: bold; margin: 10px 0; }
-        .btn-view { background: var(--cor-principal); color: white; border: none; padding: 10px; width: 100%; border-radius: 5px; cursor: pointer; }
+        body { background: #121212; color: white; font-family: sans-serif; text-align: center; }
+        .vitrine { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; padding: 20px; }
+        .card { background: #1e1e1e; padding: 15px; border-radius: 10px; width: 250px; border: 1px solid #333; }
+        .card img { width: 100%; height: 300px; object-fit: cover; border-radius: 5px; }
+        .preco { color: #2ecc71; font-size: 1.5rem; font-weight: bold; }
     </style>
 </head>
 <body>
-
-    <header><h1 id="loja-nome">MercantGames</h1></header>
-
-    <div class="vitrine" id="vitrine-jogos">
-        <p id="loading-msg">Carregando jogos...</p>
-    </div>
+    <h1>MercantGames - Vitrine</h1>
+    <div class="vitrine" id="vitrine">Carregando anúncios...</div>
 
     <script>
-        const URL_SB = "https://grogiwbccvnbyjgxvafw.supabase.co";
-        const KEY_SB = "sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14";
-        const HEADERS = { 'apikey': KEY_SB, 'Authorization': `Bearer ${KEY_SB}` };
+        const SB_URL = "https://grogiwbccvnbyjgxvafw.supabase.co";
+        const SB_KEY = "sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14";
 
-        async function carregarLoja() {
-            const vitrine = document.getElementById('vitrine-jogos');
-            try {
-                // Busca os jogos
-                const res = await fetch(`${URL_SB}/rest/v1/jogos`, { headers: HEADERS });
-                const jogos = await res.json();
-
-                if (!jogos || jogos.length === 0) {
-                    vitrine.innerHTML = "<h1>Nenhum jogo encontrado no banco de dados.</h1>";
-                    return;
-                }
-
-                // Limpa o "Carregando..."
-                vitrine.innerHTML = "";
-
-                jogos.forEach(j => {
-                    // Tenta encontrar a imagem em qualquer coluna comum
-                    const imgUrl = j.url_da_imagem || j.imagem || j.capa || j.url || "";
-                    const nome = j.nome || j.titulo || "Jogo sem nome";
-                    const preco = j.preco || "0,00";
-
-                    const card = document.createElement('div');
-                    card.className = 'card';
-                    card.innerHTML = `
-                        <img src="${imgUrl}" onerror="this.src='https://via.placeholder.com/300x400?text=Sem+Foto'">
-                        <h3>${nome}</h3>
-                        <div class="preco">R$ ${preco}</div>
-                        <button class="btn-view">VER DETALHES</button>
-                    `;
-                    vitrine.appendChild(card);
-                });
-
-                // Atualiza cores e nome da loja
-                const resCfg = await fetch(`${URL_SB}/rest/v1/configuracoes?id=eq.1`, { headers: HEADERS });
-                const [cfg] = await resCfg.json();
-                if(cfg) {
-                    document.getElementById('loja-nome').innerText = cfg.loja_nome;
-                    document.documentElement.style.setProperty('--cor-principal', cfg.cor_principal);
-                }
-
-            } catch (err) {
-                vitrine.innerHTML = "<h1>Erro ao conectar com o banco.</h1>";
-                console.error(err);
+        async function carregar() {
+            const res = await fetch(`${SB_URL}/rest/v1/jogos?select=*`, {
+                headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}` }
+            });
+            const jogos = await res.json();
+            
+            const vitrine = document.getElementById('vitrine');
+            if(jogos.length === 0) {
+                vitrine.innerHTML = "<h2>Nenhum jogo encontrado. Cadastre no Admin!</h2>";
+            } else {
+                vitrine.innerHTML = jogos.map(j => `
+                    <div class="card">
+                        <img src="${j.url_da_imagem}">
+                        <h3>${j.nome}</h3>
+                        <p class="preco">R$ ${j.preco}</p>
+                    </div>
+                `).join('');
             }
         }
-
-        window.onload = carregarLoja;
+        window.onload = carregar;
     </script>
 </body>
 </html>
