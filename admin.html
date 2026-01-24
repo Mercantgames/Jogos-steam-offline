@@ -7,170 +7,171 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { --azul: #003366; --prata: #E5E4E2; --bg: #f1f1f1; --branco: #ffffff; --border: #d2d2d2; }
-        
-        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); display: flex; color: #303030; height: 100vh; overflow: hidden; }
+        body { margin: 0; font-family: -apple-system, sans-serif; background: var(--bg); display: flex; height: 100vh; overflow: hidden; }
 
         /* Sidebar */
-        .sidebar { width: 240px; background: #ebebeb; height: 100vh; border-right: 1px solid var(--border); padding: 10px; shrink: 0; }
-        .sidebar-item { padding: 10px 12px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; font-size: 14px; margin-bottom: 2px; color: #4a4a4a; font-weight: 500; transition: 0.2s; }
-        .sidebar-item i { margin-right: 10px; width: 18px; color: #5c5c5c; }
-        .sidebar-item:hover, .sidebar-item.active { background: #dfdfdf; color: #000; }
+        .sidebar { width: 240px; background: #ebebeb; border-right: 1px solid var(--border); padding: 10px; shrink: 0; }
+        .sidebar-item { padding: 12px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; font-size: 14px; margin-bottom: 5px; color: #4a4a4a; transition: 0.2s; }
+        .sidebar-item i { margin-right: 10px; width: 18px; }
+        .sidebar-item.active { background: #dfdfdf; color: #000; font-weight: bold; }
 
-        /* Área de Conteúdo */
-        .container { flex: 1; padding: 20px 40px; overflow-y: auto; }
+        /* Conteúdo */
+        .container { flex: 1; padding: 30px; overflow-y: auto; }
         .aba { display: none; }
-        .aba.active { display: block; animation: fadeIn 0.3s; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .btn-save { background: var(--azul); color: white; border: none; padding: 8px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; }
-
-        /* Grid Estilo Shopify */
-        .product-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
-        .card { background: var(--branco); border-radius: 10px; padding: 20px; border: 1px solid var(--border); margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .card-title { font-size: 14px; font-weight: 600; margin-bottom: 15px; display: block; color: var(--azul); }
-
-        input, textarea, select { width: 100%; padding: 10px; border: 1px solid #bbb; border-radius: 8px; font-size: 14px; box-sizing: border-box; margin-top: 5px; }
+        .aba.active { display: block; }
+        .card { background: var(--branco); border-radius: 10px; padding: 20px; border: 1px solid var(--border); margin-bottom: 20px; }
         
-        /* Upload de Mídia */
-        .media-upload { border: 2px dashed #bbb; border-radius: 8px; padding: 30px; text-align: center; cursor: pointer; background: #fafafa; }
-        .banner-preview-item { display: flex; align-items: center; gap: 10px; background: #f9f9f9; padding: 8px; border-radius: 6px; margin-top: 10px; border: 1px solid var(--border); }
-        .banner-preview-item img { width: 80px; height: 40px; object-fit: cover; border-radius: 4px; }
-
-        /* Tabela de Vendas */
-        table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
-        th { background: #f8f8f8; padding: 12px; text-align: left; font-size: 13px; color: #666; border-bottom: 1px solid var(--border); }
-        td { padding: 12px; border-bottom: 1px solid #eee; font-size: 14px; }
+        /* Formulários */
+        input, textarea, select { width: 100%; padding: 10px; border: 1px solid #bbb; border-radius: 8px; margin-top: 5px; margin-bottom: 15px; box-sizing: border-box; }
+        .btn-save { background: var(--azul); color: white; border: none; padding: 10px 25px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        
+        /* Grid */
+        .grid-2 { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+        table { width: 100%; border-collapse: collapse; background: white; }
+        th { background: #f8f8f8; padding: 12px; text-align: left; border-bottom: 1px solid var(--border); }
+        td { padding: 12px; border-bottom: 1px solid #eee; }
+        .banner-img { width: 100px; height: 50px; object-fit: cover; border-radius: 4px; margin: 5px; border: 1px solid #ddd; }
     </style>
 </head>
 <body>
 
     <div class="sidebar">
-        <div style="font-weight: bold; padding: 10px; color: var(--azul); font-size: 18px;">MERCANT GAMES</div>
-        <div class="sidebar-item" id="btn-vendas" onclick="mudarAba('vendas')"><i class="fas fa-shopping-cart"></i> Pedidos</div>
-        <div class="sidebar-item active" id="btn-produtos" onclick="mudarAba('produtos')"><i class="fas fa-tag"></i> Produtos</div>
-        <div class="sidebar-item" id="btn-config" onclick="mudarAba('config')"><i class="fas fa-cog"></i> Configurações</div>
+        <div style="font-weight: bold; padding: 10px; color: var(--azul);">MERCANT GAMES</div>
+        <div class="sidebar-item active" onclick="mudarAba('vendas', this)"><i class="fas fa-shopping-cart"></i> Pedidos</div>
+        <div class="sidebar-item" onclick="mudarAba('produtos', this)"><i class="fas fa-tag"></i> Produtos / SEO</div>
+        <div class="sidebar-item" onclick="mudarAba('config', this)"><i class="fas fa-cog"></i> Configurações</div>
     </div>
 
     <div class="container">
-        
-        <div id="aba-vendas" class="aba">
-            <div class="header-top"><h2>Pedidos</h2></div>
+        <div id="aba-vendas" class="aba active">
+            <h2>Pedidos Realizados</h2>
             <div class="card">
                 <table>
-                    <thead><tr><th>Pedido</th><th>Cliente</th><th>Produto</th><th>Total</th><th>Status</th></tr></thead>
-                    <tbody id="lista-pedidos">
-                        </tbody>
+                    <thead><tr><th>ID</th><th>Cliente</th><th>Produto</th><th>Total</th><th>Status</th></tr></thead>
+                    <tbody id="lista-pedidos"></tbody>
                 </table>
             </div>
         </div>
 
-        <div id="aba-produtos" class="aba active">
-            <div class="header-top">
-                <h2>📦 Adicionar jogo</h2>
-                <button class="btn-save" onclick="salvarJogo()">Salvar Produto</button>
+        <div id="aba-produtos" class="aba">
+            <div style="display:flex; justify-content: space-between; align-items: center;">
+                <h2>Cadastrar Produto</h2>
+                <button class="btn-save" onclick="salvarJogo()">Publicar Jogo</button>
             </div>
-            <div class="product-grid">
-                <div class="left-col">
+            <div class="grid-2">
+                <div class="left">
                     <div class="card">
-                        <label class="card-title">Título e Descrição SEO</label>
-                        <input type="text" id="p_nome" placeholder="Nome do jogo">
-                        <textarea id="p_desc" style="height: 120px; margin-top:15px;" placeholder="Descrição completa para o Google..."></textarea>
+                        <label>Título SEO</label><input type="text" id="p_nome">
+                        <label>Descrição Completa</label><textarea id="p_desc" style="height:100px;"></textarea>
                     </div>
                     <div class="card">
-                        <label class="card-title">Capa do Jogo</label>
-                        <div class="media-upload" onclick="document.getElementById('p_file').click()">
-                            <i class="fas fa-image" style="font-size: 20px; color: var(--azul);"></i><br>
-                            <span>Subir imagem do PC</span>
-                            <input type="file" id="p_file" hidden accept="image/*" onchange="previewCapa(this)">
-                        </div>
-                        <img id="capa-prev" style="width: 120px; margin-top: 15px; border-radius: 8px; display: none; border: 1px solid var(--border);">
+                        <label>Imagem da Capa</label>
+                        <input type="file" id="p_file" accept="image/*">
                     </div>
                 </div>
-                <div class="right-col">
+                <div class="right">
                     <div class="card">
-                        <label class="card-title">Preço e Organização</label>
-                        <input type="number" id="p_preco" placeholder="Preço R$">
-                        <select id="p_cat" style="margin-top:15px;"><option>Lançamentos</option><option>Ação</option></select>
-                        <input type="text" id="p_tags" style="margin-top:15px;" placeholder="Tags SEO (vírgula)">
+                        <label>Preço R$</label><input type="number" id="p_preco">
+                        <label>Tags (Google)</label><input type="text" id="p_tags">
+                        <label>Categoria</label>
+                        <select id="p_cat"><option>Lançamentos</option><option>Ação</option></select>
                     </div>
                 </div>
             </div>
         </div>
 
         <div id="aba-config" class="aba">
-            <div class="header-top">
-                <h2>🎨 Identidade da Loja</h2>
-                <button class="btn-save" onclick="salvarConfig()">Salvar Alterações</button>
+            <div style="display:flex; justify-content: space-between; align-items: center;">
+                <h2>Configurar Loja</h2>
+                <button class="btn-save" onclick="salvarConfig()">Salvar Tudo</button>
             </div>
-            <div class="product-grid">
-                <div class="left-col">
+            <div class="grid-2">
+                <div class="left">
                     <div class="card">
-                        <label class="card-title">Banners do Carrossel (Upload Múltiplo)</label>
-                        <div class="media-upload" onclick="document.getElementById('b_file').click()">
-                            <i class="fas fa-images"></i><br><span>Adicionar Banners ao Slide</span>
-                            <input type="file" id="b_file" hidden accept="image/*" onchange="addBannerLista()">
-                        </div>
-                        <div id="lista-banners-preview"></div>
+                        <label>Adicionar Banner ao Carrossel</label>
+                        <input type="file" id="b_file" accept="image/*" onchange="uploadBanner()">
+                        <div id="preview-banners"></div>
                     </div>
                 </div>
-                <div class="right-col">
+                <div class="right">
                     <div class="card">
-                        <label class="card-title">Visual</label>
-                        <label style="font-size: 12px;">Nome da Loja</label>
-                        <input type="text" id="cfg_nome">
-                        <label style="font-size: 12px; margin-top:15px; display:block;">Cor Principal</label>
-                        <input type="color" id="cfg_cor" style="height: 40px; padding: 2px;">
+                        <label>Nome da Loja</label><input type="text" id="cfg_nome">
+                        <label>Cor Identidade</label><input type="color" id="cfg_cor" style="height:45px;">
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
 
     <script>
         const URL_SB = "https://grogiwbccvnbyjgxvafw.supabase.co";
         const KEY_SB = "sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14";
         const HEADERS = { 'apikey': KEY_SB, 'Authorization': `Bearer ${KEY_SB}`, 'Content-Type': 'application/json' };
-        let bannersArr = [];
+        let bannersLista = [];
 
-        // FUNÇÃO PARA CLICAR E MUDAR DE TELA
-        function mudarAba(abaId) {
-            // Esconde todas as abas
+        function mudarAba(id, el) {
             document.querySelectorAll('.aba').forEach(a => a.classList.remove('active'));
-            // Remove destaque de todos os botões
-            document.querySelectorAll('.sidebar-item').forEach(b => b.classList.remove('active'));
-            
-            // Mostra a aba clicada e destaca o botão
-            document.getElementById('aba-' + abaId).classList.add('active');
-            document.getElementById('btn-' + abaId).classList.add('active');
-
-            // Carrega os dados específicos
-            if(abaId === 'vendas') carregarVendas();
-            if(abaId === 'config') carregarConfig();
+            document.querySelectorAll('.sidebar-item').forEach(s => s.classList.remove('active'));
+            document.getElementById('aba-' + id).classList.add('active');
+            el.classList.add('active');
+            if(id === 'vendas') carregarVendas();
+            if(id === 'config') carregarConfig();
         }
 
-        function previewCapa(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = e => { 
-                    const img = document.getElementById('capa-prev');
-                    img.src = e.target.result; img.style.display = 'block'; 
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
+        async function subirStorage(file) {
+            const name = `${Date.now()}_${file.name}`;
+            const res = await fetch(`${URL_SB}/storage/v1/object/capas/${name}`, { method: 'POST', headers: { 'apikey': KEY_SB, 'Authorization': `Bearer ${KEY_SB}` }, body: file });
+            return res.ok ? `${URL_SB}/storage/v1/object/public/capas/${name}` : null;
         }
 
         async function carregarVendas() {
             const res = await fetch(`${URL_SB}/rest/v1/vendas`, { headers: HEADERS });
             const dados = await res.json();
-            document.getElementById('lista-pedidos').innerHTML = dados.map(v => `
-                <tr><td>#${v.id}</td><td>${v.cliente_nome}</td><td>${v.produto_nome}</td><td>R$ ${v.valor}</td><td><b>${v.status}</b></td></tr>
-            `).join('');
+            document.getElementById('lista-pedidos').innerHTML = dados.map(v => `<tr><td>#${v.id}</td><td>${v.cliente_nome}</td><td>${v.produto_nome}</td><td>R$ ${v.valor}</td><td>${v.status}</td></tr>`).join('');
         }
 
-        // Sistema de Banners e Configurações segue aqui com a lógica de upload anterior...
-        // ... (as funções de upload e salvar continuam as mesmas)
+        async function salvarJogo() {
+            const url = await subirStorage(document.getElementById('p_file').files[0]);
+            if(!url) return alert("Selecione a foto!");
+            await fetch(`${URL_SB}/rest/v1/jogos`, { method: 'POST', headers: HEADERS, body: JSON.stringify({ 
+                nome: document.getElementById('p_nome').value, preco: document.getElementById('p_preco').value, 
+                descricao: document.getElementById('p_desc').value, tags: document.getElementById('p_tags').value, 
+                categoria: document.getElementById('p_cat').value, url_da_imagem: url 
+            })});
+            alert("Jogo Salvo!");
+        }
+
+        async function uploadBanner() {
+            const url = await subirStorage(document.getElementById('b_file').files[0]);
+            if(url) { 
+                bannersLista.push(url); 
+                renderBanners(); 
+            }
+        }
+
+        function renderBanners() {
+            document.getElementById('preview-banners').innerHTML = bannersLista.map((b, i) => `<img src="${b}" class="banner-img" onclick="bannersLista.splice(${i},1);renderBanners()">`).join('');
+        }
+
+        async function carregarConfig() {
+            const res = await fetch(`${URL_SB}/rest/v1/configuracoes?id=eq.1`, { headers: HEADERS });
+            const [cfg] = await res.json();
+            if(cfg) {
+                document.getElementById('cfg_nome').value = cfg.loja_nome;
+                document.getElementById('cfg_cor').value = cfg.cor_principal;
+                bannersLista = cfg.banners || [];
+                renderBanners();
+            }
+        }
+
+        async function salvarConfig() {
+            await fetch(`${URL_SB}/rest/v1/configuracoes?id=eq.1`, { method: 'PATCH', headers: HEADERS, body: JSON.stringify({ 
+                loja_nome: document.getElementById('cfg_nome').value, cor_principal: document.getElementById('cfg_cor').value, banners: bannersLista 
+            })});
+            alert("Configurações Salvas!");
+        }
+
+        window.onload = carregarVendas;
     </script>
 </body>
 </html>
