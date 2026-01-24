@@ -8,67 +8,93 @@
     <style>
         :root { --azul: #003366; --prata: #E5E4E2; --branco: #ffffff; }
         body { margin: 0; font-family: 'Segoe UI', sans-serif; display: flex; background: #f4f4f4; height: 100vh; overflow: hidden; }
+        
         .sidebar { width: 260px; background: var(--azul); color: var(--prata); display: flex; flex-direction: column; padding: 20px 0; shrink: 0; }
         .sidebar h2 { text-align: center; font-size: 1.2rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px; }
-        .menu-item { padding: 15px 25px; cursor: pointer; display: flex; align-items: center; color: var(--prata); text-decoration: none; }
+        .menu-item { padding: 15px 25px; cursor: pointer; display: flex; align-items: center; color: var(--prata); text-decoration: none; transition: 0.3s; }
         .menu-item:hover, .menu-item.active { background: rgba(255,255,255,0.1); border-left: 4px solid var(--prata); }
+        
         .main { flex: 1; overflow-y: auto; padding: 30px; }
         .aba { display: none; }
         .aba.active { display: block; }
+        
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: var(--branco); padding: 20px; border-radius: 12px; border: 1px solid var(--prata); box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .stat-card .valor { font-size: 1.8rem; font-weight: bold; color: var(--azul); margin-top: 10px; }
+        
         .form-group { background: var(--branco); padding: 25px; border-radius: 12px; border: 1px solid var(--prata); margin-bottom: 30px; }
         input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
         .btn-acao { background: var(--azul); color: white; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; }
-        table { width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; margin-top: 20px; }
+        
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; }
         th { background: var(--azul); color: white; padding: 15px; text-align: left; }
         td { padding: 15px; border-bottom: 1px solid #eee; }
-        .banner-item { display: flex; align-items: center; gap: 15px; background: #f9f9f9; padding: 10px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #ddd; }
-        .banner-item img { width: 120px; height: 60px; object-fit: cover; border-radius: 4px; }
+
+        .banner-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; margin-top: 15px; }
+        .banner-card { position: relative; border: 1px solid var(--prata); border-radius: 8px; overflow: hidden; background: #eee; }
+        .banner-card img { width: 100%; height: 80px; object-fit: cover; }
+        .btn-del { position: absolute; top: 5px; right: 5px; background: red; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <div class="sidebar">
         <h2>MERCANT ADMIN</h2>
-        <div class="menu-item" onclick="mudarAba('vendas')"><i class="fas fa-chart-line"></i> Dashboard</div>
+        <div class="menu-item active" onclick="mudarAba('vendas')"><i class="fas fa-chart-line"></i> Dashboard</div>
         <div class="menu-item" onclick="mudarAba('produtos')"><i class="fas fa-gamepad"></i> Produtos</div>
-        <div class="menu-item active" onclick="mudarAba('edicao')"><i class="fas fa-magic"></i> Editar Loja</div>
+        <div class="menu-item" onclick="mudarAba('clientes')"><i class="fas fa-users"></i> Clientes</div>
+        <div class="menu-item" onclick="mudarAba('edicao')"><i class="fas fa-magic"></i> Editar Loja</div>
     </div>
 
     <div class="main">
-        <div id="vendas" class="aba">
-            <h3>Dashboard Financeiro</h3>
-            <div id="resumo">Saldo: <b id="saldo-valor">R$ 0,00</b> | Pedidos: <b id="vendas-total">0</b></div>
-            <table id="tabela-vendas"></table>
+        <div id="vendas" class="aba active">
+            <h3>Vendas</h3>
+            <div class="stats-grid">
+                <div class="stat-card"><h4>Saldo</h4><div class="valor" id="saldo-valor">R$ 0,00</div></div>
+                <div class="stat-card"><h4>Pedidos</h4><div class="valor" id="vendas-total">0</div></div>
+            </div>
+            <table>
+                <thead><tr><th>ID</th><th>Cliente</th><th>Produto</th><th>Valor</th><th>Status</th></tr></thead>
+                <tbody id="tabela-vendas"></tbody>
+            </table>
         </div>
 
         <div id="produtos" class="aba">
-            <h3>Produtos</h3>
+            <h3>Estoque</h3>
             <div class="form-group">
-                <input type="text" id="p_nome" placeholder="Nome">
+                <input type="text" id="p_nome" placeholder="Nome do Jogo">
                 <input type="number" id="p_preco" placeholder="Preço">
-                <input type="file" id="p_file">
-                <button class="btn-acao" onclick="salvarProduto()">CADASTRAR JOGO</button>
+                <input type="file" id="p_file" accept="image/*">
+                <button class="btn-acao" onclick="salvarJogo()">CADASTRAR JOGO</button>
             </div>
-            <table id="tabela-produtos"></table>
+            <table id="tabela-produtos">
+                <thead><tr><th>Foto</th><th>Nome</th><th>Preço</th><th>Ação</th></tr></thead>
+                <tbody id="corpo-produtos"></tbody>
+            </table>
         </div>
 
-        <div id="edicao" class="aba active">
-            <h3>Personalizar Banners e Visual</h3>
+        <div id="clientes" class="aba">
+            <h3>Clientes</h3>
+            <table>
+                <thead><tr><th>Nome</th><th>WhatsApp</th><th>Total</th></tr></thead>
+                <tbody id="tabela-clientes"></tbody>
+            </table>
+        </div>
+
+        <div id="edicao" class="aba">
+            <h3>Visual da Loja</h3>
             <div class="form-group">
                 <label>Nome da Loja:</label>
                 <input type="text" id="cfg_nome">
-                
-                <label>Adicionar Novo Banner (Foto do PC):</label>
-                <input type="file" id="new_banner_file" accept="image/*">
-                <button class="btn-acao" onclick="addBanner()" style="background: #27ae60;">+ ADICIONAR BANNER À LISTA</button>
-                
-                <h4 style="margin-top:20px;">Meus Banners Atuais:</h4>
-                <div id="lista-banners">
-                    </div>
-
-                <label>Cor da Loja:</label>
+                <label>Cor Principal:</label>
                 <input type="color" id="cfg_cor">
-                <button class="btn-acao" onclick="salvarGeral()">SALVAR TUDO NA LOJA 🚀</button>
+                
+                <label style="margin-top: 20px; display: block;">Adicionar Banner (PC):</label>
+                <input type="file" id="cfg_new_banner" accept="image/*" onchange="addBannerRapido()">
+                
+                <div class="banner-list" id="lista-banners"></div>
+                
+                <button class="btn-acao" onclick="salvarLojaCompleto()" style="background: #27ae60; margin-top: 30px;">SALVAR TODAS AS ALTERAÇÕES 🚀</button>
             </div>
         </div>
     </div>
@@ -77,70 +103,109 @@
         const URL = "https://grogiwbccvnbyjgxvafw.supabase.co";
         const KEY = "sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14";
         const HEAD = { 'apikey': KEY, 'Authorization': `Bearer ${KEY}`, 'Content-Type': 'application/json' };
-        let bannersAtuais = [];
+        let bannersTemp = [];
 
-        function mudarAba(id) {
+        async function mudarAba(id) {
             document.querySelectorAll('.aba').forEach(a => a.classList.remove('active'));
+            document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
             document.getElementById(id).classList.add('active');
+            event.currentTarget.classList.add('active');
+
+            if(id === 'vendas') listarVendas();
+            if(id === 'produtos') listarProdutos();
+            if(id === 'clientes') listarClientes();
+            if(id === 'edicao') carregarLoja();
         }
 
-        async function subirArquivo(file) {
+        async function subirStorage(file) {
             const name = `${Date.now()}_${file.name}`;
-            const res = await fetch(`${URL}/storage/v1/object/capas/${name}`, { method: 'POST', headers: {'apikey': KEY, 'Authorization': `Bearer ${KEY}`}, body: file });
+            const res = await fetch(`${URL}/storage/v1/object/capas/${name}`, { 
+                method: 'POST', 
+                headers: { 'apikey': KEY, 'Authorization': `Bearer ${KEY}` }, 
+                body: file 
+            });
             return res.ok ? `${URL}/storage/v1/object/public/capas/${name}` : null;
         }
 
-        async function carregarConfig() {
+        async function listarVendas() {
+            const res = await fetch(`${URL}/rest/v1/vendas`, { headers: HEAD });
+            const dados = await res.json();
+            const body = document.getElementById('tabela-vendas');
+            let saldo = 0; body.innerHTML = "";
+            dados.forEach(v => {
+                if(v.status === 'Pago') saldo += parseFloat(v.valor);
+                body.innerHTML += `<tr><td>#${v.id}</td><td>${v.cliente_nome}</td><td>${v.produto_nome}</td><td>R$ ${v.valor}</td><td>${v.status}</td></tr>`;
+            });
+            document.getElementById('saldo-valor').innerText = `R$ ${saldo.toFixed(2)}`;
+            document.getElementById('vendas-total').innerText = dados.length;
+        }
+
+        async function listarProdutos() {
+            const res = await fetch(`${URL}/rest/v1/jogos`, { headers: HEAD });
+            const dados = await res.json();
+            const body = document.getElementById('corpo-produtos');
+            body.innerHTML = dados.map(p => `<tr><td><img src="${p.url_da_imagem}" width="40"></td><td>${p.nome}</td><td>R$ ${p.preco}</td><td><button onclick="deletarProd(${p.id})">❌</button></td></tr>`).join('');
+        }
+
+        async function salvarJogo() {
+            const url = await subirStorage(document.getElementById('p_file').files[0]);
+            if(!url) return alert("Selecione a foto!");
+            await fetch(`${URL}/rest/v1/jogos`, {
+                method: 'POST', headers: HEAD,
+                body: JSON.stringify({ nome: document.getElementById('p_nome').value, preco: document.getElementById('p_preco').value, url_da_imagem: url })
+            });
+            listarProdutos();
+        }
+
+        async function carregarLoja() {
             const res = await fetch(`${URL}/rest/v1/configuracoes?id=eq.1`, { headers: HEAD });
             const [cfg] = await res.json();
             if(cfg) {
                 document.getElementById('cfg_nome').value = cfg.loja_nome;
                 document.getElementById('cfg_cor').value = cfg.cor_principal;
-                bannersAtuais = cfg.banners || [];
-                renderBanners();
+                bannersTemp = cfg.banners || [];
+                atualizarListaBanners();
             }
         }
 
-        function renderBanners() {
+        async function addBannerRapido() {
+            const file = document.getElementById('cfg_new_banner').files[0];
+            const url = await subirStorage(file);
+            if(url) {
+                bannersTemp.push(url);
+                atualizarListaBanners();
+            }
+        }
+
+        function atualizarListaBanners() {
             const div = document.getElementById('lista-banners');
-            div.innerHTML = bannersAtuais.map((url, index) => `
-                <div class="banner-item">
+            div.innerHTML = bannersTemp.map((url, i) => `
+                <div class="banner-card">
                     <img src="${url}">
-                    <span>Banner ${index + 1}</span>
-                    <button onclick="removerBanner(${index})" style="margin-left:auto; color:red; border:none; background:none; cursor:pointer;">Excluir</button>
+                    <button class="btn-del" onclick="bannersTemp.splice(${i},1); atualizarListaBanners();">×</button>
                 </div>
             `).join('');
         }
 
-        async function addBanner() {
-            const file = document.getElementById('new_banner_file').files[0];
-            if(!file) return alert("Selecione uma foto!");
-            const url = await subirArquivo(file);
-            if(url) {
-                bannersAtuais.push(url);
-                renderBanners();
-                alert("Banner adicionado à lista! Não esqueça de clicar em SALVAR TUDO.");
-            }
-        }
-
-        function removerBanner(index) {
-            bannersAtuais.splice(index, 1);
-            renderBanners();
-        }
-
-        async function salvarGeral() {
+        async function salvarLojaCompleto() {
             await fetch(`${URL}/rest/v1/configuracoes?id=eq.1`, {
                 method: 'PATCH', headers: HEAD,
                 body: JSON.stringify({
                     loja_nome: document.getElementById('cfg_nome').value,
                     cor_principal: document.getElementById('cfg_cor').value,
-                    banners: bannersAtuais
+                    banners: bannersTemp
                 })
             });
-            alert("Loja atualizada com sucesso!");
+            alert("MercantGames Atualizada!");
         }
 
-        window.onload = carregarConfig;
+        async function listarClientes() {
+            const res = await fetch(`${URL}/rest/v1/clientes`, { headers: HEAD });
+            const dados = await res.json();
+            document.getElementById('tabela-clientes').innerHTML = dados.map(c => `<tr><td>${c.nome}</td><td>${c.whatsapp}</td><td>R$ ${c.total_comprado}</td></tr>`).join('');
+        }
+
+        window.onload = () => { listarVendas(); listarProdutos(); carregarLoja(); };
     </script>
 </body>
 </html>
