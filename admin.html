@@ -2,77 +2,122 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Admin MercantGames</title>
+    <title>Painel Master | MercantGames</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { background: #E5E4E2; font-family: sans-serif; display: flex; justify-content: center; padding: 40px; }
-        .box { background: white; padding: 30px; border-radius: 15px; border: 2px solid #003366; width: 350px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; }
-        h2 { color: #003366; margin-bottom: 20px; }
-        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
-        button { width: 100%; padding: 15px; background: #003366; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 10px; }
-        button:hover { background: #007BFF; }
+        :root { --azul: #003366; --prata: #E5E4E2; --dark: #1a1a1a; --texto: #333; }
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; display: flex; background: #f4f4f4; height: 100vh; overflow: hidden; }
+
+        /* Sidebar */
+        .sidebar { width: 260px; background: var(--azul); color: var(--prata); display: flex; flex-direction: column; padding: 20px 0; }
+        .sidebar h2 { text-align: center; font-size: 1.2rem; margin-bottom: 30px; letter-spacing: 2px; }
+        .menu-item { padding: 15px 25px; cursor: pointer; display: flex; align-items: center; transition: 0.3s; color: var(--prata); text-decoration: none; }
+        .menu-item i { margin-right: 15px; width: 20px; }
+        .menu-item:hover, .menu-item.active { background: rgba(255,255,255,0.1); border-left: 4px solid var(--prata); }
+
+        /* Conteúdo Principal */
+        .main { flex: 1; overflow-y: auto; padding: 30px; }
+        .aba { display: none; }
+        .aba.active { display: block; }
+
+        /* Cards de Saldo */
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: white; padding: 20px; border-radius: 12px; border: 1px solid var(--prata); box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .stat-card h4 { margin: 0; color: #666; font-size: 0.9rem; }
+        .stat-card .valor { font-size: 1.8rem; font-weight: bold; color: var(--azul); margin-top: 10px; }
+
+        /* Tabelas */
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; }
+        th { background: var(--azul); color: white; padding: 15px; text-align: left; }
+        td { padding: 15px; border-bottom: 1px solid #eee; }
+
+        /* Inputs de Edição */
+        .form-group { background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--prata); }
+        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+        .btn-acao { background: var(--azul); color: white; border: none; padding: 12px 25px; border-radius: 6px; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
-    <div class="box">
-        <h2>CADASTRAR JOGO</h2>
-        <input type="text" id="nome" placeholder="Nome do Jogo">
-        <input type="number" id="preco" placeholder="Preço (R$)">
-        <input type="file" id="arquivo" accept="image/*">
-        <button onclick="publicar()">PUBLICAR AGORA 🚀</button>
+
+    <div class="sidebar">
+        <h2>MERCANT ADMIN</h2>
+        <div class="menu-item active" onclick="mudarAba('vendas')"><i class="fas fa-shopping-cart"></i> Vendas</div>
+        <div class="menu-item" onclick="mudarAba('produtos')"><i class="fas fa-box"></i> Produtos</div>
+        <div class="menu-item" onclick="mudarAba('clientes')"><i class="fas fa-users"></i> Clientes</div>
+        <div class="menu-item" onclick="mudarAba('chat')"><i class="fas fa-comments"></i> Chat Suporte</div>
+        <div class="menu-item" onclick="mudarAba('edicao')"><i class="fas fa-edit"></i> Edição da Loja</div>
+    </div>
+
+    <div class="main">
+        <div id="vendas" class="aba active">
+            <h2 style="color: var(--azul)">Visão Geral e Vendas</h2>
+            <div class="stats-grid">
+                <div class="stat-card"><h4>Saldo Disponível</h4><div class="valor">R$ 1.250,00</div></div>
+                <div class="stat-card"><h4>Vendas Hoje</h4><div class="valor">12</div></div>
+                <div class="stat-card"><h4>Descontos Aplicados</h4><div class="valor">R$ 45,00</div></div>
+            </div>
+            <table>
+                <thead><tr><th>Pedido</th><th>Cliente</th><th>Produto</th><th>Status</th><th>Total</th></tr></thead>
+                <tbody>
+                    <tr><td>#1001</td><td>João Silva</td><td>GTA V - Offline</td><td><span style="color:green">Pago</span></td><td>R$ 29,90</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="produtos" class="aba">
+            <h2 style="color: var(--azul)">Lista de Produtos</h2>
+            <div class="form-group">
+                <h4>Adicionar Novo Jogo (Categorias)</h4>
+                <input type="text" placeholder="Nome do Jogo">
+                <select>
+                    <option>Ação/Aventura</option>
+                    <option>Simulação</option>
+                    <option>Esportes</option>
+                </select>
+                <input type="number" placeholder="Preço R$">
+                <input type="file" id="arquivo">
+                <button class="btn-acao">Cadastrar Produto</button>
+            </div>
+        </div>
+
+        <div id="edicao" class="aba">
+            <h2 style="color: var(--azul)">Personalização da Loja</h2>
+            <div class="form-group">
+                <h4>Configurações Visuais</h4>
+                <label>Banner Principal (URL):</label>
+                <input type="text" placeholder="Cole o link da imagem do banner">
+                <label>Launcher da Loja (Link de Download):</label>
+                <input type="text" placeholder="URL do executável do Launcher">
+                <label>Cor Principal:</label>
+                <input type="color" value="#003366">
+                <button class="btn-acao">Salvar Alterações</button>
+            </div>
+        </div>
+
+        <div id="chat" class="aba">
+            <h2 style="color: var(--azul)">Mensagens de Pedidos</h2>
+            <div style="background: white; height: 400px; border-radius: 12px; display: flex; flex-direction: column; border: 1px solid var(--prata)">
+                <div style="flex: 1; padding: 20px; overflow-y: auto;">
+                    <p><strong>Cliente #1001:</strong> Já fiz o pagamento, me manda o acesso?</p>
+                </div>
+                <div style="padding: 20px; border-top: 1px solid #eee; display: flex;">
+                    <input type="text" placeholder="Responda ao cliente..." style="margin: 0; margin-right: 10px;">
+                    <button class="btn-acao">Enviar</button>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <script>
-        async function publicar() {
-            const btn = document.querySelector('button');
-            btn.innerText = "Publicando...";
-            btn.disabled = true;
-
-            const URL_BASE = "https://grogiwbccvnbyjgxvafw.supabase.co";
-            const KEY = "sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14";
+        function mudarAba(id) {
+            // Remove active de tudo
+            document.querySelectorAll('.aba').forEach(a => a.classList.remove('active'));
+            document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
             
-            const arquivo = document.getElementById('arquivo').files[0];
-            const nome = document.getElementById('nome').value;
-            const preco = document.getElementById('preco').value;
-
-            try {
-                // 1. Upload da Imagem
-                const fileName = `${Date.now()}_${arquivo.name}`;
-                const uploadRes = await fetch(`${URL_BASE}/storage/v1/object/capas/${fileName}`, {
-                    method: 'POST',
-                    headers: { 'apikey': KEY, 'Authorization': `Bearer ${KEY}` },
-                    body: arquivo
-                });
-
-                if(!uploadRes.ok) throw new Error("Erro ao subir imagem");
-
-                // 2. Salvar no Banco (Ajustado para sua Imagem 420)
-                const res = await fetch(`${URL_BASE}/rest/v1/jogos`, {
-                    method: 'POST',
-                    headers: { 
-                        'apikey': KEY, 
-                        'Authorization': `Bearer ${KEY}`, 
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        nome: nome,
-                        preco: parseFloat(preco),
-                        url_da_imagem: `${URL_BASE}/storage/v1/object/public/capas/${fileName}`
-                    })
-                });
-
-                if(res.ok) {
-                    alert("🚀 SUCESSO! Jogo cadastrado.");
-                    location.reload();
-                } else {
-                    const erro = await res.json();
-                    alert("Erro: " + erro.message);
-                }
-            } catch (e) {
-                alert("❌ Falha: " + e.message);
-            } finally {
-                btn.innerText = "PUBLICAR AGORA 🚀";
-                btn.disabled = false;
-            }
+            // Ativa a correta
+            document.getElementById(id).classList.add('active');
+            event.currentTarget.classList.add('active');
         }
     </script>
 </body>
