@@ -1,69 +1,53 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>Admin MercantGames | Upload</title>
-    <style>
-        body { background: #E5E4E2; font-family: sans-serif; display: flex; justify-content: center; padding: 40px; }
-        .box { background: white; padding: 30px; border-radius: 15px; border: 2px solid #003366; width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        h2 { color: #003366; text-align: center; }
-        input, select { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
-        .file-label { display: block; margin-top: 10px; font-weight: bold; color: #003366; }
-        button { width: 100%; padding: 15px; background: #003366; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 20px; }
-        button:hover { background: #007BFF; }
-    </style>
-</head>
-<body>
-    <div class="box">
-        <h2>CADASTRAR JOGO</h2>
-        <input type="text" id="nome" placeholder="Nome do Jogo">
-        <input type="number" id="preco" placeholder="Preço (R$)">
-        
-        <label class="file-label">Capa do Jogo (PNG/JPG):</label>
-        <input type="file" id="arquivo" accept="image/*">
+async function uploadEPublicar() {
+    const fileInput = document.getElementById('arquivo');
+    const nome = document.getElementById('nome').value;
+    const preco = document.getElementById('preco').value;
 
-        <button onclick="uploadEPublicar()">PUBLICAR IGUAL NUVEMSHOP 🚀</button>
-    </div>
+    if (!fileInput.files[0] || !nome || !preco) return alert("Preencha tudo!");
 
-    <script>
-        const URL_BASE = "https://grogiwbccvnbyjgxvafw.supabase.co";
-        const KEY = "sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14";
+    const URL_BASE = "https://grogiwbccvnbyjgxvafw.supabase.co";
+    const KEY = "sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14";
 
-        async function uploadEPublicar() {
-            const fileInput = document.getElementById('arquivo');
-            if (fileInput.files.length === 0) return alert("Selecione uma imagem!");
+    const file = fileInput.files[0];
+    const fileName = `${Date.now()}_${file.name}`;
+    const filePath = `${URL_BASE}/storage/v1/object/public/capas/${fileName}`;
 
-            const file = fileInput.files[0];
-            const fileName = `${Date.now()}_${file.name}`;
-            const filePath = `${URL_BASE}/storage/v1/object/public/capas/${fileName}`;
+    try {
+        // 1. Sobe a imagem
+        const uploadRes = await fetch(`${URL_BASE}/storage/v1/object/capas/${fileName}`, {
+            method: 'POST',
+            headers: { 'apikey': KEY, 'Authorization': `Bearer ${KEY}` },
+            body: file
+        });
 
-            // 1. Sobe a imagem para o Storage
-            const uploadRes = await fetch(`${URL_BASE}/storage/v1/object/capas/${fileName}`, {
-                method: 'POST',
-                headers: { 'apikey': KEY, 'Authorization': `Bearer ${KEY}` },
-                body: file
-            });
+        if (!uploadRes.ok) throw new Error("Erro no Storage");
 
-            if (uploadRes.ok) {
-                // 2. Salva os dados no banco usando o link da imagem que acabamos de subir
-                const dados = {
-                    nome: document.getElementById('nome').value,
-                    preco: parseFloat(document.getElementById('preco').value),
-                    url_da_imagem: filePath
-                };
+        // 2. TENTA SALVAR (Testando os nomes das colunas)
+        const res = await fetch(`${URL_BASE}/rest/v1/jogos`, {
+            method: 'POST',
+            headers: { 
+                'apikey': KEY, 
+                'Authorization': `Bearer ${KEY}`, 
+                'Content-Type': 'application/json',
+                'Prefer': 'return=minimal'
+            },
+            body: JSON.stringify({
+                nome: nome,
+                preco: parseFloat(preco),
+                url_da_imagem: filePath, // Nome que vimos na sua imagem 420
+                categoria: "lancamentos"
+            })
+        });
 
-                const res = await fetch(`${URL_BASE}/rest/v1/jogos`, {
-                    method: 'POST',
-                    headers: { 'apikey': KEY, 'Authorization': `Bearer ${KEY}`, 'Content-Type': 'application/json' },
-                    body: JSON.stringify(dados)
-                });
-
-                if (res.ok) alert("🚀 Jogo e Imagem publicados com sucesso!");
-                else alert("❌ Erro ao salvar dados do jogo.");
-            } else {
-                alert("❌ Erro ao subir imagem. Verifique se o bucket 'capas' é público.");
-            }
+        if (res.ok) {
+            alert("🚀 SUCESSO! Jogo na loja!");
+            window.location.reload();
+        } else {
+            const erroDetalhado = await res.json();
+            console.error(erroDetalhado);
+            alert("❌ Erro do Banco: " + erroDetalhado.message);
         }
-    </script>
-</body>
-</html>
+    } catch (e) {
+        alert("❌ Erro: " + e.message);
+    }
+}
