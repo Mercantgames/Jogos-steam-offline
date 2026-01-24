@@ -1,87 +1,119 @@
-<style>
-    :root { --azul: #003366; --prata: #E5E4E2; --branco: #ffffff; }
-    body { background-color: #f4f4f4; margin: 0; font-family: 'Segoe UI', sans-serif; }
-
-    /* Header Profissional */
-    header { background: var(--azul); color: var(--prata); padding: 20px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-    header h1 { margin: 0; letter-spacing: 2px; font-size: 2rem; }
-
-    /* Banner de Destaque */
-    .banner { background: linear-gradient(rgba(0,51,102,0.7), rgba(0,51,102,0.7)), url('https://images.unsplash.com/photo-1542751371-adc38448a05e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'); 
-               height: 250px; background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; color: white; text-align: center; flex-direction: column; }
-    
-    .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
-    .section-title { color: var(--azul); border-left: 5px solid var(--azul); padding-left: 15px; margin-bottom: 30px; }
-
-    /* Grid de Jogos */
-    .grid-jogos { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 30px; }
-
-    /* Card do Jogo */
-    .game-card { background: var(--branco); border-radius: 15px; overflow: hidden; border: 1px solid var(--prata); transition: 0.3s; position: relative; display: flex; flex-direction: column; }
-    .game-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.15); border-color: var(--azul); }
-    
-    .img-container { width: 100%; height: 320px; background: #eee; overflow: hidden; }
-    .img-container img { width: 100%; height: 100%; object-fit: cover; }
-
-    .info { padding: 20px; text-align: center; }
-    .info h3 { margin: 0 0 10px; color: var(--azul); font-size: 1.2rem; height: 50px; overflow: hidden; }
-    .price { font-size: 1.5rem; font-weight: bold; color: #333; margin-bottom: 20px; }
-    
-    .btn-comprar { background: var(--azul); color: var(--prata); text-decoration: none; padding: 12px; border-radius: 8px; font-weight: bold; display: block; transition: 0.3s; }
-    .btn-comprar:hover { background: #004a94; color: white; }
-
-    /* Grade em Branco (Skeleton) */
-    .skeleton { background: #e0e0e0; height: 320px; width: 100%; animation: pulse 1.5s infinite; }
-    @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
-</style>
-
-<header>
-    <h1>MERCANT GAMES</h1>
-    <p>A melhor experiência em jogos digitais</p>
-</header>
-
-<div class="banner">
-    <h2>LANÇAMENTOS 2026</h2>
-    <p>Confira as novidades do mês com os melhores preços</p>
-</div>
-
-<div class="container">
-    <h2 class="section-title">TODOS OS JOGOS</h2>
-    <div id="vitrine" class="grid-jogos">
-        <div class="game-card"><div class="skeleton"></div><div class="info"><div style="height:20px; background:#eee; margin-bottom:10px"></div><div style="height:30px; background:#eee"></div></div></div>
-        <div class="game-card"><div class="skeleton"></div><div class="info"><div style="height:20px; background:#eee; margin-bottom:10px"></div><div style="height:30px; background:#eee"></div></div></div>
-        <div class="game-card"><div class="skeleton"></div><div class="info"><div style="height:20px; background:#eee; margin-bottom:10px"></div><div style="height:30px; background:#eee"></div></div></div>
-        <div class="game-card"><div class="skeleton"></div><div class="info"><div style="height:20px; background:#eee; margin-bottom:10px"></div><div style="height:30px; background:#eee"></div></div></div>
-    </div>
-</div>
-
-<script>
-async function carregarLoja() {
-    const URL = "https://grogiwbccvnbyjgxvafw.supabase.co/rest/v1/jogos";
-    const KEY = "sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14";
-
-    try {
-        const res = await fetch(URL, { headers: { 'apikey': KEY, 'Authorization': `Bearer ${KEY}` } });
-        const jogos = await res.json();
-        const vitrine = document.getElementById('vitrine');
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="site-title">MercantGames</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Variáveis que serão alteradas pelo Banco de Dados */
+        :root { --cor-principal: #003366; --prata: #E5E4E2; }
         
-        if (jogos.length > 0) {
-            vitrine.innerHTML = ""; // Remove os quadradinhos em branco se houver jogos
-            jogos.forEach(jogo => {
-                vitrine.innerHTML += `
-                    <div class="game-card">
-                        <div class="img-container">
-                            <img src="${jogo.url_da_imagem}" alt="${jogo.nome}">
-                        </div>
-                        <div class="info">
-                            <h3>${jogo.nome}</h3>
-                            <div class="price">R$ ${parseFloat(jogo.preco).toFixed(2)}</div>
-                            <a href="https://wa.me/5511999999999?text=Quero comprar ${jogo.nome}" class="btn-comprar">🛒 COMPRAR AGORA</a>
-                        </div>
-                    </div>`;
-            });
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: #121212; color: white; }
+        
+        /* Header Dinâmico */
+        header { 
+            background: var(--cor-principal); 
+            padding: 20px; 
+            text-align: center; 
+            border-bottom: 3px solid var(--prata); 
         }
-    } catch (e) { console.error("Erro ao carregar:", e); }
-}
-carregarLoja();
-</script>
+
+        /* Banner/Slider Dinâmico */
+        .slider-container { width: 100%; height: 400px; overflow: hidden; position: relative; }
+        .slide { 
+            width: 100%; height: 100%; 
+            background-size: cover; 
+            background-position: center; 
+            display: none; 
+            animation: fade 1s;
+        }
+        .slide.active { display: block; }
+
+        @keyframes fade { from { opacity: 0.4 } to { opacity: 1 } }
+
+        .vitrine { padding: 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+        .card { background: #1e1e1e; border-radius: 10px; padding: 15px; border: 1px solid #333; text-align: center; }
+        .card img { width: 100%; border-radius: 8px; }
+        .btn-comprar { 
+            background: var(--cor-principal); 
+            color: white; border: none; padding: 10px; width: 100%; 
+            border-radius: 5px; cursor: pointer; margin-top: 10px; font-weight: bold; 
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1 id="loja-nome">Carregando...</h1>
+    </header>
+
+    <div class="slider-container" id="slider">
+        </div>
+
+    <div class="vitrine" id="vitrine-jogos">
+        </div>
+
+    <script>
+        const URL = "https://grogiwbccvnbyjgxvafw.supabase.co";
+        const KEY = "sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14";
+        const HEAD = { 'apikey': KEY, 'Authorization': `Bearer ${KEY}` };
+
+        // Função que faz a loja refletir o que está no painel
+        async function carregarIdentidade() {
+            const res = await fetch(`${URL}/rest/v1/configuracoes?id=eq.1`, { headers: HEAD });
+            const [cfg] = await res.json();
+
+            if(cfg) {
+                // Atualiza Nome e Título
+                document.getElementById('loja-nome').innerText = cfg.loja_nome;
+                document.title = cfg.loja_nome;
+
+                // Atualiza a Cor Principal
+                document.documentElement.style.setProperty('--cor-principal', cfg.cor_principal);
+
+                // Atualiza os Banners (Slider)
+                const slider = document.getElementById('slider');
+                if(cfg.banners && cfg.banners.length > 0) {
+                    slider.innerHTML = cfg.banners.map((url, i) => `
+                        <div class="slide ${i === 0 ? 'active' : ''}" style="background-image: url('${url}')"></div>
+                    `).join('');
+                    iniciarSlider();
+                }
+            }
+        }
+
+        async function carregarJogos() {
+            const res = await fetch(`${URL}/rest/v1/jogos`, { headers: HEAD });
+            const jogos = await res.json();
+            const vitrine = document.getElementById('vitrine-jogos');
+            vitrine.innerHTML = jogos.map(j => `
+                <div class="card">
+                    <img src="${j.url_da_imagem}">
+                    <h3>${j.nome}</h3>
+                    <p style="color: #27ae60; font-weight: bold;">R$ ${j.preco}</p>
+                    <button class="btn-comprar">COMPRAR AGORA</button>
+                </div>
+            `).join('');
+        }
+
+        // Lógica simples de giro do banner
+        function iniciarSlider() {
+            let atual = 0;
+            const slides = document.querySelectorAll('.slide');
+            if(slides.length <= 1) return;
+            
+            setInterval(() => {
+                slides[atual].classList.remove('active');
+                atual = (atual + 1) % slides.length;
+                slides[atual].classList.add('active');
+            }, 5000); // Muda a cada 5 segundos
+        }
+
+        window.onload = () => {
+            carregarIdentidade();
+            carregarJogos();
+        };
+    </script>
+</body>
+</html>
