@@ -2,180 +2,85 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Master Admin | MercantGames</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root { --blue: #0066ff; --bg: #f5f7f9; --border: #dce1e5; --text: #333; --white: #fff; }
-        body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); display: flex; color: var(--text); }
-
-        /* SIDEBAR */
-        .sidebar { width: 240px; background: var(--white); height: 100vh; position: fixed; border-right: 1px solid var(--border); z-index: 100; }
-        .sidebar-logo { padding: 25px; font-weight: 800; color: var(--blue); border-bottom: 1px solid #eee; font-size: 1.2rem; display: flex; align-items: center; gap: 10px; }
-        .nav-item { padding: 15px 25px; display: flex; align-items: center; gap: 12px; color: #666; text-decoration: none; cursor: pointer; transition: 0.2s; }
-        .nav-item:hover, .nav-item.active { background: #f0f7ff; color: var(--blue); font-weight: 600; border-left: 4px solid var(--blue); }
-
-        /* CONTEÚDO */
-        .main { margin-left: 240px; width: calc(100% - 240px); padding: 30px; }
-        .section { display: none; }
-        .section.active { display: block; }
-
-        /* ESTATÍSTICAS (IGUAL ÀS FOTOS) */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 30px; }
-        .stat-card { background: #fff; padding: 24px; border-radius: 8px; border: 1px solid var(--border); display: flex; align-items: center; gap: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
-        .stat-icon-circle { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
-        .stat-label { font-size: 0.85rem; color: #666; display: block; margin-bottom: 4px; }
-        .stat-row { display: flex; align-items: center; justify-content: space-between; width: 100%; }
-        .stat-row h2 { margin: 0; font-size: 1.5rem; font-weight: 700; color: #333; }
-        .stat-badge { font-size: 0.75rem; background: #e6ffed; color: #2ecc71; padding: 2px 8px; border-radius: 4px; font-weight: 600; }
-
-        /* TABELA DE PRODUTOS */
-        .card { background: var(--white); border-radius: 8px; border: 1px solid var(--border); padding: 25px; margin-bottom: 25px; }
-        table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; padding: 12px; color: #999; font-size: 0.75rem; text-transform: uppercase; border-bottom: 1px solid #eee; }
-        td { padding: 12px; border-bottom: 1px solid #eee; font-size: 0.9rem; }
-        .prod-cell { display: flex; align-items: center; gap: 10px; }
-        .prod-cell img { width: 45px; height: 45px; border-radius: 4px; object-fit: cover; }
-
-        /* FORMULÁRIO */
-        .field { margin-bottom: 15px; display: flex; flex-direction: column; gap: 5px; }
-        label { font-size: 0.85rem; font-weight: 600; }
-        input, textarea, select { padding: 12px; border: 1px solid var(--border); border-radius: 6px; outline: none; width: 100%; box-sizing: border-box; }
-        .btn-blue { background: var(--blue); color: white; border: none; padding: 12px 25px; border-radius: 6px; font-weight: 600; cursor: pointer; }
-        .btn-del { color: #ff4d4d; border: none; background: none; cursor: pointer; }
-
-        .header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-    </style>
+    <title>Painel Admin</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-    <aside class="sidebar">
-        <div class="sidebar-logo"><i class="fas fa-rocket"></i> MercantGames</div>
-        <div class="nav-item active" onclick="showTab('dashboard')"><i class="fas fa-chart-line"></i> Painel Geral</div>
-        <div class="nav-item" onclick="showTab('lista')"><i class="fas fa-box"></i> Meus Produtos</div>
-        <div class="nav-item" onclick="showTab('banners')"><i class="fas fa-images"></i> Banners Loja</div>
-    </aside>
+<div class="sidebar">
+    <h2>Admin</h2>
+    <ul>
+        <li onclick="showPage('dashboard')">📊 Dashboard</li>
+        <li onclick="showPage('orders')">📦 Pedidos</li>
+        <li onclick="showPage('products')">🛍 Produtos</li>
+        <li onclick="showPage('customers')">👥 Clientes</li>
+        <li onclick="showPage('settings')">⚙ Configurações</li>
+    </ul>
+</div>
 
-    <main class="main">
-        
-        <div id="tab-dashboard" class="section active">
-            <h1 style="margin-bottom: 30px;">Resumo da Loja</h1>
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icon-circle" style="background:#eef5ff; color:#0066ff"><i class="fas fa-shopping-bag"></i></div>
-                    <div style="flex:1">
-                        <span class="stat-label">Produtos Ativos</span>
-                        <div class="stat-row"><h2 id="st-total">0</h2><span class="stat-badge">Estoque</span></div>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon-circle" style="background:#ebfbee; color:#2ecc71"><i class="fas fa-wallet"></i></div>
-                    <div style="flex:1">
-                        <span class="stat-label">Valor do Inventário</span>
-                        <div class="stat-row"><h2 id="st-valor">R$ 0,00</h2><span class="stat-badge">Bruto</span></div>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon-circle" style="background:#f4efff; color:#6a0dad"><i class="fas fa-eye"></i></div>
-                    <div style="flex:1">
-                        <span class="stat-label">Visitas Hoje</span>
-                        <div class="stat-row"><h2>1.240</h2><span class="stat-badge" style="background:#f0f0f0; color:#888">Live</span></div>
-                    </div>
-                </div>
-            </div>
-            <div class="card"><h3>Bem-vindo ao seu painel!</h3><p style="color:#666">Aqui você controla todos os jogos da sua vitrine.</p></div>
+<div class="main">
+    <div class="topbar">
+        <span>Painel Administrativo</span>
+        <span>👤 Admin</span>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="dashboard" class="page active">
+        <h1>Dashboard</h1>
+
+        <div class="cards">
+            <div class="card">💰 Faturamento<br><strong>R$ 25.000</strong></div>
+            <div class="card">📦 Pedidos<br><strong>320</strong></div>
+            <div class="card">👥 Clientes<br><strong>120</strong></div>
+            <div class="card">🛍 Produtos<br><strong>85</strong></div>
         </div>
+    </div>
 
-        <div id="tab-lista" class="section">
-            <div class="header-flex">
-                <h1>Produtos Cadastrados</h1>
-                <button class="btn-blue" onclick="showTab('novo')">+ Novo Jogo</button>
-            </div>
-            <div class="card">
-                <table>
-                    <thead><tr><th>Produto</th><th>Preço</th><th>Categoria</th><th>Ações</th></tr></thead>
-                    <tbody id="lista-corpo"></tbody>
-                </table>
-            </div>
-        </div>
+    <!-- PEDIDOS -->
+    <div id="orders" class="page">
+        <h1>Pedidos</h1>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Cliente</th>
+                <th>Status</th>
+                <th>Total</th>
+            </tr>
+            <tr>
+                <td>#1023</td>
+                <td>João</td>
+                <td>Pago</td>
+                <td>R$ 250</td>
+            </tr>
+            <tr>
+                <td>#1024</td>
+                <td>Maria</td>
+                <td>Pendente</td>
+                <td>R$ 180</td>
+            </tr>
+        </table>
+    </div>
 
-        <div id="tab-novo" class="section">
-            <div class="header-flex"><h1>Novo Produto</h1><button class="btn-blue" onclick="salvarProduto()">Salvar no Banco</button></div>
-            <div class="card">
-                <div class="field"><label>Nome do Jogo</label><input type="text" id="p-nome"></div>
-                <div class="field"><label>Descrição SEO</label><textarea id="p-desc" rows="4"></textarea></div>
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px">
-                    <div class="field"><label>Preço (R$)</label><input type="text" id="p-preco"></div>
-                    <div class="field"><label>Categoria</label><select id="p-cat"><option value="Ação">Ação</option><option value="Esportes">Esportes</option><option value="Luta">Luta</option></select></div>
-                </div>
-                <div class="field"><label>URL da Imagem</label><input type="text" id="p-img"></div>
-            </div>
-        </div>
+    <!-- PRODUTOS -->
+    <div id="products" class="page">
+        <h1>Produtos</h1>
+        <button>➕ Novo Produto</button>
+    </div>
 
-        <div id="tab-banners" class="section">
-            <h1>Configuração de Banners</h1>
-            <div class="card">
-                <label>Links das imagens (separe por vírgula)</label>
-                <textarea id="b-links" rows="6" style="width:100%; margin-top:10px"></textarea>
-                <button class="btn-blue" style="margin-top:20px" onclick="salvarBanners()">Atualizar Banners do Site</button>
-            </div>
-        </div>
+    <!-- CLIENTES -->
+    <div id="customers" class="page">
+        <h1>Clientes</h1>
+        <p>Lista de clientes cadastrados.</p>
+    </div>
 
-    </main>
+    <!-- CONFIGURAÇÕES -->
+    <div id="settings" class="page">
+        <h1>Configurações</h1>
+        <p>Configurações do sistema.</p>
+    </div>
 
-    <script>
-        const SB_URL = "https://grogiwbccvnbyjgxvafw.supabase.co";
-        const SB_KEY = "sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14";
-        const HEADERS = { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`, 'Content-Type': 'application/json' };
+</div>
 
-        function showTab(id) {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            document.getElementById('tab-'+id).classList.add('active');
-            if(event) event.currentTarget.classList.add('active');
-        }
-
-        async function init() {
-            const res = await fetch(`${SB_URL}/rest/v1/jogos?order=id.desc`, { headers: HEADERS });
-            const jogos = await res.json();
-            
-            // Stats
-            document.getElementById('st-total').innerText = jogos.length;
-            let total = jogos.reduce((acc, j) => acc + parseFloat(j.preco || 0), 0);
-            document.getElementById('st-valor').innerText = `R$ ${total.toLocaleString('pt-br', {minimumFractionDigits: 2})}`;
-
-            // Listagem
-            document.getElementById('lista-corpo').innerHTML = jogos.map(j => `
-                <tr>
-                    <td><div class="prod-cell"><img src="${j.url_da_imagem}"><span>${j.nome}</span></div></td>
-                    <td>R$ ${j.preco}</td>
-                    <td>${j.categoria || 'Geral'}</td>
-                    <td><button class="btn-del" onclick="deletar(${j.id})"><i class="fas fa-trash"></i></button></td>
-                </tr>
-            `).join('');
-        }
-
-        async function salvarProduto() {
-            const body = { nome: document.getElementById('p-nome').value, preco: document.getElementById('p-preco').value, descricao: document.getElementById('p-desc').value, url_da_imagem: document.getElementById('p-img').value, categoria: document.getElementById('p-cat').value };
-            await fetch(`${SB_URL}/rest/v1/jogos`, { method: 'POST', headers: HEADERS, body: JSON.stringify(body) });
-            alert("Salvo!"); init(); showTab('lista');
-        }
-
-        async function salvarBanners() {
-            const links = document.getElementById('b-links').value.split(',').map(l => l.trim());
-            await fetch(`${SB_URL}/rest/v1/configuracoes?id=eq.1`, { method: 'PATCH', headers: HEADERS, body: JSON.stringify({ banners: links }) });
-            alert("Banners Atualizados!");
-        }
-
-        async function deletar(id) {
-            if(confirm("Excluir item?")) {
-                await fetch(`${SB_URL}/rest/v1/jogos?id=eq.${id}`, { method: 'DELETE', headers: HEADERS });
-                init();
-            }
-        }
-
-        window.onload = init;
-    </script>
+<script src="js/script.js"></script>
 </body>
 </html>
