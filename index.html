@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,14 +11,16 @@
 
         /* HEADER */
         header { background: #000; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--main); position: sticky; top: 0; z-index: 1000; }
-        .logo { font-size: 22px; font-weight: 900; letter-spacing: 1px; color: #fff; text-decoration: none; }
+        .logo { font-size: 22px; font-weight: 900; letter-spacing: 1px; color: #fff; text-decoration: none; text-transform: uppercase; }
         .search-bar { flex: 1; max-width: 500px; margin: 0 30px; position: relative; }
         .search-bar input { width: 100%; background: #1c2128; border: 1px solid #30363d; padding: 10px 15px; border-radius: 20px; color: white; outline: none; }
 
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; flex: 1; width: 100%; box-sizing: border-box; }
 
-        /* BANNER MAIOR E LIMPO */
-        .hero-section { margin-top: 10px; height: 450px; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid #333; background-size: cover; background-position: center; transition: 1s ease-in-out; }
+        /* BANNER VIVO (SLIDER DINÂMICO) */
+        .hero-container { margin-top: 10px; height: 450px; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid #333; position: relative; }
+        .slide { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; transition: opacity 1.5s ease-in-out; }
+        .slide.active { opacity: 1; }
 
         /* GRID CATEGORIAS */
         .section-title { font-size: 1.2rem; margin: 40px 0 20px; display: flex; align-items: center; gap: 10px; font-weight: 600; text-transform: uppercase; }
@@ -47,18 +49,13 @@
         .social-icons { display: flex; gap: 15px; font-size: 1.5rem; }
         .pay-icons { display: flex; flex-wrap: wrap; gap: 10px; font-size: 1.8rem; color: #444; }
         .copyright { text-align: center; border-top: 1px solid #111; padding-top: 20px; color: #444; font-size: 12px; }
-
-        /* PÁGINA PRODUTO */
-        #page-product { display: none; padding-top: 40px; }
     </style>
 </head>
 <body>
 
     <header>
         <a href="#" class="logo" onclick="location.reload()">MERCANT GAMES</a>
-        <div class="search-bar">
-            <input type="text" placeholder="Pesquisar jogos ou categorias...">
-        </div>
+        <div class="search-bar"><input type="text" placeholder="Pesquisar jogos..."></div>
         <div style="display:flex; gap:20px; font-size:1.2rem; color:#fff; cursor:pointer;">
             <i class="fas fa-shopping-basket"></i>
             <i class="fas fa-user-circle"></i>
@@ -66,9 +63,10 @@
     </header>
 
     <div id="home-view" class="container">
-        <div class="hero-section" id="hero-bg" style="background-image: url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1200')"></div>
+        <div class="hero-container" id="slider">
+            </div>
 
-        <h2 class="section-title">Categorias Populares</h2>
+        <h2 class="section-title">Categorias</h2>
         <div class="cat-grid">
             <div class="cat-card" style="background-image: url('https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400')"><h3>ESPORTES</h3></div>
             <div class="cat-card" style="background-image: url('https://images.unsplash.com/photo-1511512578047-dfb367046420?w=400')"><h3>LUTA</h3></div>
@@ -79,48 +77,16 @@
         <div class="game-grid" id="vitrine"></div>
     </div>
 
-    <div id="page-product" class="container">
-        </div>
-
     <footer>
         <div class="footer-grid">
-            <div class="footer-box">
-                <h4 style="color:var(--main)">MercantGames</h4>
-                <p>A maior loja de jogos digitais do Brasil. Entrega imediata e suporte 24h.</p>
-                <div class="social-icons">
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-discord"></i></a>
-                    <a href="#"><i class="fab fa-whatsapp"></i></a>
-                </div>
+            <div class="footer-box"><h4 style="color:var(--main)">MercantGames</h4><p>A tua loja de jogos digitais. Entrega imediata e suporte 24h.</p>
+                <div class="social-icons"><a href="#"><i class="fab fa-instagram"></i></a><a href="#"><i class="fab fa-discord"></i></a><a href="#"><i class="fab fa-whatsapp"></i></a></div>
             </div>
-            <div class="footer-box">
-                <h4>Navegação</h4>
-                <a href="#">Início</a>
-                <a href="#">Todos os Jogos</a>
-                <a href="#">Lançamentos</a>
-                <a href="#">Promoções</a>
-            </div>
-            <div class="footer-box">
-                <h4>Suporte</h4>
-                <a href="#">Dúvidas Frequentes</a>
-                <a href="#">Como Ativar seu Jogo</a>
-                <a href="#">Termos de Garantia</a>
-                <a href="#">Contato</a>
-            </div>
-            <div class="footer-box">
-                <h4>Pagamento</h4>
-                <div class="pay-icons">
-                    <i class="fab fa-cc-visa"></i>
-                    <i class="fab fa-cc-mastercard"></i>
-                    <i class="fas fa-pix"></i>
-                    <i class="fas fa-barcode"></i>
-                </div>
-                <p style="margin-top:15px;"><i class="fas fa-shield-alt"></i> Site Seguro</p>
-            </div>
+            <div class="footer-box"><h4>Navegação</h4><a href="#">Início</a><a href="#">Todos os Jogos</a><a href="#">Promoções</a></div>
+            <div class="footer-box"><h4>Suporte</h4><a href="#">Dúvidas</a><a href="#">Garantia</a><a href="#">Contato</a></div>
+            <div class="footer-box"><h4>Pagamento</h4><div class="pay-icons"><i class="fab fa-cc-visa"></i><i class="fab fa-cc-mastercard"></i><i class="fas fa-pix"></i><i class="fas fa-barcode"></i></div><p style="margin-top:15px;"><i class="fas fa-shield-alt"></i> Site Seguro</p></div>
         </div>
-        <div class="copyright">
-            © 2026 MercantGames - CNPJ 00.000.000/0000-00 - Todos os direitos reservados.
-        </div>
+        <div class="copyright">© 2026 MercantGames - Todos os direitos reservados.</div>
     </footer>
 
     <script>
@@ -130,16 +96,31 @@
 
         async function init() {
             try {
-                // Banner
+                // 1. CARREGAR E INICIAR SLIDER (BANNER)
                 const resCfg = await fetch(`${SB_URL}/rest/v1/configuracoes?id=eq.1`, { headers: HEADERS });
                 const [cfg] = await resCfg.json();
-                if(cfg && cfg.banners.length > 0) document.getElementById('hero-bg').style.backgroundImage = `url('${cfg.banners[0]}')`;
-
-                // Jogos
-                const res = await fetch(`${SB_URL}/rest/v1/jogos`, { headers: HEADERS });
-                const jogos = await res.json();
                 
-                document.getElementById('vitrine').innerHTML = jogos.map((j) => `
+                if(cfg && cfg.banners && cfg.banners.length > 0) {
+                    const slider = document.getElementById('slider');
+                    slider.innerHTML = cfg.banners.map((url, i) => `
+                        <div class="slide ${i === 0 ? 'active' : ''}" style="background-image: url('${url}')"></div>
+                    `).join('');
+                    
+                    if(cfg.banners.length > 1) {
+                        let currentSlide = 0;
+                        const slides = document.querySelectorAll('.slide');
+                        setInterval(() => {
+                            slides[currentSlide].classList.remove('active');
+                            currentSlide = (currentSlide + 1) % slides.length;
+                            slides[currentSlide].classList.add('active');
+                        }, 5000); // Muda a cada 5 segundos
+                    }
+                }
+
+                // 2. CARREGAR JOGOS NA VITRINE
+                const resJogos = await fetch(`${SB_URL}/rest/v1/jogos`, { headers: HEADERS });
+                const jogos = await resJogos.json();
+                document.getElementById('vitrine').innerHTML = jogos.map(j => `
                     <div class="game-card">
                         <img src="${j.url_da_imagem}">
                         <div class="game-info">
@@ -149,7 +130,7 @@
                         </div>
                     </div>
                 `).join('');
-            } catch (e) { console.error(e); }
+            } catch (e) { console.error("Erro:", e); }
         }
         window.onload = init;
     </script>
