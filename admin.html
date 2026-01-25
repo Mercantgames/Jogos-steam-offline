@@ -2,78 +2,137 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Mercantgames | Administração</title>
+    <title>Admin | MercantGames</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* Aqui eu resumi os estilos principais do seu arquivo para o layout não quebrar */
-        :root { --blue: #0066ff; --bg: #f0f2f5; }
-        body { margin: 0; background: var(--bg); font-family: 'Inter', sans-serif; display: flex; }
-        
-        /* Sidebar igual ao seu arquivo */
-        .nimbus-sidebar { width: 260px; background: #fff; height: 100vh; border-right: 1px solid #d8dee4; position: fixed; }
-        .nimbus-sidebar-header { padding: 32px 24px; font-weight: 800; color: var(--blue); font-size: 1.5rem; }
-        
-        .main-container { margin-left: 260px; padding: 40px; width: 100%; }
-        
-        /* O Grid de Estatísticas que você quer que marque certo */
-        .nimbus-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 24px; }
-        .nimbus-card { background: #fff; border: 1px solid #d8dee4; border-radius: 8px; padding: 24px; }
-        .nimbus-card-title { font-size: 0.875rem; color: #4f566b; margin-bottom: 8px; }
-        .nimbus-card-value { font-size: 1.5rem; font-weight: 700; color: #1a1f36; }
-        
-        /* Tabela de Produtos */
-        .product-table { width: 100%; background: #fff; border-radius: 8px; border: 1px solid #d8dee4; margin-top: 24px; border-collapse: collapse; }
-        .product-table th { text-align: left; padding: 12px; border-bottom: 1px solid #f0f2f5; color: #697386; font-size: 0.75rem; }
-        .product-table td { padding: 16px 12px; border-bottom: 1px solid #f0f2f5; }
-        
-        .btn-nimbus { background: var(--blue); color: #fff; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; }
-        .hidden { display: none; }
+        /* BASE DO DESIGN NIMBUS */
+        :root {
+            --nimbus-spacing-1: 4px;
+            --nimbus-spacing-2: 8px;
+            --nimbus-spacing-6: 24px;
+            --nimbus-colors-primary-surface: #e5f0ff;
+            --nimbus-colors-primary-surfaceHighlight: #cce0ff;
+            --nimbus-colors-neutral-surfaceDisabled: #f2f2f2;
+            --nimbus-colors-primary-interactive: #0066ff;
+            --nimbus-colors-neutral-textHigh: #1a1f36;
+        }
+
+        body { margin: 0; font-family: 'Inter', sans-serif; background: #f0f2f5; display: flex; }
+
+        /* SIDEBAR BASE */
+        .sidebar { width: 260px; background: #fff; height: 100vh; border-right: 1px solid #d8dee4; position: fixed; }
+        .sidebar-logo { padding: 24px; font-weight: 800; color: #0066ff; font-size: 1.4rem; border-bottom: 1px solid #f0f2f5; }
+
+        /* O CÓDIGO QUE VOCÊ ENVIOU (ADAPTADO) */
+        .nimbus-menu-container {
+            padding-left: var(--nimbus-spacing-6);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            box-sizing: border-box;
+            margin-top: 20px;
+        }
+
+        .nimbus-link {
+            padding: 8px 16px;
+            align-items: center;
+            text-decoration: none;
+            background-color: transparent;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            width: 90%;
+            transition: all 0.2s;
+            max-height: 34px;
+            box-sizing: border-box;
+        }
+
+        .nimbus-link:hover { background-color: var(--nimbus-colors-primary-surface); }
+        .nimbus-link.active { background-color: var(--nimbus-colors-primary-surface); }
+
+        .nimbus-text {
+            font-size: 14px;
+            color: var(--nimbus-colors-neutral-textHigh);
+            margin: 0;
+            font-weight: 400;
+        }
+
+        .nimbus-link.active .nimbus-text { color: var(--nimbus-colors-primary-interactive); font-weight: 600; }
+
+        .nimbus-tag-beta {
+            background: #e5f0ff;
+            color: #0066ff;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-left: 8px;
+            font-weight: 700;
+        }
+
+        /* ÁREA DE CONTEÚDO */
+        .main-content { margin-left: 260px; padding: 40px; width: 100%; }
+        .nimbus-card { background: #fff; border: 1px solid #d8dee4; border-radius: 8px; padding: 24px; margin-bottom: 20px; }
+        .stat-value { font-size: 1.5rem; font-weight: 700; color: #1a1f36; }
     </style>
 </head>
 <body>
 
-    <nav class="nimbus-sidebar">
-        <div class="nimbus-sidebar-header">nuvemshop</div>
-        <div style="padding: 10px 0;">
-            <div onclick="show('dash')" style="padding: 12px 24px; cursor: pointer;">Início</div>
-            <div onclick="show('lista')" style="padding: 12px 24px; cursor: pointer;">Produtos</div>
+    <aside class="sidebar">
+        <div class="sidebar-logo">nuvemshop</div>
+        
+        <div class="nimbus-menu-container">
+            <a class="nimbus-link active" onclick="tab('dash')">
+                <p class="nimbus-text">Início</p>
+            </a>
+            <a class="nimbus-link" onclick="tab('lista')">
+                <p class="nimbus-text">Lista de produtos</p>
+            </a>
+            <a class="nimbus-link">
+                <p class="nimbus-text">Inventário</p>
+            </a>
+            <a class="nimbus-link">
+                <p class="nimbus-text">Categorias</p>
+            </a>
+            <a class="nimbus-link">
+                <p class="nimbus-text">Tabelas de preços</p>
+                <span class="nimbus-tag-beta">Beta</span>
+            </a>
         </div>
-    </nav>
+    </aside>
 
-    <main class="main-container">
-        <div id="sec-dash">
-            <h1 style="font-size: 1.75rem;">Visão geral</h1>
+    <main class="main-content">
+        <div id="dash" class="section">
+            <h1 style="font-size: 1.5rem; margin-bottom: 24px;">Visão geral</h1>
             
-            <div class="nimbus-grid">
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
                 <div class="nimbus-card">
-                    <div class="nimbus-card-title">Vendas (Produtos no Banco)</div>
-                    <div class="nimbus-card-value" id="real-vendas">0</div>
+                    <p style="font-size: 0.8rem; color: #666;">Vendas</p>
+                    <div class="stat-value" id="val-vendas">0</div>
                 </div>
                 <div class="nimbus-card">
-                    <div class="nimbus-card-title">Receita Total (Estoque)</div>
-                    <div class="nimbus-card-value" id="real-receita">R$ 0,00</div>
+                    <p style="font-size: 0.8rem; color: #666;">Receita</p>
+                    <div class="stat-value" id="val-receita">R$ 0,00</div>
                 </div>
                 <div class="nimbus-card">
-                    <div class="nimbus-card-title">Ticket médio</div>
-                    <div class="nimbus-card-value" id="real-ticket">R$ 0,00</div>
-                </div>
-                <div class="nimbus-card">
-                    <div class="nimbus-card-title">Visitas</div>
-                    <div class="nimbus-card-value">1.240</div>
+                    <p style="font-size: 0.8rem; color: #666;">Ticket Médio</p>
+                    <div class="stat-value" id="val-ticket">R$ 0,00</div>
                 </div>
             </div>
         </div>
 
-        <div id="sec-lista" class="hidden">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <h1>Meus Produtos</h1>
-                <button class="btn-nimbus" onclick="addNovo()">+ Adicionar</button>
+        <div id="lista" class="section" style="display:none;">
+            <h1>Lista de Produtos</h1>
+            <div class="nimbus-card">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="text-align: left; border-bottom: 1px solid #eee;">
+                            <th style="padding: 10px;">Produto</th>
+                            <th>Preço</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lista-corpo"></tbody>
+                </table>
             </div>
-            <table class="product-table">
-                <thead>
-                    <tr><th>Jogo</th><th>Preço</th><th>Ações</th></tr>
-                </thead>
-                <tbody id="corpo-tabela"></tbody>
-            </table>
         </div>
     </main>
 
@@ -82,59 +141,37 @@
         const SB_KEY = "sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14";
         const HEADERS = { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`, 'Content-Type': 'application/json' };
 
-        // Função para trocar de aba sem recarregar
-        function show(aba) {
-            document.getElementById('sec-dash').classList.toggle('hidden', aba !== 'dash');
-            document.getElementById('sec-lista').classList.toggle('hidden', aba !== 'lista');
-            carregarDadosReais();
+        function tab(id) {
+            document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
+            document.getElementById(id).style.display = 'block';
+            
+            // Ativa o link no menu
+            document.querySelectorAll('.nimbus-link').forEach(l => l.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            
+            carregarDados();
         }
 
-        async function carregarDadosReais() {
-            try {
-                const res = await fetch(`${SB_URL}/rest/v1/jogos?select=*`, { headers: HEADERS });
-                const jogos = await res.json();
+        async function carregarDados() {
+            const res = await fetch(`${SB_URL}/rest/v1/jogos`, { headers: HEADERS });
+            const jogos = await res.json();
 
-                // 1. ATUALIZA OS CARDS DO LAYOUT NUVEMSHOP
-                document.getElementById('real-vendas').innerText = jogos.length;
-                
-                const soma = jogos.reduce((acc, j) => acc + parseFloat(j.preco || 0), 0);
-                document.getElementById('real-receita').innerText = `R$ ${soma.toLocaleString('pt-br', {minimumFractionDigits: 2})}`;
-                
-                const ticket = jogos.length > 0 ? (soma / jogos.length) : 0;
-                document.getElementById('real-ticket').innerText = `R$ ${ticket.toLocaleString('pt-br', {minimumFractionDigits: 2})}`;
+            // Stats
+            document.getElementById('val-vendas').innerText = jogos.length;
+            const total = jogos.reduce((acc, j) => acc + parseFloat(j.preco || 0), 0);
+            document.getElementById('val-receita').innerText = `R$ ${total.toLocaleString('pt-br', {minimumFractionDigits: 2})}`;
+            document.getElementById('val-ticket').innerText = `R$ ${(total/jogos.length || 0).toLocaleString('pt-br', {minimumFractionDigits: 2})}`;
 
-                // 2. ATUALIZA A TABELA
-                document.getElementById('corpo-tabela').innerHTML = jogos.map(j => `
-                    <tr>
-                        <td><b>${j.nome}</b></td>
-                        <td>R$ ${j.preco}</td>
-                        <td><button onclick="deletar(${j.id})" style="color:red; background:none; border:none; cursor:pointer;">Excluir</button></td>
-                    </tr>
-                `).join('');
-
-            } catch (err) { console.error("Erro ao puxar dados:", err); }
+            // Tabela
+            document.getElementById('lista-corpo').innerHTML = jogos.map(j => `
+                <tr style="border-bottom: 1px solid #f9f9f9;">
+                    <td style="padding: 12px;">${j.nome}</td>
+                    <td>R$ ${j.preco}</td>
+                </tr>
+            `).join('');
         }
 
-        async function deletar(id) {
-            if(confirm("Deseja apagar?")) {
-                await fetch(`${SB_URL}/rest/v1/jogos?id=eq.${id}`, { method: 'DELETE', headers: HEADERS });
-                carregarDadosReais();
-            }
-        }
-
-        function addNovo() {
-            const nome = prompt("Nome do Jogo:");
-            const preco = prompt("Preço:");
-            if(nome && preco) {
-                fetch(`${SB_URL}/rest/v1/jogos`, {
-                    method: 'POST',
-                    headers: HEADERS,
-                    body: JSON.stringify({ nome, preco, url_da_imagem: 'https://via.placeholder.com/150' })
-                }).then(() => carregarDadosReais());
-            }
-        }
-
-        window.onload = carregarDadosReais;
+        window.onload = carregarDados;
     </script>
 </body>
 </html>
