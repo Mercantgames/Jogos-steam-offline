@@ -8,41 +8,42 @@
     <style>
         :root { 
             --main: #003366; 
-            --hero-purple: #6a0dad; /* Roxo da armadura */
-            --hero-blue: #0047ab;   /* Azul cobalto detalhes */
+            --hero-purple: #6a0dad; 
+            --hero-blue: #0047ab;   
             --bg: #0b0e13; 
             --panel: #151921; 
         }
         body { margin: 0; font-family: 'Poppins', sans-serif; background: var(--bg); color: white; overflow-x: hidden; }
 
-        /* PERSONAGEM FIXO NA ESQUERDA */
+        /* PERSONAGEM COM FUNDO BRANCO REMOVIDO */
         .char-fixed {
             position: fixed;
-            left: -40px;
+            left: -30px;
             bottom: -10px;
             z-index: 9999;
             pointer-events: none;
-            transition: 0.5s;
         }
         .char-fixed img {
-            width: 400px; /* Tamanho épico */
-            filter: drop-shadow(0 0 20px var(--hero-purple));
+            width: 420px; 
+            /* O TRUQUE MÁGICO AQUI: */
+            mix-blend-mode: multiply; 
+            filter: brightness(1.2) contrast(1.1) drop-shadow(0 0 20px var(--hero-purple));
             animation: heroFloat 4s ease-in-out infinite;
         }
 
         @keyframes heroFloat {
-            0%, 100% { transform: translateY(0) scale(1); filter: drop-shadow(0 0 15px var(--hero-blue)); }
-            50% { transform: translateY(-25px) scale(1.02); filter: drop-shadow(0 0 30px var(--hero-purple)); }
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
         }
 
-        /* HEADER E LAYOUT */
+        /* HEADER */
         header { background: #000; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--hero-blue); position: sticky; top: 0; z-index: 1000; }
         .logo { font-size: 22px; font-weight: 900; color: #fff; text-decoration: none; text-transform: uppercase; letter-spacing: 2px; }
         
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; position: relative; }
 
-        /* BANNER */
-        .hero-banner { height: 450px; border-radius: 15px; overflow: hidden; position: relative; border: 1px solid #333; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
+        /* BANNER AUTOMÁTICO */
+        .hero-banner { height: 450px; border-radius: 15px; overflow: hidden; position: relative; border: 1px solid #333; }
         .slide { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; transition: opacity 1.5s; }
         .slide.active { opacity: 1; }
 
@@ -50,25 +51,23 @@
         .section-title { font-size: 1.4rem; margin: 50px 0 20px; text-transform: uppercase; border-left: 5px solid var(--hero-purple); padding-left: 15px; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 25px; }
         .card { background: var(--panel); border-radius: 12px; overflow: hidden; border: 1px solid #222; transition: 0.3s; text-align: center; }
-        .card:hover { border-color: var(--hero-blue); transform: translateY(-8px); box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
+        .card:hover { border-color: var(--hero-blue); transform: translateY(-8px); }
         .card img { width: 100%; height: 320px; object-fit: cover; }
         .price { color: #2ecc71; font-weight: 800; font-size: 1.4rem; display: block; margin: 15px 0; }
         .btn { background: linear-gradient(90deg, var(--hero-blue), var(--hero-purple)); color: white; border: none; padding: 12px; width: 90%; border-radius: 8px; font-weight: bold; cursor: pointer; margin-bottom: 20px; text-transform: uppercase; }
 
-        /* MOBILE ESCONDE O BONECO */
         @media (max-width: 1100px) { .char-fixed { display: none; } }
     </style>
 </head>
 <body>
 
     <div class="char-fixed">
-        <img src="https://grogiwbccvnbyjgxvafw.supabase.co/storage/v1/object/public/capas/Design%20sem%20nome.gif" alt="Hero Character">
+        <img src="LINK_DO_SEU_GIF_DO_SUPABASE.gif" alt="Hero Character">
     </div>
 
     <header>
         <a href="#" class="logo">MERCANT <span style="color: var(--hero-blue);">GAMES</span></a>
         <div style="display:flex; gap:25px; font-size:1.3rem; color:#fff; cursor:pointer;">
-            <i class="fas fa-search"></i>
             <i class="fas fa-shopping-cart"></i>
             <i class="fas fa-user-shield"></i>
         </div>
@@ -78,8 +77,7 @@
         <div class="hero-banner">
             <div id="slides-area"></div>
         </div>
-
-        <h2 class="section-title">Jogos em <span style="color: var(--hero-blue);">Destaque</span></h2>
+        <h2 class="section-title">Destaques</h2>
         <div class="grid" id="vitrine"></div>
     </div>
 
@@ -114,7 +112,7 @@
                         <div style="padding:10px;">
                             <h4 style="margin:10px 0 5px;">${j.nome}</h4>
                             <span class="price">R$ ${j.preco}</span>
-                            <button class="btn">ADQUIRIR AGORA</button>
+                            <button class="btn">ADQUIRIR</button>
                         </div>
                     </div>
                 `).join('');
@@ -124,4 +122,3 @@
     </script>
 </body>
 </html>
-
