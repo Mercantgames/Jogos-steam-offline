@@ -1,146 +1,31 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel Admin | MercantGames</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        /* Personalização para ficar IDENTICO à Nuvemshop */
-        :root {
-            --nimbus-blue: #0066ff;
-            --nimbus-bg: #f0f2f5;
-        }
-        body { background-color: var(--nimbus-bg); }
-        .sidebar { width: 256px; background: white; border-right: 1px solid #e5e7eb; height: 100vh; position: fixed; }
-        .nav-item { display: flex; align-items: center; padding: 12px 24px; color: #4f566b; transition: 0.2s; cursor: pointer; }
-        .nav-item:hover { background: #f4f7ff; color: var(--nimbus-blue); }
-        .nav-item.active { background: #e5f0ff; color: var(--nimbus-blue); border-left: 4px solid var(--nimbus-blue); font-weight: 600; }
-        .nimbus-card { background: white; border: 1px solid #d8dee4; border-radius: 8px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
-    </style>
-</head>
-<body>
+<script>
+  const SB_URL = "https://grogiwbccvnbyjgxvafw.supabase.co";
+  const SB_KEY = "sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14";
 
-    <div class="sidebar">
-        <div class="p-6">
-            <h1 class="text-2xl font-bold text-[#0066ff] tracking-tight">nuvemshop</h1>
-        </div>
-        <nav class="mt-2">
-            <div onclick="showSection('dashboard')" id="nav-dashboard" class="nav-item active"><i class="fas fa-home mr-3"></i> Início</div>
-            <div onclick="showSection('produtos')" id="nav-produtos" class="nav-item"><i class="fas fa-box mr-3"></i> Produtos</div>
-            <div onclick="showSection('clientes')" id="nav-clientes" class="nav-item"><i class="fas fa-users mr-3"></i> Clientes</div>
-        </nav>
-    </div>
+  async function atualizarDados() {
+    try {
+      const response = await fetch(`${SB_URL}/rest/v1/jogos`, {
+        headers: { "apikey": SB_KEY, "Authorization": `Bearer ${SB_KEY}` }
+      });
+      const dados = await response.json();
 
-    <div class="ml-64 p-10">
-        
-        <div id="section-dashboard">
-            <header class="mb-8">
-                <h2 class="text-2xl font-bold text-gray-800">Visão geral</h2>
-                <p class="text-gray-500">Dados reais do seu Supabase</p>
-            </header>
+      // Coloca a quantidade de jogos no campo de vendas
+      const campoVendas = document.getElementById('vendas-db');
+      if (campoVendas) campoVendas.innerText = dados.length;
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="nimbus-card">
-                    <p class="text-sm text-gray-500 mb-1">Vendas (Jogos no Banco)</p>
-                    <p class="text-3xl font-bold text-gray-900" id="stat-vendas">0</p>
-                </div>
-                <div class="nimbus-card">
-                    <p class="text-sm text-gray-500 mb-1">Receita total</p>
-                    <p class="text-3xl font-bold text-gray-900" id="stat-receita">R$ 0,00</p>
-                </div>
-                <div class="nimbus-card">
-                    <p class="text-sm text-gray-500 mb-1">Ticket médio</p>
-                    <p class="text-3xl font-bold text-gray-900" id="stat-ticket">R$ 0,00</p>
-                </div>
-            </div>
-        </div>
+      // Soma os preços e coloca no campo de receita
+      const total = dados.reduce((acc, jogo) => acc + parseFloat(jogo.preco || 0), 0);
+      const campoReceita = document.getElementById('receita-db');
+      if (campoReceita) {
+        campoReceita.innerText = `R$ ${total.toLocaleString('pt-br', {minimumFractionDigits: 2})}`;
+      }
+      
+      console.log("Dados sincronizados com o Supabase!");
+    } catch (err) {
+      console.error("Erro ao carregar dados:", err);
+    }
+  }
 
-        <div id="section-produtos" class="hidden">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bold text-gray-800">Produtos</h2>
-                <button onclick="addProduto()" class="bg-[#0066ff] text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700">Adicionar produto</button>
-            </div>
-            <div class="nimbus-card">
-                <table class="w-full text-left">
-                    <thead>
-                        <tr class="text-xs text-gray-400 uppercase border-bottom">
-                            <th class="pb-4">Produto</th>
-                            <th class="pb-4">Preço</th>
-                            <th class="pb-4">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="lista-corpo-produtos">
-                        </tbody>
-                </table>
-            </div>
-        </div>
-
-    </div>
-
-    <script>
-        // CONFIG SUPABASE
-        const SB_URL = "https://grogiwbccvnbyjgxvafw.supabase.co";
-        const SB_KEY = "sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14";
-        const HEADERS = { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`, 'Content-Type': 'application/json' };
-
-        // TROCAR DE ABA
-        function showSection(id) {
-            document.getElementById('section-dashboard').classList.add('hidden');
-            document.getElementById('section-produtos').classList.add('hidden');
-            document.getElementById('nav-dashboard').classList.remove('active');
-            document.getElementById('nav-produtos').classList.remove('active');
-
-            document.getElementById('section-' + id).classList.remove('hidden');
-            document.getElementById('nav-' + id).classList.add('active');
-            fetchData();
-        }
-
-        // PUXAR DADOS REAIS
-        async function fetchData() {
-            try {
-                const res = await fetch(`${SB_URL}/rest/v1/jogos?select=*`, { headers: HEADERS });
-                const jogos = await res.json();
-
-                // Atualiza Estatísticas
-                const totalReceita = jogos.reduce((acc, j) => acc + parseFloat(j.preco || 0), 0);
-                document.getElementById('stat-vendas').innerText = jogos.length;
-                document.getElementById('stat-receita').innerText = `R$ ${totalReceita.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-                document.getElementById('stat-ticket').innerText = `R$ ${(totalReceita / (jogos.length || 1)).toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-
-                // Atualiza Tabela
-                document.getElementById('lista-corpo-produtos').innerHTML = jogos.map(j => `
-                    <tr class="border-t border-gray-100">
-                        <td class="py-4 font-semibold text-gray-800">${j.nome}</td>
-                        <td class="py-4">R$ ${j.preco}</td>
-                        <td class="py-4"><button onclick="deletar(${j.id})" class="text-red-500 hover:underline"><i class="fas fa-trash"></i></button></td>
-                    </tr>
-                `).join('');
-            } catch (e) { console.error(e); }
-        }
-
-        async function deletar(id) {
-            if(confirm("Deseja apagar este jogo?")) {
-                await fetch(`${SB_URL}/rest/v1/jogos?id=eq.${id}`, { method: 'DELETE', headers: HEADERS });
-                fetchData();
-            }
-        }
-
-        async function addProduto() {
-            const nome = prompt("Nome do Jogo:");
-            const preco = prompt("Preço:");
-            if(nome && preco) {
-                await fetch(`${SB_URL}/rest/v1/jogos`, {
-                    method: 'POST',
-                    headers: HEADERS,
-                    body: JSON.stringify({ nome, preco, url_da_imagem: 'https://via.placeholder.com/150' })
-                });
-                fetchData();
-            }
-        }
-
-        window.onload = fetchData;
-    </script>
-</body>
-</html>
+  // Executa a função
+  atualizarDados();
+</script>
