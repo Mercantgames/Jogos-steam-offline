@@ -6,108 +6,85 @@
     <title>MercantGames | Loja Oficial</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --main: #003366; --bg: #0b0e13; --panel: #151921; }
-        body { margin: 0; font-family: 'Poppins', sans-serif; background: var(--bg); color: white; overflow-x: hidden; }
+        :root { --main: #003366; --bg: #0b0e13; --panel: #151921; --accent: #00d2ff; --footer: #05070a; }
+        body { margin: 0; font-family: 'Poppins', sans-serif; background: var(--bg); color: white; display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
 
+        /* HEADER */
         header { background: #000; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--main); position: sticky; top: 0; z-index: 1000; }
-        .logo { font-size: 22px; font-weight: 900; color: #fff; text-decoration: none; text-transform: uppercase; }
+        .logo { font-size: 22px; font-weight: 900; letter-spacing: 1px; color: #fff; text-decoration: none; text-transform: uppercase; }
+        .search-bar { flex: 1; max-width: 500px; margin: 0 30px; position: relative; }
+        .search-bar input { width: 100%; background: #1c2128; border: 1px solid #30363d; padding: 10px 15px; border-radius: 20px; color: white; outline: none; }
 
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; position: relative; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; flex: 1; width: 100%; box-sizing: border-box; }
 
-        /* AREA DO BANNER */
-        .hero-wrapper { position: relative; width: 100%; margin-top: 20px; }
-        
-        .hero-container { 
-            height: 450px; 
-            border-radius: 12px; 
-            position: relative; 
-            background: #000;
-            border: 1px solid #333;
-            overflow: hidden;
-            z-index: 5;
-        }
-
-        .slide { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; transition: opacity 1.5s; }
+        /* BANNER DINÂMICO */
+        .hero-container { margin-top: 10px; height: 450px; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid #333; position: relative; background: #000; }
+        .slide { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; transition: opacity 1.5s ease-in-out; }
         .slide.active { opacity: 1; }
 
-        /* SOLDADOS POR FORA DO BANNER */
-        .soldier-fixed {
-            position: absolute;
-            bottom: -20px;
-            width: 350px; /* Soldados grandes e imponentes */
-            z-index: 10;
-            pointer-events: none;
-        }
-
-        .s-left {
-            left: -280px; /* Joga para fora do banner no lado esquerdo */
-            animation: fire-left 0.1s infinite alternate;
-        }
-
-        .s-right {
-            right: -280px; /* Joga para fora do banner no lado direito */
-            transform: scaleX(-1);
-            animation: hit-right 0.15s infinite alternate;
-        }
-
-        /* FOGO DA ARMA */
-        .muzzle {
-            position: absolute;
-            width: 70px;
-            height: 70px;
-            background: radial-gradient(circle, #fff 5%, #ffde00 30%, transparent 70%);
-            top: 38%;
-            right: -30px;
-            border-radius: 50%;
-            animation: blink 0.05s infinite;
-            box-shadow: 0 0 50px #ffae00;
-        }
-
-        @keyframes fire-left { from { transform: translateX(0); } to { transform: translateX(-15px); } }
-        @keyframes hit-right { from { transform: scaleX(-1) translateX(0); } to { transform: scaleX(-1) translateX(8px) rotate(2deg); } }
-        @keyframes blink { 0% { opacity: 0; } 100% { opacity: 1; } }
+        /* TÍTULOS */
+        .section-title { font-size: 1.2rem; margin: 40px 0 20px; display: flex; align-items: center; gap: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+        .section-title::before { content: ''; width: 4px; height: 20px; background: var(--main); display: inline-block; }
 
         /* VITRINE */
-        .game-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; margin-top: 50px; }
-        .game-card { background: var(--panel); border-radius: 8px; overflow: hidden; border: 1px solid #222; text-align: center; transition: 0.3s; }
-        .game-card:hover { transform: translateY(-5px); border-color: var(--main); }
-        .game-card img { width: 100%; height: 280px; object-fit: cover; }
-        .price { color: #2ecc71; font-weight: bold; font-size: 1.3rem; padding: 10px; display: block; }
+        .game-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 25px; margin-bottom: 50px; }
+        .game-card { background: var(--panel); border-radius: 12px; overflow: hidden; border: 1px solid #222; transition: 0.3s; cursor: pointer; text-align: center; }
+        .game-card:hover { border-color: var(--main); transform: translateY(-5px); box-shadow: 0 0 20px rgba(0,51,102,0.3); }
+        .game-card img { width: 100%; height: 300px; object-fit: cover; }
+        .game-info { padding: 15px; }
+        .game-price { color: #2ecc71; font-weight: 800; font-size: 1.3rem; margin: 10px 0; display: block; }
+        .btn-comprar { background: var(--main); color: white; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.2s; }
+        .btn-comprar:hover { background: #004488; }
 
-        /* RESPONSIVO: Esconde soldados em telas pequenas para não quebrar o site */
-        @media (max-width: 1600px) {
-            .soldier-fixed { width: 200px; }
-            .s-left { left: -150px; }
-            .s-right { right: -150px; }
-        }
-        @media (max-width: 1300px) {
-            .soldier-fixed { display: none; } /* Esconde se a tela for pequena demais */
-        }
+        /* RODAPÉ */
+        footer { background: var(--footer); border-top: 1px solid #222; padding: 60px 5% 20px; margin-top: auto; }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; margin-bottom: 40px; }
+        .footer-box h4 { color: white; margin-bottom: 20px; text-transform: uppercase; font-size: 14px; }
+        .footer-box a { color: #888; text-decoration: none; font-size: 14px; display: block; margin-bottom: 10px; }
+        .footer-box a:hover { color: var(--main); }
+        .pay-icons { display: flex; gap: 15px; font-size: 1.8rem; color: #444; margin-top: 10px; }
     </style>
 </head>
 <body>
 
-    <header><a href="#" class="logo">MERCANT GAMES</a></header>
+    <header>
+        <a href="#" class="logo">MERCANT GAMES</a>
+        <div class="search-bar"><input type="text" placeholder="Pesquisar jogos..."></div>
+        <div style="display:flex; gap:20px; font-size:1.2rem; color:#fff; cursor:pointer;">
+            <i class="fas fa-shopping-basket"></i>
+            <i class="fas fa-user-circle"></i>
+        </div>
+    </header>
 
-    <div class="container">
-        
-        <div class="hero-wrapper">
-            <div class="soldier-fixed s-left">
-                <img src="https://www.pngmart.com/files/12/Call-of-Duty-Soldier-PNG-Transparent-Image.png" width="100%">
-                <div class="muzzle"></div>
-            </div>
-
-            <div class="hero-container">
-                <div id="slides-area"></div>
-            </div>
-
-            <div class="soldier-fixed s-right">
-                <img src="https://www.pngmart.com/files/12/Battlefield-Soldier-PNG-Clipart.png" width="100%">
-            </div>
+    <div id="home-view" class="container">
+        <div class="hero-container" id="slider-box">
+            <div id="slides-area"></div>
         </div>
 
-        <div class="game-grid" id="vitrine"></div>
+        <h2 class="section-title">Destaques da Semana</h2>
+        <div class="game-grid" id="vitrine">
+            </div>
     </div>
+
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-box">
+                <h4 style="color:var(--main)">MercantGames</h4>
+                <p style="color:#888; font-size:14px;">A sua loja oficial de jogos digitais com entrega imediata.</p>
+            </div>
+            <div class="footer-box">
+                <h4>Navegação</h4>
+                <a href="#">Início</a><a href="#">Todos os Jogos</a><a href="#">Suporte</a>
+            </div>
+            <div class="footer-box">
+                <h4>Pagamento</h4>
+                <div class="pay-icons">
+                    <i class="fab fa-cc-visa"></i><i class="fab fa-cc-mastercard"></i><i class="fas fa-pix"></i>
+                </div>
+            </div>
+        </div>
+        <p style="text-align:center; color:#333; font-size:12px; border-top:1px solid #111; padding-top:20px;">© 2026 MercantGames - Todos os direitos reservados.</p>
+    </footer>
 
     <script>
         const SB_URL = "https://grogiwbccvnbyjgxvafw.supabase.co";
@@ -116,29 +93,34 @@
 
         async function init() {
             try {
+                // Config Banner
                 const resCfg = await fetch(`${SB_URL}/rest/v1/configuracoes?id=eq.1`, { headers: HEADERS });
                 const [cfg] = await resCfg.json();
-                if(cfg && cfg.banners) {
+                if(cfg && cfg.banners.length > 0) {
                     const area = document.getElementById('slides-area');
                     area.innerHTML = cfg.banners.map((url, i) => `<div class="slide ${i === 0 ? 'active' : ''}" style="background-image: url('${url}')"></div>`).join('');
                     
                     let current = 0;
                     const slides = document.querySelectorAll('.slide');
-                    setInterval(() => {
-                        slides[current].classList.remove('active');
-                        current = (current + 1) % slides.length;
-                        slides[current].classList.add('active');
-                    }, 5000);
+                    if(slides.length > 1) {
+                        setInterval(() => {
+                            slides[current].classList.remove('active');
+                            current = (current + 1) % slides.length;
+                            slides[current].classList.add('active');
+                        }, 5000);
+                    }
                 }
 
+                // Carrega Vitrine
                 const resJogos = await fetch(`${SB_URL}/rest/v1/jogos`, { headers: HEADERS });
                 const jogos = await resJogos.json();
                 document.getElementById('vitrine').innerHTML = jogos.map(j => `
                     <div class="game-card">
                         <img src="${j.url_da_imagem}">
-                        <div style="padding:15px;">
-                            <h4 style="margin:0;">${j.nome}</h4>
-                            <span class="price">R$ ${j.preco}</span>
+                        <div class="game-info">
+                            <h4>${j.nome}</h4>
+                            <span class="game-price">R$ ${j.preco}</span>
+                            <button class="btn-comprar">COMPRAR AGORA</button>
                         </div>
                     </div>
                 `).join('');
