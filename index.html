@@ -3,54 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MercantGames | Official Store</title>
+    <title>MercantGames | Loja Oficial</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --main: #003366; --bg: #0b0e13; --panel: #151921; --accent: #00d2ff; }
-        body { margin: 0; font-family: 'Poppins', sans-serif; background: var(--bg); color: white; }
+        :root { --main: #003366; --bg: #0b0e13; --panel: #151921; --accent: #00d2ff; --footer: #05070a; }
+        body { margin: 0; font-family: 'Poppins', sans-serif; background: var(--bg); color: white; display: flex; flex-direction: column; min-height: 100vh; }
 
-        /* HEADER DREX STYLE */
+        /* HEADER */
         header { background: #000; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--main); position: sticky; top: 0; z-index: 1000; }
         .logo { font-size: 22px; font-weight: 900; letter-spacing: 1px; color: #fff; text-decoration: none; }
         .search-bar { flex: 1; max-width: 500px; margin: 0 30px; position: relative; }
         .search-bar input { width: 100%; background: #1c2128; border: 1px solid #30363d; padding: 10px 15px; border-radius: 20px; color: white; outline: none; }
-        
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
 
-        /* NOVO BANNER: COMPACTO E ELEGANTE */
-        .hero-section { margin-top: 20px; position: relative; height: 320px; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid #333; }
-        .hero-slide { width: 100%; height: 100%; background-size: cover; background-position: center; display: flex; align-items: center; padding-left: 50px; }
-        .hero-content { position: relative; z-index: 2; max-width: 450px; }
-        .hero-content h2 { font-size: 2.5rem; margin: 0; text-shadow: 2px 2px 10px rgba(0,0,0,1); }
-        .hero-overlay { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(0,0,0,0.8) 20%, transparent 100%); }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; flex: 1; width: 100%; box-sizing: border-box; }
 
-        /* GRID CATEGORIAS (DA IMAGEM) */
-        .section-title { font-size: 1.2rem; margin: 40px 0 20px; display: flex; align-items: center; gap: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+        /* BANNER MAIOR E LIMPO */
+        .hero-section { margin-top: 10px; height: 450px; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid #333; background-size: cover; background-position: center; transition: 1s ease-in-out; }
+
+        /* GRID CATEGORIAS */
+        .section-title { font-size: 1.2rem; margin: 40px 0 20px; display: flex; align-items: center; gap: 10px; font-weight: 600; text-transform: uppercase; }
         .section-title::before { content: ''; width: 4px; height: 20px; background: var(--main); display: inline-block; }
         
         .cat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
-        .cat-card { height: 150px; border-radius: 10px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; background-size: cover; background-position: center; cursor: pointer; border: 1px solid #222; transition: 0.3s; }
-        .cat-card:hover { transform: translateY(-5px); border-color: var(--accent); }
-        .cat-card h3 { position: relative; z-index: 2; font-size: 1.5rem; text-shadow: 2px 2px 5px #000; }
-        .cat-card::after { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.3); }
+        .cat-card { height: 160px; border-radius: 10px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; background-size: cover; background-position: center; cursor: pointer; border: 1px solid #222; }
+        .cat-card h3 { position: relative; z-index: 2; font-size: 1.4rem; text-shadow: 2px 2px 5px #000; margin: 0; color: white; }
+        .cat-card::after { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.4); }
 
-        /* VITRINE DE JOGOS */
-        .game-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 25px; }
-        .game-card { background: var(--panel); border-radius: 12px; overflow: hidden; border: 1px solid #222; transition: 0.3s; cursor: pointer; display: flex; flex-direction: column; }
-        .game-card:hover { border-color: var(--main); box-shadow: 0 0 20px rgba(0,51,102,0.3); }
+        /* VITRINE */
+        .game-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 25px; margin-bottom: 50px; }
+        .game-card { background: var(--panel); border-radius: 12px; overflow: hidden; border: 1px solid #222; transition: 0.3s; cursor: pointer; }
+        .game-card:hover { border-color: var(--main); transform: translateY(-5px); }
         .game-card img { width: 100%; height: 300px; object-fit: cover; }
-        .game-info { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
-        .game-info h4 { margin: 0 0 10px; font-size: 15px; color: #eee; }
-        .game-price { color: #2ecc71; font-weight: 800; font-size: 1.3rem; margin-bottom: 12px; }
-        .btn-comprar { background: var(--main); color: white; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        .btn-comprar:hover { background: #004488; }
+        .game-info { padding: 15px; text-align: center; }
+        .game-price { color: #2ecc71; font-weight: 800; font-size: 1.3rem; margin: 10px 0; }
+        .btn-comprar { background: var(--main); color: white; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; }
 
-        /* PÁGINA DO PRODUTO */
+        /* RODAPÉ COMPLETO */
+        footer { background: var(--footer); border-top: 1px solid #222; padding: 60px 5% 20px; margin-top: auto; }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; margin-bottom: 40px; }
+        .footer-box h4 { color: white; margin-bottom: 20px; text-transform: uppercase; font-size: 14px; letter-spacing: 1px; }
+        .footer-box p, .footer-box a { color: #888; text-decoration: none; font-size: 14px; display: block; margin-bottom: 10px; }
+        .footer-box a:hover { color: var(--main); }
+        .social-icons { display: flex; gap: 15px; font-size: 1.5rem; }
+        .pay-icons { display: flex; flex-wrap: wrap; gap: 10px; font-size: 1.8rem; color: #444; }
+        .copyright { text-align: center; border-top: 1px solid #111; padding-top: 20px; color: #444; font-size: 12px; }
+
+        /* PÁGINA PRODUTO */
         #page-product { display: none; padding-top: 40px; }
-        .prod-layout { display: grid; grid-template-columns: 400px 1fr; gap: 40px; }
-        .buy-box { background: var(--panel); padding: 30px; border-radius: 15px; border: 1px solid #333; }
-        
-        @media (max-width: 850px) { .cat-grid, .prod-layout { grid-template-columns: 1fr; } .search-bar { display: none; } }
     </style>
 </head>
 <body>
@@ -58,68 +57,90 @@
     <header>
         <a href="#" class="logo" onclick="location.reload()">MERCANT GAMES</a>
         <div class="search-bar">
-            <input type="text" placeholder="O que você está procurando?">
-            <i class="fas fa-search" style="position:absolute; right:15px; top:12px; color:#555;"></i>
+            <input type="text" placeholder="Pesquisar jogos ou categorias...">
         </div>
-        <div style="display:flex; gap:20px; font-size:1.2rem;">
+        <div style="display:flex; gap:20px; font-size:1.2rem; color:#fff; cursor:pointer;">
             <i class="fas fa-shopping-basket"></i>
             <i class="fas fa-user-circle"></i>
         </div>
     </header>
 
     <div id="home-view" class="container">
-        <div class="hero-section" id="hero-bg" style="background-image: url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1200')">
-            <div class="hero-overlay"></div>
-            <div class="hero-content">
-                <span style="background:var(--main); padding:5px 10px; border-radius:5px; font-size:12px; font-weight:bold;">DESTAQUE</span>
-                <h2>Sua Jornada Começa Aqui.</h2>
-                <p style="color:#ccc;">Os melhores títulos com entrega digital imediata.</p>
-            </div>
-        </div>
+        <div class="hero-section" id="hero-bg" style="background-image: url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1200')"></div>
 
-        <h2 class="section-title">Categorias</h2>
+        <h2 class="section-title">Categorias Populares</h2>
         <div class="cat-grid">
             <div class="cat-card" style="background-image: url('https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400')"><h3>ESPORTES</h3></div>
             <div class="cat-card" style="background-image: url('https://images.unsplash.com/photo-1511512578047-dfb367046420?w=400')"><h3>LUTA</h3></div>
             <div class="cat-card" style="background-image: url('https://images.unsplash.com/photo-1552820728-8b83bb6b773f?w=400')"><h3>AÇÃO</h3></div>
         </div>
 
-        <h2 class="section-title">Melhores Ofertas</h2>
+        <h2 class="section-title">Destaques</h2>
         <div class="game-grid" id="vitrine"></div>
     </div>
 
     <div id="page-product" class="container">
-        <div onclick="closeProd()" style="color:var(--accent); cursor:pointer; margin-bottom:20px; font-weight:bold;"><i class="fas fa-arrow-left"></i> VOLTAR PARA A LOJA</div>
-        <div class="prod-layout">
-            <img id="p-img" style="width:100%; border-radius:15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-            <div class="buy-box">
-                <h1 id="p-title" style="margin-top:0;"></h1>
-                <div class="game-price" id="p-price" style="font-size:2.8rem;"></div>
-                <p id="p-desc" style="line-height:1.7; color:#bbb; border-top:1px solid #333; padding-top:20px;"></p>
-                <button class="btn-comprar" style="padding:18px; font-size:1.1rem; width:100%; margin-top:20px;">ADICIONAR AO CARRINHO</button>
+        </div>
+
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-box">
+                <h4 style="color:var(--main)">MercantGames</h4>
+                <p>A maior loja de jogos digitais do Brasil. Entrega imediata e suporte 24h.</p>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-discord"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+            <div class="footer-box">
+                <h4>Navegação</h4>
+                <a href="#">Início</a>
+                <a href="#">Todos os Jogos</a>
+                <a href="#">Lançamentos</a>
+                <a href="#">Promoções</a>
+            </div>
+            <div class="footer-box">
+                <h4>Suporte</h4>
+                <a href="#">Dúvidas Frequentes</a>
+                <a href="#">Como Ativar seu Jogo</a>
+                <a href="#">Termos de Garantia</a>
+                <a href="#">Contato</a>
+            </div>
+            <div class="footer-box">
+                <h4>Pagamento</h4>
+                <div class="pay-icons">
+                    <i class="fab fa-cc-visa"></i>
+                    <i class="fab fa-cc-mastercard"></i>
+                    <i class="fas fa-pix"></i>
+                    <i class="fas fa-barcode"></i>
+                </div>
+                <p style="margin-top:15px;"><i class="fas fa-shield-alt"></i> Site Seguro</p>
             </div>
         </div>
-    </div>
+        <div class="copyright">
+            © 2026 MercantGames - CNPJ 00.000.000/0000-00 - Todos os direitos reservados.
+        </div>
+    </footer>
 
     <script>
         const SB_URL = "https://grogiwbccvnbyjgxvafw.supabase.co";
         const SB_KEY = "sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14";
         const HEADERS = { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}` };
-        let JOGOS = [];
 
         async function init() {
             try {
-                // Banner Dinâmico
+                // Banner
                 const resCfg = await fetch(`${SB_URL}/rest/v1/configuracoes?id=eq.1`, { headers: HEADERS });
                 const [cfg] = await resCfg.json();
                 if(cfg && cfg.banners.length > 0) document.getElementById('hero-bg').style.backgroundImage = `url('${cfg.banners[0]}')`;
 
                 // Jogos
                 const res = await fetch(`${SB_URL}/rest/v1/jogos`, { headers: HEADERS });
-                JOGOS = await res.json();
+                const jogos = await res.json();
                 
-                document.getElementById('vitrine').innerHTML = JOGOS.map((j, i) => `
-                    <div class="game-card" onclick="openProd(${i})">
+                document.getElementById('vitrine').innerHTML = jogos.map((j) => `
+                    <div class="game-card">
                         <img src="${j.url_da_imagem}">
                         <div class="game-info">
                             <h4>${j.nome}</h4>
@@ -130,23 +151,6 @@
                 `).join('');
             } catch (e) { console.error(e); }
         }
-
-        function openProd(i) {
-            const j = JOGOS[i];
-            document.getElementById('home-view').style.display = 'none';
-            document.getElementById('page-product').style.display = 'block';
-            document.getElementById('p-title').innerText = j.nome;
-            document.getElementById('p-price').innerText = "R$ " + j.preco;
-            document.getElementById('p-desc').innerText = j.descricao || "Descrição do produto não informada.";
-            document.getElementById('p-img').src = j.url_da_imagem;
-            window.scrollTo(0,0);
-        }
-
-        function closeProd() {
-            document.getElementById('home-view').style.display = 'block';
-            document.getElementById('page-product').style.display = 'none';
-        }
-
         window.onload = init;
     </script>
 </body>
