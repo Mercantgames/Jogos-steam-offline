@@ -2,76 +2,167 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Admin MercantGames</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Admin | MercantGames</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --azul: #003366; --bg: #f6f6f7; }
-        body { font-family: sans-serif; background: var(--bg); display: flex; margin: 0; }
-        .sidebar { width: 240px; background: #ebebeb; height: 100vh; padding: 20px; border-right: 1px solid #ddd; }
-        .main { flex: 1; padding: 40px; overflow-y: auto; }
-        .card { background: white; padding: 20px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 20px; }
-        input, textarea, select { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; }
-        .btn { background: var(--azul); color: white; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; border-radius: 4px; }
+        :root { --main: #003366; --accent: #6a0dad; --bg: #f4f7f6; --dark: #1a1a1a; }
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg); display: flex; }
+
+        /* SIDEBAR */
+        .sidebar { width: 250px; height: 100vh; background: var(--dark); color: white; position: fixed; padding: 20px; }
+        .sidebar h2 { color: var(--main); font-size: 1.2rem; text-transform: uppercase; margin-bottom: 30px; }
+        .nav-link { display: block; color: #ccc; text-decoration: none; padding: 12px; border-radius: 8px; margin-bottom: 10px; transition: 0.3s; }
+        .nav-link:hover, .nav-link.active { background: var(--main); color: white; }
+
+        /* CONTEÚDO PRINCIPAL */
+        .main-content { margin-left: 250px; width: calc(100% - 250px); padding: 40px; }
+        .header-admin { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        
+        /* CARD DE FORMULÁRIO */
+        .admin-card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 40px; }
+        .admin-card h3 { margin-top: 0; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 20px; }
+
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #555; }
+        input, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+        
+        .btn-save { background: var(--main); color: white; border: none; padding: 12px 30px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; transition: 0.3s; }
+        .btn-save:hover { background: var(--accent); }
+
+        /* TABELA DE PRODUTOS */
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        th { background: #eee; padding: 15px; text-align: left; }
+        td { padding: 15px; border-bottom: 1px solid #eee; }
+        .img-table { width: 50px; height: 50px; object-fit: cover; border-radius: 4px; }
+        .btn-delete { color: #e74c3c; cursor: pointer; border: none; background: none; font-size: 1.1rem; }
+        
+        @media (max-width: 768px) {
+            .sidebar { width: 70px; padding: 10px; }
+            .sidebar h2, .nav-link span { display: none; }
+            .main-content { margin-left: 70px; width: calc(100% - 70px); padding: 20px; }
+        }
     </style>
 </head>
 <body>
+
     <div class="sidebar">
-        <h2 style="color: var(--azul)">MercantGames</h2>
-        <p>📦 Produtos</p>
+        <h2>Mercant<span>Games</span></h2>
+        <a href="#" class="nav-link active"><i class="fas fa-box"></i> <span>Produtos</span></a>
+        <a href="index.html" class="nav-link"><i class="fas fa-eye"></i> <span>Ver Loja</span></a>
     </div>
-    <div class="main">
-        <h1>Adicionar Jogo</h1>
-        <div class="card">
-            <input type="text" id="nome" placeholder="Nome do Jogo">
-            <input type="number" id="preco" placeholder="Preço (Ex: 59.90)">
-            <textarea id="desc" placeholder="Descrição"></textarea>
-            <input type="file" id="foto">
-            <button class="btn" onclick="salvar()">Salvar Produto</button>
+
+    <div class="main-content">
+        <div class="header-admin">
+            <h1>Gestão de Inventário</h1>
+            <div id="status"></div>
+        </div>
+
+        <div class="admin-card">
+            <h3><i class="fas fa-plus-circle"></i> Adicionar Novo Jogo</h3>
+            <div class="form-group">
+                <label>Nome do Jogo</label>
+                <input type="text" id="nome" placeholder="Ex: Elden Ring">
+            </div>
+            <div class="form-group">
+                <label>Preço (R$)</label>
+                <input type="number" id="preco" placeholder="Ex: 199.90">
+            </div>
+            <div class="form-group">
+                <label>Descrição</label>
+                <textarea id="descricao" rows="3" placeholder="Detalhes do jogo..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Link da Imagem (Supabase URL)</label>
+                <input type="text" id="url_imagem" placeholder="https://...">
+            </div>
+            <button class="btn-save" onclick="salvarProduto()">SALVAR PRODUTO NO BANCO</button>
+        </div>
+
+        <div class="admin-card">
+            <h3><i class="fas fa-list"></i> Jogos Cadastrados</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Capa</th>
+                        <th>Nome</th>
+                        <th>Preço</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="tabela-jogos">
+                    </tbody>
+            </table>
         </div>
     </div>
 
     <script>
         const SB_URL = "https://grogiwbccvnbyjgxvafw.supabase.co";
         const SB_KEY = "sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14";
+        const HEADERS = { 
+            'apikey': SB_KEY, 
+            'Authorization': `Bearer ${SB_KEY}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=representation'
+        };
 
-        async function salvar() {
-            const file = document.getElementById('foto').files[0];
-            if(!file) return alert("Coloque uma foto!");
+        // CARREGAR JOGOS NA TABELA
+        async function listarJogos() {
+            const res = await fetch(`${SB_URL}/rest/v1/jogos?order=id.desc`, { headers: HEADERS });
+            const jogos = await res.json();
+            const tbody = document.getElementById('tabela-jogos');
+            tbody.innerHTML = jogos.map(j => `
+                <tr>
+                    <td><img src="${j.url_da_imagem}" class="img-table"></td>
+                    <td>${j.nome}</td>
+                    <td>R$ ${j.preco}</td>
+                    <td>
+                        <button class="btn-delete" onclick="excluirJogo(${j.id})">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
 
-            // 1. Sobe a imagem
-            const fileName = Date.now() + "_" + file.name;
-            const resImg = await fetch(`${SB_URL}/storage/v1/object/capas/${fileName}`, {
-                method: 'POST',
-                headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}` },
-                body: file
-            });
-            const imgData = await resImg.json();
-            const urlFinal = `${SB_URL}/storage/v1/object/public/capas/${fileName}`;
+        // SALVAR NO SUPABASE
+        async function salvarProduto() {
+            const novoJogo = {
+                nome: document.getElementById('nome').value,
+                preco: document.getElementById('preco').value,
+                descricao: document.getElementById('descricao').value,
+                url_da_imagem: document.getElementById('url_imagem').value
+            };
 
-            // 2. Salva no Banco
             const res = await fetch(`${SB_URL}/rest/v1/jogos`, {
                 method: 'POST',
-                headers: { 
-                    'apikey': SB_KEY, 
-                    'Authorization': `Bearer ${SB_KEY}`,
-                    'Content-Type': 'application/json',
-                    'Prefer': 'return=minimal'
-                },
-                body: JSON.stringify({
-                    nome: document.getElementById('nome').value,
-                    preco: document.getElementById('preco').value,
-                    descricao: document.getElementById('desc').value,
-                    url_da_imagem: urlFinal
-                })
+                headers: HEADERS,
+                body: JSON.stringify(novoJogo)
             });
 
             if(res.ok) {
-                alert("✅ JOGO SALVO! Agora verifique a loja.");
+                alert("Jogo cadastrado com sucesso!");
+                location.reload();
             } else {
-                const erro = await res.json();
-                alert("❌ ERRO AO SALVAR: " + erro.message);
+                alert("Erro ao salvar. Verifique os campos.");
             }
         }
+
+        // EXCLUIR DO SUPABASE
+        async function excluirJogo(id) {
+            if(!confirm("Tem certeza que deseja excluir este jogo?")) return;
+            
+            const res = await fetch(`${SB_URL}/rest/v1/jogos?id=eq.${id}`, {
+                method: 'DELETE',
+                headers: HEADERS
+            });
+
+            if(res.ok) {
+                listarJogos();
+            }
+        }
+
+        window.onload = listarJogos;
     </script>
 </body>
 </html>
