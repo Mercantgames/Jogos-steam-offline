@@ -1,20 +1,122 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<title>Login Admin</title>
-<link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <title>Painel Admin - Mercantgames</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      display: flex;
+      background-color: #f4f4f4;
+    }
+    aside {
+      width: 220px;
+      background-color: #2c3e50;
+      color: white;
+      padding: 20px;
+      height: 100vh;
+    }
+    aside h2 {
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+    aside nav a {
+      display: block;
+      color: white;
+      text-decoration: none;
+      margin: 10px 0;
+    }
+    main {
+      flex: 1;
+      padding: 20px;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .product-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    .product-table th, .product-table td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: left;
+    }
+    .product-table th {
+      background-color: #ecf0f1;
+    }
+    .actions button {
+      margin-right: 5px;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+    .infinite {
+      color: green;
+      font-weight: bold;
+    }
+  </style>
 </head>
-<body class="login-body">
+<body>
+  <aside>
+    <h2>Mercantgames</h2>
+    <nav>
+      <a href="#">Vendas</a>
+      <a href="#">Estoque</a>
+      <a href="#">Categorias</a>
+      <a href="#">Descontos</a>
+      <a href="#">Marketing</a>
+    </nav>
+  </aside>
 
-<div class="login-box">
-    <h2>Admin</h2>
-    <input id="email" type="email" placeholder="Email">
-    <input id="password" type="password" placeholder="Senha">
-    <button onclick="login()">Entrar</button>
-    <p id="error"></p>
-</div>
+  <main>
+    <header>
+      <h1>Produtos</h1>
+      <button onclick="alert('Adicionar produto')">+ Adicionar Produto</button>
+    </header>
 
-<script src="js/auth.js"></script>
+    <table class="product-table">
+      <thead>
+        <tr>
+          <th>Imagem</th>
+          <th>Nome</th>
+          <th>Tags</th>
+          <th>Estoque</th>
+          <th>Preço</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><img src="https://via.placeholder.com/50" alt="Dispatch"></td>
+          <td>Dispatch deluxe Pc Steam offline</td>
+          <td>Dispatch deluxe, Steam offline</td>
+          <td class="infinite">Infinito</td>
+          <td>R$ 29,90</td>
+          <td class="actions">
+            <button onclick="alert('Compartilhar')">🔗</button>
+            <button onclick="alert('Editar')">✏️</button>
+            <button onclick="alert('Excluir')">🗑️</button>
+          </td>
+        </tr>
+        <tr>
+          <td><img src="https://via.placeholder.com/50" alt="Starrupture"></td>
+          <td>Starrupture: Steam Offline</td>
+          <td>Starrupture, Steam Offline</td>
+          <td>5</td>
+          <td>R$ 39,90</td>
+          <td class="actions">
+            <button onclick="alert('Compartilhar')">🔗</button>
+            <button onclick="alert('Editar')">✏️</button>
+            <button onclick="alert('Excluir')">🗑️</button>
+          </td>
+        </tr>
+        <!-- Adicione mais produtos conforme necessário -->
+      </tbody>
+    </table>
+  </main>
 </body>
 </html>
