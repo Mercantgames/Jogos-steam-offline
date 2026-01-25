@@ -6,85 +6,82 @@
     <title>MercantGames | Loja Oficial</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --main: #003366; --bg: #0b0e13; --panel: #151921; --accent: #00d2ff; --footer: #05070a; }
-        body { margin: 0; font-family: 'Poppins', sans-serif; background: var(--bg); color: white; display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
+        :root { 
+            --main: #003366; 
+            --hero-purple: #6a0dad; /* Roxo da armadura */
+            --hero-blue: #0047ab;   /* Azul cobalto detalhes */
+            --bg: #0b0e13; 
+            --panel: #151921; 
+        }
+        body { margin: 0; font-family: 'Poppins', sans-serif; background: var(--bg); color: white; overflow-x: hidden; }
 
-        /* HEADER */
-        header { background: #000; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--main); position: sticky; top: 0; z-index: 1000; }
-        .logo { font-size: 22px; font-weight: 900; letter-spacing: 1px; color: #fff; text-decoration: none; text-transform: uppercase; }
-        .search-bar { flex: 1; max-width: 500px; margin: 0 30px; position: relative; }
-        .search-bar input { width: 100%; background: #1c2128; border: 1px solid #30363d; padding: 10px 15px; border-radius: 20px; color: white; outline: none; }
+        /* PERSONAGEM FIXO NA ESQUERDA */
+        .char-fixed {
+            position: fixed;
+            left: -40px;
+            bottom: -10px;
+            z-index: 9999;
+            pointer-events: none;
+            transition: 0.5s;
+        }
+        .char-fixed img {
+            width: 400px; /* Tamanho épico */
+            filter: drop-shadow(0 0 20px var(--hero-purple));
+            animation: heroFloat 4s ease-in-out infinite;
+        }
 
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; flex: 1; width: 100%; box-sizing: border-box; }
+        @keyframes heroFloat {
+            0%, 100% { transform: translateY(0) scale(1); filter: drop-shadow(0 0 15px var(--hero-blue)); }
+            50% { transform: translateY(-25px) scale(1.02); filter: drop-shadow(0 0 30px var(--hero-purple)); }
+        }
 
-        /* BANNER DINÂMICO */
-        .hero-container { margin-top: 10px; height: 450px; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid #333; position: relative; background: #000; }
-        .slide { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; transition: opacity 1.5s ease-in-out; }
+        /* HEADER E LAYOUT */
+        header { background: #000; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--hero-blue); position: sticky; top: 0; z-index: 1000; }
+        .logo { font-size: 22px; font-weight: 900; color: #fff; text-decoration: none; text-transform: uppercase; letter-spacing: 2px; }
+        
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; position: relative; }
+
+        /* BANNER */
+        .hero-banner { height: 450px; border-radius: 15px; overflow: hidden; position: relative; border: 1px solid #333; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
+        .slide { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; transition: opacity 1.5s; }
         .slide.active { opacity: 1; }
 
-        /* TÍTULOS */
-        .section-title { font-size: 1.2rem; margin: 40px 0 20px; display: flex; align-items: center; gap: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
-        .section-title::before { content: ''; width: 4px; height: 20px; background: var(--main); display: inline-block; }
-
         /* VITRINE */
-        .game-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 25px; margin-bottom: 50px; }
-        .game-card { background: var(--panel); border-radius: 12px; overflow: hidden; border: 1px solid #222; transition: 0.3s; cursor: pointer; text-align: center; }
-        .game-card:hover { border-color: var(--main); transform: translateY(-5px); box-shadow: 0 0 20px rgba(0,51,102,0.3); }
-        .game-card img { width: 100%; height: 300px; object-fit: cover; }
-        .game-info { padding: 15px; }
-        .game-price { color: #2ecc71; font-weight: 800; font-size: 1.3rem; margin: 10px 0; display: block; }
-        .btn-comprar { background: var(--main); color: white; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.2s; }
-        .btn-comprar:hover { background: #004488; }
+        .section-title { font-size: 1.4rem; margin: 50px 0 20px; text-transform: uppercase; border-left: 5px solid var(--hero-purple); padding-left: 15px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 25px; }
+        .card { background: var(--panel); border-radius: 12px; overflow: hidden; border: 1px solid #222; transition: 0.3s; text-align: center; }
+        .card:hover { border-color: var(--hero-blue); transform: translateY(-8px); box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
+        .card img { width: 100%; height: 320px; object-fit: cover; }
+        .price { color: #2ecc71; font-weight: 800; font-size: 1.4rem; display: block; margin: 15px 0; }
+        .btn { background: linear-gradient(90deg, var(--hero-blue), var(--hero-purple)); color: white; border: none; padding: 12px; width: 90%; border-radius: 8px; font-weight: bold; cursor: pointer; margin-bottom: 20px; text-transform: uppercase; }
 
-        /* RODAPÉ */
-        footer { background: var(--footer); border-top: 1px solid #222; padding: 60px 5% 20px; margin-top: auto; }
-        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; margin-bottom: 40px; }
-        .footer-box h4 { color: white; margin-bottom: 20px; text-transform: uppercase; font-size: 14px; }
-        .footer-box a { color: #888; text-decoration: none; font-size: 14px; display: block; margin-bottom: 10px; }
-        .footer-box a:hover { color: var(--main); }
-        .pay-icons { display: flex; gap: 15px; font-size: 1.8rem; color: #444; margin-top: 10px; }
+        /* MOBILE ESCONDE O BONECO */
+        @media (max-width: 1100px) { .char-fixed { display: none; } }
     </style>
 </head>
 <body>
 
+    <div class="char-fixed">
+        <img src="LINK_DO_SEU_GIF_NO_SUPABASE.gif" alt="Hero Character">
+    </div>
+
     <header>
-        <a href="#" class="logo">MERCANT GAMES</a>
-        <div class="search-bar"><input type="text" placeholder="Pesquisar jogos..."></div>
-        <div style="display:flex; gap:20px; font-size:1.2rem; color:#fff; cursor:pointer;">
-            <i class="fas fa-shopping-basket"></i>
-            <i class="fas fa-user-circle"></i>
+        <a href="#" class="logo">MERCANT <span style="color: var(--hero-blue);">GAMES</span></a>
+        <div style="display:flex; gap:25px; font-size:1.3rem; color:#fff; cursor:pointer;">
+            <i class="fas fa-search"></i>
+            <i class="fas fa-shopping-cart"></i>
+            <i class="fas fa-user-shield"></i>
         </div>
     </header>
 
-    <div id="home-view" class="container">
-        <div class="hero-container" id="slider-box">
+    <div class="container">
+        <div class="hero-banner">
             <div id="slides-area"></div>
         </div>
 
-        <h2 class="section-title">Destaques da Semana</h2>
-        <div class="game-grid" id="vitrine">
-            </div>
+        <h2 class="section-title">Jogos em <span style="color: var(--hero-blue);">Destaque</span></h2>
+        <div class="grid" id="vitrine"></div>
     </div>
-
-    <footer>
-        <div class="footer-grid">
-            <div class="footer-box">
-                <h4 style="color:var(--main)">MercantGames</h4>
-                <p style="color:#888; font-size:14px;">A sua loja oficial de jogos digitais com entrega imediata.</p>
-            </div>
-            <div class="footer-box">
-                <h4>Navegação</h4>
-                <a href="#">Início</a><a href="#">Todos os Jogos</a><a href="#">Suporte</a>
-            </div>
-            <div class="footer-box">
-                <h4>Pagamento</h4>
-                <div class="pay-icons">
-                    <i class="fab fa-cc-visa"></i><i class="fab fa-cc-mastercard"></i><i class="fas fa-pix"></i>
-                </div>
-            </div>
-        </div>
-        <p style="text-align:center; color:#333; font-size:12px; border-top:1px solid #111; padding-top:20px;">© 2026 MercantGames - Todos os direitos reservados.</p>
-    </footer>
 
     <script>
         const SB_URL = "https://grogiwbccvnbyjgxvafw.supabase.co";
@@ -93,34 +90,31 @@
 
         async function init() {
             try {
-                // Config Banner
+                // Banner
                 const resCfg = await fetch(`${SB_URL}/rest/v1/configuracoes?id=eq.1`, { headers: HEADERS });
                 const [cfg] = await resCfg.json();
-                if(cfg && cfg.banners.length > 0) {
+                if(cfg && cfg.banners) {
                     const area = document.getElementById('slides-area');
                     area.innerHTML = cfg.banners.map((url, i) => `<div class="slide ${i === 0 ? 'active' : ''}" style="background-image: url('${url}')"></div>`).join('');
-                    
                     let current = 0;
                     const slides = document.querySelectorAll('.slide');
-                    if(slides.length > 1) {
-                        setInterval(() => {
-                            slides[current].classList.remove('active');
-                            current = (current + 1) % slides.length;
-                            slides[current].classList.add('active');
-                        }, 5000);
-                    }
+                    setInterval(() => {
+                        slides[current].classList.remove('active');
+                        current = (current + 1) % slides.length;
+                        slides[current].classList.add('active');
+                    }, 5000);
                 }
 
-                // Carrega Vitrine
+                // Vitrine
                 const resJogos = await fetch(`${SB_URL}/rest/v1/jogos`, { headers: HEADERS });
                 const jogos = await resJogos.json();
                 document.getElementById('vitrine').innerHTML = jogos.map(j => `
-                    <div class="game-card">
+                    <div class="card">
                         <img src="${j.url_da_imagem}">
-                        <div class="game-info">
-                            <h4>${j.nome}</h4>
-                            <span class="game-price">R$ ${j.preco}</span>
-                            <button class="btn-comprar">COMPRAR AGORA</button>
+                        <div style="padding:10px;">
+                            <h4 style="margin:10px 0 5px;">${j.nome}</h4>
+                            <span class="price">R$ ${j.preco}</span>
+                            <button class="btn">ADQUIRIR AGORA</button>
                         </div>
                     </div>
                 `).join('');
