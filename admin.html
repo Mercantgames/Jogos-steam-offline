@@ -1,86 +1,20 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <title>Painel Admin</title>
-    <link rel="stylesheet" href="css/style.css">
+<meta charset="UTF-8">
+<title>Login Admin</title>
+<link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body class="login-body">
 
-<div class="sidebar">
+<div class="login-box">
     <h2>Admin</h2>
-    <ul>
-        <li onclick="showPage('dashboard')">📊 Dashboard</li>
-        <li onclick="showPage('orders')">📦 Pedidos</li>
-        <li onclick="showPage('products')">🛍 Produtos</li>
-        <li onclick="showPage('customers')">👥 Clientes</li>
-        <li onclick="showPage('settings')">⚙ Configurações</li>
-    </ul>
+    <input id="email" type="email" placeholder="Email">
+    <input id="password" type="password" placeholder="Senha">
+    <button onclick="login()">Entrar</button>
+    <p id="error"></p>
 </div>
 
-<div class="main">
-    <div class="topbar">
-        <span>Painel Administrativo</span>
-        <span>👤 Admin</span>
-    </div>
-
-    <!-- DASHBOARD -->
-    <div id="dashboard" class="page active">
-        <h1>Dashboard</h1>
-
-        <div class="cards">
-            <div class="card">💰 Faturamento<br><strong>R$ 25.000</strong></div>
-            <div class="card">📦 Pedidos<br><strong>320</strong></div>
-            <div class="card">👥 Clientes<br><strong>120</strong></div>
-            <div class="card">🛍 Produtos<br><strong>85</strong></div>
-        </div>
-    </div>
-
-    <!-- PEDIDOS -->
-    <div id="orders" class="page">
-        <h1>Pedidos</h1>
-        <table>
-            <tr>
-                <th>ID</th>
-                <th>Cliente</th>
-                <th>Status</th>
-                <th>Total</th>
-            </tr>
-            <tr>
-                <td>#1023</td>
-                <td>João</td>
-                <td>Pago</td>
-                <td>R$ 250</td>
-            </tr>
-            <tr>
-                <td>#1024</td>
-                <td>Maria</td>
-                <td>Pendente</td>
-                <td>R$ 180</td>
-            </tr>
-        </table>
-    </div>
-
-    <!-- PRODUTOS -->
-    <div id="products" class="page">
-        <h1>Produtos</h1>
-        <button>➕ Novo Produto</button>
-    </div>
-
-    <!-- CLIENTES -->
-    <div id="customers" class="page">
-        <h1>Clientes</h1>
-        <p>Lista de clientes cadastrados.</p>
-    </div>
-
-    <!-- CONFIGURAÇÕES -->
-    <div id="settings" class="page">
-        <h1>Configurações</h1>
-        <p>Configurações do sistema.</p>
-    </div>
-
-</div>
-
-<script src="js/script.js"></script>
+<script src="js/auth.js"></script>
 </body>
 </html>
