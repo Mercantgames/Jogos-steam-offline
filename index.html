@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-pt">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { --main: #003366; --bg: #0b0e13; --panel: #151921; --accent: #00d2ff; --footer: #05070a; }
-        body { margin: 0; font-family: 'Poppins', sans-serif; background: var(--bg); color: white; display: flex; flex-direction: column; min-height: 100vh; }
+        body { margin: 0; font-family: 'Poppins', sans-serif; background: var(--bg); color: white; display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
 
         /* HEADER */
         header { background: #000; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--main); position: sticky; top: 0; z-index: 1000; }
@@ -17,18 +17,30 @@
 
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; flex: 1; width: 100%; box-sizing: border-box; }
 
-        /* BANNER VIVO (SLIDER DINÂMICO) */
-        .hero-container { margin-top: 10px; height: 450px; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid #333; position: relative; }
+        /* BANNER COM SLIDER E SOLDADOS */
+        .hero-container { margin-top: 10px; height: 450px; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid #333; position: relative; background: #000; }
         .slide { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; transition: opacity 1.5s ease-in-out; }
         .slide.active { opacity: 1; }
+
+        /* SOLDADOS ANIMADOS */
+        .warzone { position: absolute; inset: 0; pointer-events: none; z-index: 20; }
+        .soldier { position: absolute; bottom: -10px; width: 320px; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.8)); }
+        .soldier-left { left: -30px; animation: shooting 0.15s infinite alternate; }
+        .soldier-right { right: -30px; transform: scaleX(-1); animation: hit 0.2s infinite alternate; }
+        
+        /* FOGO DA ARMA */
+        .muzzle-flash { position: absolute; width: 50px; height: 50px; background: radial-gradient(circle, #fff700 10%, #ff8c00 40%, transparent 70%); border-radius: 50%; top: 38%; right: -25px; animation: blink 0.05s infinite; box-shadow: 0 0 30px #ffae00; }
+
+        @keyframes shooting { from { transform: translateX(0); } to { transform: translateX(-8px); } }
+        @keyframes hit { from { transform: scaleX(-1) translateX(0); } to { transform: scaleX(-1) translateX(4px) rotate(1deg); } }
+        @keyframes blink { 0% { opacity: 0; } 50% { opacity: 1; } 100% { opacity: 0; } }
 
         /* GRID CATEGORIAS */
         .section-title { font-size: 1.2rem; margin: 40px 0 20px; display: flex; align-items: center; gap: 10px; font-weight: 600; text-transform: uppercase; }
         .section-title::before { content: ''; width: 4px; height: 20px; background: var(--main); display: inline-block; }
-        
         .cat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
         .cat-card { height: 160px; border-radius: 10px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; background-size: cover; background-position: center; cursor: pointer; border: 1px solid #222; }
-        .cat-card h3 { position: relative; z-index: 2; font-size: 1.4rem; text-shadow: 2px 2px 5px #000; margin: 0; color: white; }
+        .cat-card h3 { position: relative; z-index: 2; font-size: 1.4rem; text-shadow: 2px 2px 5px #000; margin: 0; }
         .cat-card::after { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.4); }
 
         /* VITRINE */
@@ -40,22 +52,19 @@
         .game-price { color: #2ecc71; font-weight: 800; font-size: 1.3rem; margin: 10px 0; }
         .btn-comprar { background: var(--main); color: white; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; }
 
-        /* RODAPÉ COMPLETO */
+        /* RODAPÉ */
         footer { background: var(--footer); border-top: 1px solid #222; padding: 60px 5% 20px; margin-top: auto; }
         .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; margin-bottom: 40px; }
-        .footer-box h4 { color: white; margin-bottom: 20px; text-transform: uppercase; font-size: 14px; letter-spacing: 1px; }
-        .footer-box p, .footer-box a { color: #888; text-decoration: none; font-size: 14px; display: block; margin-bottom: 10px; }
-        .footer-box a:hover { color: var(--main); }
-        .social-icons { display: flex; gap: 15px; font-size: 1.5rem; }
-        .pay-icons { display: flex; flex-wrap: wrap; gap: 10px; font-size: 1.8rem; color: #444; }
-        .copyright { text-align: center; border-top: 1px solid #111; padding-top: 20px; color: #444; font-size: 12px; }
+        .footer-box h4 { color: white; margin-bottom: 20px; text-transform: uppercase; font-size: 14px; }
+        .footer-box a { color: #888; text-decoration: none; font-size: 14px; display: block; margin-bottom: 10px; }
+        .pay-icons { display: flex; gap: 15px; font-size: 1.8rem; color: #444; margin-top: 10px; }
     </style>
 </head>
 <body>
 
     <header>
-        <a href="#" class="logo" onclick="location.reload()">MERCANT GAMES</a>
-        <div class="search-bar"><input type="text" placeholder="Pesquisar jogos..."></div>
+        <a href="#" class="logo">MERCANT GAMES</a>
+        <div class="search-bar"><input type="text" placeholder="Procurar jogos..."></div>
         <div style="display:flex; gap:20px; font-size:1.2rem; color:#fff; cursor:pointer;">
             <i class="fas fa-shopping-basket"></i>
             <i class="fas fa-user-circle"></i>
@@ -63,8 +72,19 @@
     </header>
 
     <div id="home-view" class="container">
-        <div class="hero-container" id="slider">
+        <div class="hero-container" id="slider-box">
+            <div id="slides-area"></div>
+            
+            <div class="warzone">
+                <div class="soldier soldier-left">
+                    <img src="https://www.pngmart.com/files/12/Call-of-Duty-Soldier-PNG-Transparent-Image.png" width="100%">
+                    <div class="muzzle-flash"></div>
+                </div>
+                <div class="soldier soldier-right">
+                    <img src="https://www.pngmart.com/files/12/Battlefield-Soldier-PNG-Clipart.png" width="100%">
+                </div>
             </div>
+        </div>
 
         <h2 class="section-title">Categorias</h2>
         <div class="cat-grid">
@@ -79,14 +99,22 @@
 
     <footer>
         <div class="footer-grid">
-            <div class="footer-box"><h4 style="color:var(--main)">MercantGames</h4><p>A tua loja de jogos digitais. Entrega imediata e suporte 24h.</p>
-                <div class="social-icons"><a href="#"><i class="fab fa-instagram"></i></a><a href="#"><i class="fab fa-discord"></i></a><a href="#"><i class="fab fa-whatsapp"></i></a></div>
+            <div class="footer-box">
+                <h4 style="color:var(--main)">MercantGames</h4>
+                <p style="color:#888; font-size:14px;">Sua dose diária de adrenalina digital.</p>
             </div>
-            <div class="footer-box"><h4>Navegação</h4><a href="#">Início</a><a href="#">Todos os Jogos</a><a href="#">Promoções</a></div>
-            <div class="footer-box"><h4>Suporte</h4><a href="#">Dúvidas</a><a href="#">Garantia</a><a href="#">Contato</a></div>
-            <div class="footer-box"><h4>Pagamento</h4><div class="pay-icons"><i class="fab fa-cc-visa"></i><i class="fab fa-cc-mastercard"></i><i class="fas fa-pix"></i><i class="fas fa-barcode"></i></div><p style="margin-top:15px;"><i class="fas fa-shield-alt"></i> Site Seguro</p></div>
+            <div class="footer-box">
+                <h4>Navegação</h4>
+                <a href="#">Início</a><a href="#">Loja</a><a href="#">Suporte</a>
+            </div>
+            <div class="footer-box">
+                <h4>Pagamento</h4>
+                <div class="pay-icons">
+                    <i class="fab fa-cc-visa"></i><i class="fab fa-cc-mastercard"></i><i class="fas fa-pix"></i>
+                </div>
+            </div>
         </div>
-        <div class="copyright">© 2026 MercantGames - Todos os direitos reservados.</div>
+        <p style="text-align:center; color:#333; font-size:12px; border-top:1px solid #111; padding-top:20px;">© 2026 MercantGames - Todos os direitos reservados.</p>
     </footer>
 
     <script>
@@ -96,28 +124,23 @@
 
         async function init() {
             try {
-                // 1. CARREGAR E INICIAR SLIDER (BANNER)
+                // Config Banner
                 const resCfg = await fetch(`${SB_URL}/rest/v1/configuracoes?id=eq.1`, { headers: HEADERS });
                 const [cfg] = await resCfg.json();
-                
-                if(cfg && cfg.banners && cfg.banners.length > 0) {
-                    const slider = document.getElementById('slider');
-                    slider.innerHTML = cfg.banners.map((url, i) => `
-                        <div class="slide ${i === 0 ? 'active' : ''}" style="background-image: url('${url}')"></div>
-                    `).join('');
+                if(cfg && cfg.banners.length > 0) {
+                    const area = document.getElementById('slides-area');
+                    area.innerHTML = cfg.banners.map((url, i) => `<div class="slide ${i === 0 ? 'active' : ''}" style="background-image: url('${url}')"></div>`).join('');
                     
-                    if(cfg.banners.length > 1) {
-                        let currentSlide = 0;
-                        const slides = document.querySelectorAll('.slide');
-                        setInterval(() => {
-                            slides[currentSlide].classList.remove('active');
-                            currentSlide = (currentSlide + 1) % slides.length;
-                            slides[currentSlide].classList.add('active');
-                        }, 5000); // Muda a cada 5 segundos
-                    }
+                    let current = 0;
+                    const slides = document.querySelectorAll('.slide');
+                    setInterval(() => {
+                        slides[current].classList.remove('active');
+                        current = (current + 1) % slides.length;
+                        slides[current].classList.add('active');
+                    }, 5000);
                 }
 
-                // 2. CARREGAR JOGOS NA VITRINE
+                // Carrega Vitrine
                 const resJogos = await fetch(`${SB_URL}/rest/v1/jogos`, { headers: HEADERS });
                 const jogos = await resJogos.json();
                 document.getElementById('vitrine').innerHTML = jogos.map(j => `
@@ -126,11 +149,11 @@
                         <div class="game-info">
                             <h4>${j.nome}</h4>
                             <div class="game-price">R$ ${j.preco}</div>
-                            <button class="btn-comprar">VER DETALHES</button>
+                            <button class="btn-comprar">COMPRAR</button>
                         </div>
                     </div>
                 `).join('');
-            } catch (e) { console.error("Erro:", e); }
+            } catch (e) { console.error(e); }
         }
         window.onload = init;
     </script>
