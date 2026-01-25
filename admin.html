@@ -2,176 +2,185 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Admin | MercantGames</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MercantGames | Painel Administrativo</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* BASE DO DESIGN NIMBUS */
+        /* CORES DO JOGO E DA NUVEMSHOP */
         :root {
-            --nimbus-spacing-1: 4px;
-            --nimbus-spacing-2: 8px;
-            --nimbus-spacing-6: 24px;
-            --nimbus-colors-primary-surface: #e5f0ff;
-            --nimbus-colors-primary-surfaceHighlight: #cce0ff;
-            --nimbus-colors-neutral-surfaceDisabled: #f2f2f2;
-            --nimbus-colors-primary-interactive: #0066ff;
-            --nimbus-colors-neutral-textHigh: #1a1f36;
+            --nimbus-blue: #0066ff;
+            --nimbus-bg: #f0f2f5;
+            --sidebar-width: 260px;
+            --text-dark: #1a1f36;
+            --text-gray: #4f566b;
         }
 
-        body { margin: 0; font-family: 'Inter', sans-serif; background: #f0f2f5; display: flex; }
+        body { margin: 0; font-family: 'Inter', sans-serif; background: var(--nimbus-bg); display: flex; color: var(--text-dark); }
 
-        /* SIDEBAR BASE */
-        .sidebar { width: 260px; background: #fff; height: 100vh; border-right: 1px solid #d8dee4; position: fixed; }
-        .sidebar-logo { padding: 24px; font-weight: 800; color: #0066ff; font-size: 1.4rem; border-bottom: 1px solid #f0f2f5; }
+        /* SIDEBAR (Baseada no teu componente React) */
+        .sidebar { width: var(--sidebar-width); background: white; height: 100vh; position: fixed; border-right: 1px solid #d8dee4; z-index: 100; }
+        .sidebar-logo { padding: 30px 24px; font-weight: 800; color: var(--nimbus-blue); font-size: 1.5rem; letter-spacing: -1px; }
+        .nav-group { padding: 10px 0; }
+        .nav-item { 
+            padding: 12px 24px; display: flex; align-items: center; gap: 12px; 
+            color: var(--text-gray); cursor: pointer; transition: 0.2s; font-size: 0.95rem;
+        }
+        .nav-item:hover { background: #f4f7ff; color: var(--nimbus-blue); }
+        .nav-item.active { background: #e5f0ff; color: var(--nimbus-blue); font-weight: 600; border-left: 4px solid var(--nimbus-blue); }
 
-        /* O CÓDIGO QUE VOCÊ ENVIOU (ADAPTADO) */
-        .nimbus-menu-container {
-            padding-left: var(--nimbus-spacing-6);
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            box-sizing: border-box;
-            margin-top: 20px;
+        /* HEADER */
+        .header { 
+            position: fixed; top: 0; left: var(--sidebar-width); right: 0; height: 64px; 
+            background: white; border-bottom: 1px solid #d8dee4; display: flex; 
+            align-items: center; padding: 0 40px; z-index: 90; 
         }
 
-        .nimbus-link {
-            padding: 8px 16px;
-            align-items: center;
-            text-decoration: none;
-            background-color: transparent;
-            border-radius: 4px;
-            cursor: pointer;
-            display: flex;
-            width: 90%;
-            transition: all 0.2s;
-            max-height: 34px;
-            box-sizing: border-box;
-        }
+        /* CONTEÚDO PRINCIPAL */
+        .main-content { margin-left: var(--sidebar-width); margin-top: 64px; padding: 40px; width: 100%; box-sizing: border-box; }
+        
+        /* CARDS E ESTILOS NIMBUS */
+        .nimbus-card { background: white; border: 1px solid #d8dee4; border-radius: 8px; padding: 24px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-label { font-size: 0.85rem; color: var(--text-gray); margin-bottom: 8px; }
+        .stat-value { font-size: 1.6rem; font-weight: 700; }
 
-        .nimbus-link:hover { background-color: var(--nimbus-colors-primary-surface); }
-        .nimbus-link.active { background-color: var(--nimbus-colors-primary-surface); }
+        /* TABELAS */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { text-align: left; padding: 12px; color: #a5adbb; font-size: 0.75rem; text-transform: uppercase; border-bottom: 1px solid #f0f2f5; }
+        td { padding: 15px 12px; border-bottom: 1px solid #f0f2f5; font-size: 0.9rem; }
+        .game-thumb { width: 40px; height: 40px; border-radius: 4px; object-fit: cover; }
 
-        .nimbus-text {
-            font-size: 14px;
-            color: var(--nimbus-colors-neutral-textHigh);
-            margin: 0;
-            font-weight: 400;
-        }
-
-        .nimbus-link.active .nimbus-text { color: var(--nimbus-colors-primary-interactive); font-weight: 600; }
-
-        .nimbus-tag-beta {
-            background: #e5f0ff;
-            color: #0066ff;
-            font-size: 10px;
-            padding: 2px 6px;
-            border-radius: 10px;
-            margin-left: 8px;
-            font-weight: 700;
-        }
-
-        /* ÁREA DE CONTEÚDO */
-        .main-content { margin-left: 260px; padding: 40px; width: 100%; }
-        .nimbus-card { background: #fff; border: 1px solid #d8dee4; border-radius: 8px; padding: 24px; margin-bottom: 20px; }
-        .stat-value { font-size: 1.5rem; font-weight: 700; color: #1a1f36; }
+        /* UTILITÁRIOS */
+        .hidden { display: none; }
+        .btn-primary { background: var(--nimbus-blue); color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <aside class="sidebar">
         <div class="sidebar-logo">nuvemshop</div>
-        
-        <div class="nimbus-menu-container">
-            <a class="nimbus-link active" onclick="tab('dash')">
-                <p class="nimbus-text">Início</p>
-            </a>
-            <a class="nimbus-link" onclick="tab('lista')">
-                <p class="nimbus-text">Lista de produtos</p>
-            </a>
-            <a class="nimbus-link">
-                <p class="nimbus-text">Inventário</p>
-            </a>
-            <a class="nimbus-link">
-                <p class="nimbus-text">Categorias</p>
-            </a>
-            <a class="nimbus-link">
-                <p class="nimbus-text">Tabelas de preços</p>
-                <span class="nimbus-tag-beta">Beta</span>
-            </a>
-        </div>
+        <nav class="nav-group">
+            <div class="nav-item active" onclick="switchSection('dashboard', this)"><i class="fas fa-home"></i> Dashboard</div>
+            <div class="nav-item" onclick="switchSection('pedidos', this)"><i class="fas fa-shopping-cart"></i> Pedidos</div>
+            <div class="nav-item" onclick="switchSection('produtos', this)"><i class="fas fa-box"></i> Produtos</div>
+            <div class="nav-item" onclick="switchSection('clientes', this)"><i class="fas fa-users"></i> Clientes</div>
+            <div class="nav-item" onclick="switchSection('relatorios', this)"><i class="fas fa-chart-bar"></i> Relatórios</div>
+            <div class="nav-item" onclick="switchSection('config', this)"><i class="fas fa-cog"></i> Configurações</div>
+        </nav>
     </aside>
 
+    <header class="header">
+        <div style="font-weight: 600; color: var(--text-gray);">MercantGames Admin</div>
+    </header>
+
     <main class="main-content">
-        <div id="dash" class="section">
-            <h1 style="font-size: 1.5rem; margin-bottom: 24px;">Visão geral</h1>
-            
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+        
+        <section id="sec-dashboard">
+            <h1 style="margin-bottom: 30px;">Visão Geral</h1>
+            <div class="stats-grid">
                 <div class="nimbus-card">
-                    <p style="font-size: 0.8rem; color: #666;">Vendas</p>
-                    <div class="stat-value" id="val-vendas">0</div>
+                    <div class="stat-label">Total de Produtos</div>
+                    <div class="stat-value" id="count-produtos">0</div>
                 </div>
                 <div class="nimbus-card">
-                    <p style="font-size: 0.8rem; color: #666;">Receita</p>
-                    <div class="stat-value" id="val-receita">R$ 0,00</div>
+                    <div class="stat-label">Valor do Inventário</div>
+                    <div class="stat-value" id="total-receita">R$ 0,00</div>
                 </div>
                 <div class="nimbus-card">
-                    <p style="font-size: 0.8rem; color: #666;">Ticket Médio</p>
-                    <div class="stat-value" id="val-ticket">R$ 0,00</div>
+                    <div class="stat-label">Novos Clientes</div>
+                    <div class="stat-value">124</div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <div id="lista" class="section" style="display:none;">
-            <h1>Lista de Produtos</h1>
+        <section id="sec-produtos" class="hidden">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                <h1>Produtos</h1>
+                <button class="btn-primary" onclick="alert('Funcionalidade de Adicionar Jogo aqui')">+ Novo Produto</button>
+            </div>
             <div class="nimbus-card">
-                <table style="width: 100%; border-collapse: collapse;">
+                <table>
                     <thead>
-                        <tr style="text-align: left; border-bottom: 1px solid #eee;">
-                            <th style="padding: 10px;">Produto</th>
-                            <th>Preço</th>
-                        </tr>
+                        <tr><th>Imagem</th><th>Nome</th><th>Preço</th><th>Ações</th></tr>
                     </thead>
-                    <tbody id="lista-corpo"></tbody>
+                    <tbody id="lista-jogos">
+                        </tbody>
                 </table>
             </div>
-        </div>
+        </section>
+
+        <section id="sec-default" class="hidden">
+            <div class="nimbus-card" style="text-align: center; padding: 100px;">
+                <h2 id="default-title">Seção</h2>
+                <p style="color: var(--text-gray);">Esta seção está em desenvolvimento (Igual ao teu código React).</p>
+            </div>
+        </section>
+
     </main>
 
     <script>
+        // CONFIGURAÇÕES DO TEU SUPABASE
         const SB_URL = "https://grogiwbccvnbyjgxvafw.supabase.co";
         const SB_KEY = "sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14";
         const HEADERS = { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`, 'Content-Type': 'application/json' };
 
-        function tab(id) {
-            document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
-            document.getElementById(id).style.display = 'block';
-            
-            // Ativa o link no menu
-            document.querySelectorAll('.nimbus-link').forEach(l => l.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-            
-            carregarDados();
+        // LÓGICA DE TROCA DE ABAS (Traduzido do teu switch/case)
+        function switchSection(sectionId, element) {
+            // Atualiza Menu
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            element.classList.add('active');
+
+            // Esconde todas
+            document.getElementById('sec-dashboard').classList.add('hidden');
+            document.getElementById('sec-produtos').classList.add('hidden');
+            document.getElementById('sec-default').classList.add('hidden');
+
+            // Mostra a correta
+            if(sectionId === 'dashboard') {
+                document.getElementById('sec-dashboard').classList.remove('hidden');
+            } else if(sectionId === 'produtos') {
+                document.getElementById('sec-produtos').classList.remove('hidden');
+                carregarProdutos();
+            } else {
+                document.getElementById('sec-default').classList.remove('hidden');
+                document.getElementById('default-title').innerText = sectionId.toUpperCase();
+            }
         }
 
-        async function carregarDados() {
-            const res = await fetch(`${SB_URL}/rest/v1/jogos`, { headers: HEADERS });
-            const jogos = await res.json();
+        // CARREGAR DADOS DO SUPABASE
+        async function carregarProdutos() {
+            try {
+                const res = await fetch(`${SB_URL}/rest/v1/jogos?select=*`, { headers: HEADERS });
+                const jogos = await res.json();
 
-            // Stats
-            document.getElementById('val-vendas').innerText = jogos.length;
-            const total = jogos.reduce((acc, j) => acc + parseFloat(j.preco || 0), 0);
-            document.getElementById('val-receita').innerText = `R$ ${total.toLocaleString('pt-br', {minimumFractionDigits: 2})}`;
-            document.getElementById('val-ticket').innerText = `R$ ${(total/jogos.length || 0).toLocaleString('pt-br', {minimumFractionDigits: 2})}`;
+                // Atualiza Tabela
+                const html = jogos.map(j => `
+                    <tr>
+                        <td><img src="${j.url_da_imagem}" class="game-thumb"></td>
+                        <td><b>${j.nome}</b></td>
+                        <td>R$ ${j.preco}</td>
+                        <td><button onclick="deletar(${j.id})" style="color:red; background:none; border:none; cursor:pointer;"><i class="fas fa-trash"></i></button></td>
+                    </tr>
+                `).join('');
+                document.getElementById('lista-jogos').innerHTML = html;
 
-            // Tabela
-            document.getElementById('lista-corpo').innerHTML = jogos.map(j => `
-                <tr style="border-bottom: 1px solid #f9f9f9;">
-                    <td style="padding: 12px;">${j.nome}</td>
-                    <td>R$ ${j.preco}</td>
-                </tr>
-            `).join('');
+                // Atualiza Dashboard
+                document.getElementById('count-produtos').innerText = jogos.length;
+                const total = jogos.reduce((acc, j) => acc + parseFloat(j.preco || 0), 0);
+                document.getElementById('total-receita').innerText = `R$ ${total.toLocaleString('pt-br', {minimumFractionDigits: 2})}`;
+
+            } catch (err) { console.error("Erro Supabase:", err); }
         }
 
-        window.onload = carregarDados;
+        async function deletar(id) {
+            if(confirm("Eliminar este jogo?")) {
+                await fetch(`${SB_URL}/rest/v1/jogos?id=eq.${id}`, { method: 'DELETE', headers: HEADERS });
+                carregarProdutos();
+            }
+        }
+
+        // Inicia carregando os dados do dashboard
+        window.onload = carregarProdutos;
     </script>
 </body>
 </html>
