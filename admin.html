@@ -1,122 +1,296 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <title>Painel Admin - Mercantgames</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      display: flex;
-      background-color: #f4f4f4;
-    }
-    aside {
-      width: 220px;
-      background-color: #2c3e50;
-      color: white;
-      padding: 20px;
-      height: 100vh;
-    }
-    aside h2 {
-      font-size: 18px;
-      margin-bottom: 20px;
-    }
-    aside nav a {
-      display: block;
-      color: white;
-      text-decoration: none;
-      margin: 10px 0;
-    }
-    main {
-      flex: 1;
-      padding: 20px;
-    }
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .product-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-    .product-table th, .product-table td {
-      border: 1px solid #ccc;
-      padding: 10px;
-      text-align: left;
-    }
-    .product-table th {
-      background-color: #ecf0f1;
-    }
-    .actions button {
-      margin-right: 5px;
-      padding: 5px 10px;
-      cursor: pointer;
-    }
-    .infinite {
-      color: green;
-      font-weight: bold;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin MercantGames | Gestão Completa</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --blue: #0066ff; --bg: #f5f7f9; --border: #dce1e5; --text: #333; --sub: #666; --white: #ffffff; }
+        body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); display: flex; color: var(--text); }
+
+        /* SIDEBAR */
+        .sidebar { width: 250px; background: var(--white); height: 100vh; position: fixed; border-right: 1px solid var(--border); overflow-y: auto; }
+        .sidebar-logo { padding: 25px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #f0f0f0; }
+        .sidebar-logo img { width: 30px; }
+        .nav-group { padding: 20px 0; }
+        .nav-item { padding: 12px 25px; display: flex; align-items: center; gap: 12px; color: var(--sub); text-decoration: none; font-size: 0.9rem; cursor: pointer; transition: 0.2s; }
+        .nav-item:hover, .nav-item.active { background: #f0f7ff; color: var(--blue); font-weight: 600; border-left: 4px solid var(--blue); }
+
+        /* MAIN CONTENT */
+        .main { margin-left: 250px; width: calc(100% - 250px); padding: 30px 50px; box-sizing: border-box; }
+        .section { display: none; animation: fadeIn 0.3s ease; }
+        .section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ESTATÍSTICAS (IGUAL À FOTO) */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: var(--white); padding: 24px; border-radius: 8px; border: 1px solid var(--border); display: flex; align-items: center; gap: 20px; }
+        .stat-icon-circle { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+        .stat-data { flex: 1; }
+        .stat-label { font-size: 0.85rem; color: var(--sub); display: block; margin-bottom: 4px; }
+        .stat-row { display: flex; align-items: center; justify-content: space-between; }
+        .stat-row h2 { margin: 0; font-size: 1.5rem; font-weight: 700; }
+        .stat-badge { font-size: 0.75rem; background: #e6ffed; color: #2ecc71; padding: 2px 8px; border-radius: 4px; font-weight: 600; }
+
+        /* CARDS E TABELAS */
+        .card { background: var(--white); border-radius: 8px; border: 1px solid var(--border); padding: 25px; margin-bottom: 25px; }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #f0f0f0; padding-bottom: 15px; }
+        .card-header h3 { margin: 0; font-size: 1.1rem; }
+
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 15px; color: #999; font-size: 0.75rem; text-transform: uppercase; border-bottom: 1px solid #eee; }
+        td { padding: 15px; border-bottom: 1px solid #eee; font-size: 0.9rem; vertical-align: middle; }
+        
+        .prod-info { display: flex; align-items: center; gap: 15px; }
+        .prod-info img { width: 45px; height: 45px; border-radius: 4px; object-fit: cover; }
+        .prod-title { font-weight: 600; color: var(--blue); cursor: pointer; }
+        .tag-pill { background: #f0f0f0; border-radius: 20px; padding: 2px 10px; font-size: 0.7rem; color: #777; border: 1px solid #ddd; margin-right: 5px; }
+
+        /* FORMULÁRIO NUVEMSHOP */
+        .grid-2 { display: grid; grid-template-columns: 2fr 1fr; gap: 25px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; }
+        input, textarea, select { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.9rem; outline: none; box-sizing: border-box; }
+        input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(0,102,255,0.1); }
+        
+        /* BOTÕES */
+        .btn-save { background: var(--blue); color: #fff; border: none; padding: 12px 25px; border-radius: 6px; font-weight: 600; cursor: pointer; }
+        .btn-ghost { background: transparent; border: 1px solid var(--border); padding: 12px 20px; border-radius: 6px; cursor: pointer; }
+        .actions-cell i { color: #ccc; margin-left: 10px; cursor: pointer; transition: 0.2s; }
+        .actions-cell i:hover { color: var(--blue); }
+    </style>
 </head>
 <body>
-  <aside>
-    <h2>Mercantgames</h2>
-    <nav>
-      <a href="#">Vendas</a>
-      <a href="#">Estoque</a>
-      <a href="#">Categorias</a>
-      <a href="#">Descontos</a>
-      <a href="#">Marketing</a>
-    </nav>
-  </aside>
 
-  <main>
-    <header>
-      <h1>Produtos</h1>
-      <button onclick="alert('Adicionar produto')">+ Adicionar Produto</button>
-    </header>
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <i class="fas fa-cloud" style="color:var(--blue); font-size: 1.5rem;"></i>
+            <span style="font-weight: 800; font-size: 1.2rem;">nuvemshop</span>
+        </div>
+        <div class="nav-group">
+            <div class="nav-item active" onclick="tab('dash')"><i class="fas fa-home"></i> Início</div>
+            <div class="nav-item" onclick="tab('estats')"><i class="fas fa-chart-bar"></i> Estatísticas</div>
+            <div class="nav-item" onclick="tab('lista')"><i class="fas fa-box"></i> Produtos</div>
+            <div class="nav-item" onclick="tab('banners')"><i class="fas fa-image"></i> Banners</div>
+            <div class="nav-item"><i class="fas fa-shopping-cart"></i> Vendas <span style="background:var(--blue); color:#fff; padding:2px 6px; border-radius:10px; font-size:0.7rem; margin-left:auto">530</span></div>
+        </div>
+    </aside>
 
-    <table class="product-table">
-      <thead>
-        <tr>
-          <th>Imagem</th>
-          <th>Nome</th>
-          <th>Tags</th>
-          <th>Estoque</th>
-          <th>Preço</th>
-          <th>Ações</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><img src="https://via.placeholder.com/50" alt="Dispatch"></td>
-          <td>Dispatch deluxe Pc Steam offline</td>
-          <td>Dispatch deluxe, Steam offline</td>
-          <td class="infinite">Infinito</td>
-          <td>R$ 29,90</td>
-          <td class="actions">
-            <button onclick="alert('Compartilhar')">🔗</button>
-            <button onclick="alert('Editar')">✏️</button>
-            <button onclick="alert('Excluir')">🗑️</button>
-          </td>
-        </tr>
-        <tr>
-          <td><img src="https://via.placeholder.com/50" alt="Starrupture"></td>
-          <td>Starrupture: Steam Offline</td>
-          <td>Starrupture, Steam Offline</td>
-          <td>5</td>
-          <td>R$ 39,90</td>
-          <td class="actions">
-            <button onclick="alert('Compartilhar')">🔗</button>
-            <button onclick="alert('Editar')">✏️</button>
-            <button onclick="alert('Excluir')">🗑️</button>
-          </td>
-        </tr>
-        <!-- Adicione mais produtos conforme necessário -->
-      </tbody>
-    </table>
-  </main>
+    <main class="main">
+        
+        <div id="dash" class="section active">
+            <div class="header-flex" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
+                <h1>Início</h1>
+                <button class="btn-save" onclick="tab('novo')">+ Adicionar produto</button>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon-circle" style="background:#eef5ff; color:#0066ff"><i class="fas fa-shopping-cart"></i></div>
+                    <div class="stat-data">
+                        <span class="stat-label">Vendas nos últimos 30 dias</span>
+                        <div class="stat-row"><h2>530</h2><span class="stat-badge">+12%</span></div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon-circle" style="background:#ebfbee; color:#2ecc71"><i class="fas fa-dollar-sign"></i></div>
+                    <div class="stat-data">
+                        <span class="stat-label">Faturamento bruto</span>
+                        <div class="stat-row"><h2 id="total-fat">R$ 0,00</h2><span class="stat-badge">Mês</span></div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon-circle" style="background:#f4efff; color:#6a0dad"><i class="fas fa-eye"></i></div>
+                    <div class="stat-data">
+                        <span class="stat-label">Visitas na loja</span>
+                        <div class="stat-row"><h2>1.240</h2><span class="stat-badge" style="background:#eee; color:#888">Agora</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header"><h3>Produtos Recentes</h3></div>
+                <p style="color:var(--sub)">Gerencie seus lançamentos e estoque infinito aqui.</p>
+            </div>
+        </div>
+
+        <div id="lista" class="section">
+            <div class="header-flex" style="display:flex; justify-content:space-between; margin-bottom:20px">
+                <h1>Produtos</h1>
+                <div style="display:flex; gap:10px">
+                    <button class="btn-ghost">Exportar</button>
+                    <button class="btn-save" onclick="tab('novo')">+ Adicionar produto</button>
+                </div>
+            </div>
+            
+            <div class="card" style="padding:0">
+                <div style="padding:15px; border-bottom:1px solid #eee">
+                    <input type="text" placeholder="Buscar produtos por nome, SKU ou tags" style="width:100%">
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th width="400">Produto</th>
+                            <th>Estoque</th>
+                            <th>Preço</th>
+                            <th>Promocional</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lista-corpo"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="novo" class="section">
+            <div class="header-flex" style="display:flex; justify-content:space-between; margin-bottom:20px">
+                <h1>Adicionar Produto</h1>
+                <button class="btn-save" onclick="salvarProduto()">Salvar alterações</button>
+            </div>
+
+            <div class="grid-2">
+                <div class="col-left">
+                    <div class="card">
+                        <div class="card-header"><h3>Fotos e vídeo</h3></div>
+                        <div style="border: 2px dashed var(--blue); border-radius:8px; padding:30px; text-align:center; color:var(--blue); cursor:pointer">
+                            <i class="fas fa-plus-circle" style="font-size:1.5rem"></i><br>Arraste e solte fotos aqui
+                        </div>
+                        <div class="form-group" style="margin-top:15px">
+                            <label>URL da Imagem Principal</label>
+                            <input type="text" id="p-img" placeholder="https://supabase-url.com/image.png">
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header"><h3>Informações básicas</h3></div>
+                        <div class="form-group">
+                            <label>Nome do produto</label>
+                            <input type="text" id="p-nome" placeholder="Ex: Dispatch Deluxe Pc Steam Offline">
+                        </div>
+                        <div class="form-group">
+                            <label>Descrição</label>
+                            <textarea id="p-desc" rows="6" placeholder="Fale sobre o jogo..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header"><h3>Preços</h3></div>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px">
+                            <div class="form-group"><label>Preço de venda</label><input type="text" id="p-preco" placeholder="R$ 0.00"></div>
+                            <div class="form-group"><label>Preço promocional</label><input type="text" placeholder="R$ 0.00"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-right">
+                    <div class="card">
+                        <div class="card-header"><h3>Categorias</h3></div>
+                        <select id="p-cat">
+                            <option value="Ação">Ação</option>
+                            <option value="Esportes">Esportes</option>
+                            <option value="Luta">Luta</option>
+                            <option value="RPG">RPG</option>
+                        </select>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><h3>Marca</h3></div>
+                        <input type="text" id="p-marca" placeholder="Ex: Capcom">
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><h3>SEO</h3></div>
+                        <div class="form-group"><label>Título SEO</label><input type="text"></div>
+                        <div class="form-group"><label>Descrição SEO</label><textarea rows="3"></textarea></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="banners" class="section">
+            <h1>Banners da Loja</h1>
+            <div class="card">
+                <label>Links dos Banners (separados por vírgula)</label>
+                <textarea id="b-links" rows="6" style="margin-top:10px"></textarea>
+                <button class="btn-save" style="margin-top:15px" onclick="salvarBanners()">Atualizar Banners</button>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        const SB_URL = "https://grogiwbccvnbyjgxvafw.supabase.co";
+        const SB_KEY = "sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14";
+        const HEADERS = { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`, 'Content-Type': 'application/json' };
+
+        function tab(id) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            event.currentTarget.classList.add('active');
+            if(id === 'lista' || id === 'dash') carregarDados();
+        }
+
+        async function carregarDados() {
+            const res = await fetch(`${SB_URL}/rest/v1/jogos?order=id.desc`, { headers: HEADERS });
+            const jogos = await res.json();
+            
+            // Render Lista (Tabela idêntica à foto)
+            document.getElementById('lista-corpo').innerHTML = jogos.map(j => `
+                <tr>
+                    <td>
+                        <div class="prod-info">
+                            <img src="${j.url_da_imagem}">
+                            <div>
+                                <div class="prod-title">${j.nome}</div>
+                                <span class="tag-pill">${j.categoria}</span><span class="tag-pill">Steam</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td><span style="font-size:1.1rem">∞</span> Infinito</td>
+                    <td>R$ ${j.preco}</td>
+                    <td>R$ --</td>
+                    <td class="actions-cell">
+                        <i class="fas fa-share-alt"></i>
+                        <i class="fas fa-copy"></i>
+                        <i class="fas fa-trash" onclick="deletar(${j.id})" style="color:#ff4d4d"></i>
+                    </td>
+                </tr>
+            `).join('');
+
+            // Faturamento Simulado
+            let fat = jogos.reduce((acc, j) => acc + parseFloat(j.preco || 0), 0);
+            document.getElementById('total-fat').innerText = `R$ ${fat.toLocaleString('pt-br', {minimumFractionDigits:2})}`;
+        }
+
+        async function salvarProduto() {
+            const body = { 
+                nome: document.getElementById('p-nome').value, 
+                preco: document.getElementById('p-preco').value, 
+                descricao: document.getElementById('p-desc').value, 
+                url_da_imagem: document.getElementById('p-img').value, 
+                categoria: document.getElementById('p-cat').value,
+                marca: document.getElementById('p-marca').value
+            };
+            await fetch(`${SB_URL}/rest/v1/jogos`, { method: 'POST', headers: HEADERS, body: JSON.stringify(body) });
+            alert("Produto Salvo com Sucesso!");
+            tab('lista');
+        }
+
+        async function salvarBanners() {
+            const links = document.getElementById('b-links').value.split(',').map(l => l.trim());
+            await fetch(`${SB_URL}/rest/v1/configuracoes?id=eq.1`, { method: 'PATCH', headers: HEADERS, body: JSON.stringify({ banners: links }) });
+            alert("Banners Atualizados!");
+        }
+
+        async function deletar(id) {
+            if(confirm("Deseja excluir este jogo?")) {
+                await fetch(`${SB_URL}/rest/v1/jogos?id=eq.${id}`, { method: 'DELETE', headers: HEADERS });
+                carregarDados();
+            }
+        }
+
+        window.onload = carregarDados;
+    </script>
 </body>
 </html>
