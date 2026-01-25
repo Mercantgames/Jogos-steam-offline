@@ -3,128 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MercantGames | Loja Oficial</title>
+    <title>MercantGames | Store</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --main: #003366; --accent: #00c4cc; --bg: #ffffff; --text: #333; }
-        body { margin: 0; font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+        :root { --main: #003366; --accent: #00c4cc; --bg: #0b0e13; --panel: #151921; }
+        body { margin: 0; font-family: 'Poppins', sans-serif; background: var(--bg); color: white; overflow-x: hidden; }
 
-        /* HEADER */
-        header { background: #000; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; color: white; position: sticky; top: 0; z-index: 1000; }
-        .logo { font-size: 22px; font-weight: 900; letter-spacing: 1px; cursor: pointer; }
-        .nav-icons { display: flex; gap: 20px; font-size: 1.2rem; }
+        /* HEADER COMPLETO */
+        header { background: #000; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--main); position: sticky; top: 0; z-index: 1000; }
+        .logo { font-size: 22px; font-weight: 900; letter-spacing: 1px; cursor: pointer; color: #fff; text-decoration: none; }
+        .search-bar { flex: 1; max-width: 400px; margin: 0 20px; position: relative; }
+        .search-bar input { width: 100%; background: #1c2128; border: 1px solid #30363d; padding: 10px; border-radius: 6px; color: white; }
+        .nav-icons { display: flex; gap: 20px; align-items: center; }
+
+        /* BANNER (RESTAURADO) */
+        .hero { width: 100%; height: 400px; position: relative; background-size: cover; background-position: center; display: flex; align-items: flex-end; }
+        .hero-overlay { position: absolute; inset: 0; background: linear-gradient(0deg, var(--bg) 10%, transparent 100%); }
 
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
 
-        /* 1. GRID DE CATEGORIAS (IGUAL À IMAGEM) */
-        .cat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 40px; }
-        .cat-card { height: 200px; border-radius: 8px; position: relative; overflow: hidden; display: flex; align-items: center; padding-left: 20px; background-size: cover; background-position: center; transition: 0.3s; cursor: pointer; }
-        .cat-card:hover { transform: scale(1.02); filter: brightness(1.1); }
+        /* GRID CATEGORIAS (DA IMAGEM) */
+        .section-title { font-size: 1.5rem; margin: 40px 0 20px; border-left: 4px solid var(--main); padding-left: 15px; text-transform: uppercase; }
+        .cat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .cat-card { height: 180px; border-radius: 8px; position: relative; overflow: hidden; display: flex; align-items: center; padding-left: 20px; background-size: cover; background-position: center; cursor: pointer; border: 1px solid #333; }
+        .cat-card h3 { position: relative; z-index: 2; font-size: 22px; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); }
         .cat-card::before { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.4); }
-        .cat-content { position: relative; z-index: 2; }
-        .cat-content h3 { margin: 0; font-size: 24px; color: white; text-transform: uppercase; }
-        .cat-content span { background: #9146ff; color: white; padding: 2px 10px; font-size: 12px; font-weight: bold; border-radius: 4px; }
 
-        /* 2. BARRA DE BENEFÍCIOS */
-        .benefits-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 30px 0; border-top: 1px solid #eee; border-bottom: 1px solid #eee; margin: 20px 0; }
-        .benefit-item { display: flex; align-items: center; gap: 10px; font-size: 13px; }
-        .benefit-item i { color: var(--accent); font-size: 24px; }
-        .benefit-item b { display: block; text-transform: uppercase; font-size: 11px; }
+        /* PLATAFORMAS (DA IMAGEM) */
+        .plat-list { display: flex; justify-content: center; gap: 30px; margin: 40px 0; flex-wrap: wrap; }
+        .plat-item { text-align: center; width: 100px; cursor: pointer; }
+        .plat-circle { width: 80px; height: 80px; border-radius: 50%; background: var(--panel); border: 2px solid var(--main); display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; transition: 0.3s; }
+        .plat-circle:hover { background: var(--main); transform: translateY(-5px); }
 
-        /* 3. NAVEGUE POR PLATAFORMA */
-        .section-title { text-align: center; margin: 40px 0; font-weight: 800; color: #445; position: relative; }
-        .section-title::after { content: ''; display: block; width: 50px; height: 3px; background: var(--accent); margin: 10px auto; }
-        
-        .platform-list { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 50px; }
-        .plat-circle { width: 120px; text-align: center; cursor: pointer; }
-        .plat-img { width: 100px; height: 100px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; transition: 0.3s; border: 4px solid #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .plat-img img { width: 60%; filter: brightness(0) invert(1); }
-        .plat-circle:hover .plat-img { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,196,204,0.3); }
-        .plat-circle span { font-size: 11px; font-weight: bold; color: #666; text-transform: uppercase; }
+        /* VITRINE E CARDS */
+        .game-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 25px; }
+        .game-card { background: var(--panel); border-radius: 8px; overflow: hidden; border: 1px solid #222; transition: 0.3s; cursor: pointer; }
+        .game-card:hover { border-color: var(--main); }
+        .game-card img { width: 100%; height: 300px; object-fit: cover; }
+        .game-info { padding: 15px; }
+        .game-price { color: #2ecc71; font-weight: bold; font-size: 1.2rem; margin: 10px 0; }
+        .btn-comprar { background: var(--main); color: white; border: none; width: 100%; padding: 10px; border-radius: 4px; font-weight: bold; cursor: pointer; }
 
-        /* VITRINE DE JOGOS */
-        .game-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
-        .game-card { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: 0.3s; cursor: pointer; border: 1px solid #eee; }
-        .game-card:hover { transform: translateY(-5px); }
-        .game-card img { width: 100%; height: 280px; object-fit: cover; }
-        .game-info { padding: 15px; text-align: center; }
-        .game-info h4 { margin: 0 0 10px; font-size: 14px; height: 35px; overflow: hidden; }
-        .game-price { color: #2ecc71; font-weight: 800; font-size: 18px; }
-
-        /* WHATSAPP FLOAT */
-        .btn-whats { position: fixed; bottom: 20px; right: 20px; background: #25d366; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 1000; text-decoration: none; }
+        /* PÁGINA DE PRODUTO (MODAL/DETALHES) */
+        #page-product { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 2000; overflow-y: auto; padding: 40px 5%; }
+        .prod-layout { display: grid; grid-template-columns: 400px 1fr; gap: 40px; }
+        .buy-box { background: var(--panel); padding: 30px; border-radius: 12px; border: 1px solid #333; }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="logo">MERCANT GAMES</div>
+        <a href="#" class="logo" onclick="location.reload()">MERCANT GAMES</a>
+        <div class="search-bar"><input type="text" placeholder="Pesquisar jogo..."></div>
         <div class="nav-icons">
-            <i class="fas fa-search"></i>
             <i class="fas fa-shopping-cart"></i>
             <i class="fas fa-user"></i>
         </div>
     </header>
 
-    <div class="container">
-        <div class="cat-grid">
-            <div class="cat-card" style="background-image: url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=500')">
-                <div class="cat-content"><h3>Esportes</h3><span>Ver Categoria</span></div>
-            </div>
-            <div class="cat-card" style="background-image: url('https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=500')">
-                <div class="cat-content"><h3>Luta</h3><span>Ver Categoria</span></div>
-            </div>
-            <div class="cat-card" style="background-image: url('https://images.unsplash.com/photo-1552820728-8b83bb6b773f?q=80&w=500')">
-                <div class="cat-content"><h3>Ação</h3><span>Ver Categoria</span></div>
-            </div>
+    <div id="home-view">
+        <div class="hero" id="main-banner" style="background-image: url('https://via.placeholder.com/1500x500')">
+            <div class="hero-overlay"></div>
+            <div class="container"><h1>PROMOÇÕES DE VERÃO</h1></div>
         </div>
 
-        <div class="benefits-bar">
-            <div class="benefit-item"><i class="fas fa-credit-card"></i><div><b>Até 10x no Cartão</b><span>Todos os cartões</span></div></div>
-            <div class="benefit-item"><i class="fas fa-percent"></i><div><b>5% de Desconto</b><span>Via Pix</span></div></div>
-            <div class="benefit-item"><i class="fas fa-truck"></i><div><b>Frete Grátis</b><span>Envio por e-mail</span></div></div>
-            <div class="benefit-item"><i class="fas fa-shield-alt"></i><div><b>Site Seguro</b><span>Dados Protegidos</span></div></div>
-        </div>
-
-        <h2 class="section-title">Navegue Por Plataforma</h2>
-        <div class="platform-list">
-            <div class="plat-circle"><div class="plat-img"><i class="fab fa-steam" style="font-size: 40px; color:white;"></i></div><span>Steam</span></div>
-            <div class="plat-circle"><div class="plat-img"><i class="fas fa-gamepad" style="font-size: 40px; color:white;"></i></div><span>Epic Games</span></div>
-            <div class="plat-circle"><div class="plat-img"><i class="fab fa-xbox" style="font-size: 40px; color:white;"></i></div><span>Microsoft</span></div>
-            <div class="plat-circle"><div class="plat-img"><i class="fab fa-playstation" style="font-size: 40px; color:white;"></i></div><span>Playstation</span></div>
-        </div>
-
-        <h2 class="section-title">Destaques da Semana</h2>
-        <div class="game-grid" id="vitrine">
+        <div class="container">
+            <h2 class="section-title">Categorias Populares</h2>
+            <div class="cat-grid">
+                <div class="cat-card" style="background-image: url('https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400')"><h3>Esportes</h3></div>
+                <div class="cat-card" style="background-image: url('https://images.unsplash.com/photo-1511512578047-dfb367046420?w=400')"><h3>Luta</h3></div>
+                <div class="cat-card" style="background-image: url('https://images.unsplash.com/photo-1552820728-8b83bb6b773f?w=400')"><h3>Ação</h3></div>
             </div>
+
+            <h2 class="section-title">Plataformas</h2>
+            <div class="plat-list">
+                <div class="plat-item"><div class="plat-circle"><i class="fab fa-steam fa-2x"></i></div><span>Steam</span></div>
+                <div class="plat-item"><div class="plat-circle"><i class="fab fa-xbox fa-2x"></i></div><span>Xbox</span></div>
+                <div class="plat-item"><div class="plat-circle"><i class="fab fa-playstation fa-2x"></i></div><span>PSN</span></div>
+            </div>
+
+            <h2 class="section-title">Destaques</h2>
+            <div class="game-grid" id="vitrine"></div>
+        </div>
     </div>
 
-    <a href="#" class="btn-whats"><i class="fab fa-whatsapp"></i></a>
+    <div id="page-product">
+        <div class="container">
+            <button onclick="closeProd()" style="background:none; color:var(--main); border:none; cursor:pointer; font-weight:bold; margin-bottom:20px;">← VOLTAR</button>
+            <div class="prod-layout">
+                <img id="p-img" style="width:100%; border-radius:10px;">
+                <div class="buy-box">
+                    <h1 id="p-title"></h1>
+                    <div class="game-price" id="p-price" style="font-size:2.5rem;"></div>
+                    <p id="p-desc" style="line-height:1.6; color:#ccc; margin:20px 0;"></p>
+                    <button class="btn-comprar" style="padding:20px; font-size:1.2rem;">COMPRAR AGORA</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         const SB_URL = "https://grogiwbccvnbyjgxvafw.supabase.co";
         const SB_KEY = "sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14";
         const HEADERS = { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}` };
+        let JOGOS_DATA = [];
 
-        async function carregarJogos() {
+        async function init() {
             try {
+                // Carrega Banner e Cores
+                const resCfg = await fetch(`${SB_URL}/rest/v1/configuracoes?id=eq.1`, { headers: HEADERS });
+                const [cfg] = await resCfg.json();
+                if(cfg && cfg.banners.length > 0) document.getElementById('main-banner').style.backgroundImage = `url('${cfg.banners[0]}')`;
+
+                // Carrega Jogos
                 const res = await fetch(`${SB_URL}/rest/v1/jogos`, { headers: HEADERS });
-                const jogos = await res.json();
-                const vitrine = document.getElementById('vitrine');
+                JOGOS_DATA = await res.json();
                 
-                vitrine.innerHTML = jogos.map(j => `
-                    <div class="game-card">
+                document.getElementById('vitrine').innerHTML = JOGOS_DATA.map((j, i) => `
+                    <div class="game-card" onclick="openProd(${i})">
                         <img src="${j.url_da_imagem}">
                         <div class="game-info">
                             <h4>${j.nome}</h4>
                             <div class="game-price">R$ ${j.preco}</div>
+                            <button class="btn-comprar">VER DETALHES</button>
                         </div>
                     </div>
                 `).join('');
-            } catch (e) { console.error("Erro ao carregar vitrine:", e); }
+            } catch (e) { console.error(e); }
         }
 
-        window.onload = carregarJogos;
+        function openProd(i) {
+            const j = JOGOS_DATA[i];
+            document.getElementById('home-view').style.display = 'none';
+            document.getElementById('page-product').style.display = 'block';
+            document.getElementById('p-title').innerText = j.nome;
+            document.getElementById('p-price').innerText = "R$ " + j.preco;
+            document.getElementById('p-desc').innerText = j.descricao || "Sem descrição.";
+            document.getElementById('p-img').src = j.url_da_imagem;
+            window.scrollTo(0,0);
+        }
+
+        function closeProd() {
+            document.getElementById('home-view').style.display = 'block';
+            document.getElementById('page-product').style.display = 'none';
+        }
+
+        window.onload = init;
     </script>
 </body>
 </html>
