@@ -8,49 +8,59 @@
     <style>
         :root { 
             --main: #003366; --accent: #6a0dad; --silver: #c0c0c0; 
-            --bg: #0b0e13; --panel: #151921; 
+            --bg: #0b0e13; --panel: #151921; --teal: #1abc9c;
         }
         body { margin: 0; font-family: 'Poppins', sans-serif; background: var(--bg); color: white; overflow-x: hidden; }
 
         /* HEADER */
-        header { 
-            background: #000; padding: 15px 5%; display: flex; justify-content: space-between; 
-            align-items: center; border-bottom: 2px solid var(--main); position: sticky; top: 0; z-index: 1000; 
-        }
-        .logo { font-size: 1.2rem; font-weight: 900; color: #fff; text-decoration: none; text-transform: uppercase; letter-spacing: 1px; }
+        header { background: #000; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--main); position: sticky; top: 0; z-index: 1000; }
+        .logo { font-size: 1.2rem; font-weight: 900; color: #fff; text-decoration: none; text-transform: uppercase; }
         .logo span { color: var(--main); }
-
-        /* WHATSAPP FLUTUANTE */
-        .whatsapp-float {
-            position: fixed; width: 55px; height: 55px; bottom: 25px; right: 20px;
-            background-color: #25d366; color: #FFF; border-radius: 50px; text-align: center;
-            font-size: 28px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); z-index: 10000;
-            display: flex; align-items: center; justify-content: center; text-decoration: none; transition: 0.3s;
-        }
-        .whatsapp-float:hover { transform: scale(1.1); filter: brightness(1.1); }
 
         .container { max-width: 1200px; margin: 0 auto; padding: 15px; }
 
-        /* BANNER */
-        .hero-banner { height: 180px; border-radius: 12px; overflow: hidden; position: relative; border: 1px solid #333; margin-bottom: 25px; }
-        @media (min-width: 768px) { .hero-banner { height: 400px; } }
-        .slide { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; transition: opacity 1.5s; }
-        .slide.active { opacity: 1; }
+        /* BARRA DE VANTAGENS */
+        .vantagens { 
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; 
+            padding: 20px 0; border-bottom: 1px solid #222; margin-bottom: 20px;
+        }
+        @media (min-width: 768px) { .vantagens { grid-template-columns: repeat(4, 1fr); } }
+        .v-item { display: flex; align-items: center; gap: 10px; font-size: 0.7rem; color: #ccc; }
+        .v-item i { color: var(--teal); font-size: 1.2rem; }
 
-        /* VITRINE 2 COLUNAS MOBILE */
+        /* CATEGORIAS (FOTO) */
+        .cat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 30px; }
+        @media (min-width: 768px) { .cat-grid { grid-template-columns: repeat(3, 1fr); } }
+        .cat-card { 
+            position: relative; height: 120px; border-radius: 8px; overflow: hidden; 
+            text-decoration: none; border: 1px solid #333;
+        }
+        .cat-card img { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; transition: 0.3s; }
+        .cat-card:hover img { opacity: 0.9; transform: scale(1.05); }
+        .cat-text { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+        .cat-text b { font-size: 1rem; color: #fff; text-transform: uppercase; }
+        .cat-text span { background: var(--accent); font-size: 0.6rem; padding: 2px 8px; border-radius: 4px; margin-top: 5px; }
+
+        /* NAVEGUE POR PLATAFORMA */
+        .plat-scroll { display: flex; gap: 20px; overflow-x: auto; padding: 20px 0; scrollbar-width: none; }
+        .plat-item { min-width: 100px; text-align: center; text-decoration: none; color: white; }
+        .plat-circle { 
+            width: 80px; height: 80px; background: var(--panel); border: 2px solid var(--teal); 
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+            margin: 0 auto 10px; font-size: 2rem; transition: 0.3s;
+        }
+        .plat-item:hover .plat-circle { background: var(--teal); color: #000; transform: translateY(-5px); }
+
+        /* VITRINE 2 COLUNAS */
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
         @media (min-width: 768px) { .grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 25px; } }
+        .card { background: var(--panel); border-radius: 10px; overflow: hidden; border: 1px solid #222; text-decoration: none; color: white; }
+        .card img { width: 100%; height: 210px; object-fit: cover; }
+        .p-info { padding: 12px; text-align: center; }
+        .price { color: #2ecc71; font-weight: 800; font-size: 1.2rem; }
 
-        .card { 
-            background: var(--panel); border-radius: 10px; overflow: hidden; border: 1px solid #222; 
-            transition: 0.4s; text-decoration: none; color: white; display: flex; flex-direction: column;
-        }
-        .card img { width: 100%; height: 210px; object-fit: cover; transition: 0.5s; }
-        @media (min-width: 768px) { .card img { height: 320px; } }
-        
-        .p-info { padding: 12px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; text-align: center; }
-        .p-info h4 { margin: 5px 0; font-size: 0.95rem; font-weight: 500; color: var(--silver); line-height: 1.2; }
-        .price { color: #2ecc71; font-weight: 800; font-size: 1.2rem; margin-top: 8px; }
+        /* WHATSAPP */
+        .whatsapp-float { position: fixed; width: 55px; height: 55px; bottom: 25px; right: 20px; background: #25d366; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; color: white; z-index: 10000; text-decoration: none; }
     </style>
 </head>
 <body>
@@ -59,47 +69,60 @@
 
     <header>
         <a href="index.html" class="logo">MERCANT <span>GAMES</span></a>
-        <i class="fas fa-shopping-cart" style="font-size: 1.2rem;"></i>
+        <i class="fas fa-shopping-cart"></i>
     </header>
 
     <div class="container">
-        <div class="hero-banner" id="slider"><div id="slides-area"></div></div>
-        <h2 style="border-left: 5px solid var(--accent); padding-left: 12px; font-size: 1.2rem; margin-bottom: 20px;">LANÇAMENTOS</h2>
+        
+        <div class="vantagens">
+            <div class="v-item"><i class="fas fa-credit-card"></i> <div><b>ATÉ 10X NO CARTÃO</b><br>Todos os cartões</div></div>
+            <div class="v-item"><i class="fas fa-percentage"></i> <div><b>5% DE DESCONTO</b><br>Via Pix</div></div>
+            <div class="v-item"><i class="fas fa-shipping-fast"></i> <div><b>FRETE GRÁTIS</b><br>Envio por e-mail</div></div>
+            <div class="v-item"><i class="fas fa-shield-alt"></i> <div><b>SITE SEGURO</b><br>Dados protegidos</div></div>
+        </div>
+
+        <div class="cat-grid">
+            <a href="#" class="cat-card">
+                <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=500" alt="Esportes">
+                <div class="cat-text"><b>Esportes</b><span>Ver Categoria</span></div>
+            </a>
+            <a href="#" class="cat-card">
+                <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=500" alt="Ação">
+                <div class="cat-text"><b>Ação</b><span>Ver Categoria</span></div>
+            </a>
+            <a href="#" class="cat-card">
+                <img src="https://images.unsplash.com/photo-1552820728-8b83bb6b773f?q=80&w=500" alt="Luta">
+                <div class="cat-text"><b>Luta</b><span>Ver Categoria</span></div>
+            </a>
+        </div>
+
+        <h2 style="text-align:center; font-size: 1.2rem; margin: 40px 0 20px;">Navegue Por Plataforma</h2>
+        
+        <div class="plat-scroll">
+            <a href="#" class="plat-item"><div class="plat-circle"><i class="fab fa-steam"></i></div><span>STEAM</span></a>
+            <a href="#" class="plat-item"><div class="plat-circle"><i class="fab fa-xbox"></i></div><span>XBOX</span></a>
+            <a href="#" class="plat-item"><div class="plat-circle"><i class="fab fa-playstation"></i></div><span>PSN</span></a>
+            <a href="#" class="plat-item"><div class="plat-circle"><i class="fas fa-desktop"></i></div><span>PC</span></a>
+            <a href="#" class="plat-item"><div class="plat-circle"><i class="fas fa-gamepad"></i></div><span>EPIC</span></a>
+        </div>
+
+        <h2 style="border-left: 5px solid var(--accent); padding-left: 12px; font-size: 1.2rem; margin: 40px 0 20px;">LANÇAMENTOS</h2>
         <div class="grid" id="vitrine"></div>
+
     </div>
 
     <script>
         const SB_URL = "https://grogiwbccvnbyjgxvafw.supabase.co";
         const SB_KEY = "sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14";
-        const HEADERS = { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}` };
-
         async function init() {
-            try {
-                const resCfg = await fetch(`${SB_URL}/rest/v1/configuracoes?id=eq.1`, { headers: HEADERS });
-                const [cfg] = await resCfg.json();
-                if(cfg?.banners) {
-                    document.getElementById('slides-area').innerHTML = cfg.banners.map((url, i) => `<div class="slide ${i === 0 ? 'active' : ''}" style="background-image: url('${url}')"></div>`).join('');
-                    let current = 0;
-                    setInterval(() => {
-                        const slides = document.querySelectorAll('.slide');
-                        slides[current].classList.remove('active');
-                        current = (current + 1) % slides.length;
-                        slides[current].classList.add('active');
-                    }, 5000);
-                }
-
-                const resJogos = await fetch(`${SB_URL}/rest/v1/jogos`, { headers: HEADERS });
-                const jogos = await resJogos.json();
-                document.getElementById('vitrine').innerHTML = jogos.map(j => `
-                    <a href="produto.html?id=${j.id}" class="card">
-                        <img src="${j.url_da_imagem}">
-                        <div class="p-info">
-                            <h4>${j.nome}</h4>
-                            <span class="price">R$ ${j.preco}</span>
-                        </div>
-                    </a>
-                `).join('');
-            } catch (e) { console.error(e); }
+            const res = await fetch(`${SB_URL}/rest/v1/jogos`, { headers: {'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`} });
+            const jogos = await res.json();
+            document.getElementById('vitrine').innerHTML = jogos.map(j => `
+                <a href="produto.html?id=${j.id}" class="card">
+                    <img src="${j.url_da_imagem}">
+                    <div class="p-info"><h4>${j.nome}</h4><span class="price">R$ ${j.preco}</span></div>
+                </a>
+            `).join('');
         }
         window.onload = init;
     </script>
