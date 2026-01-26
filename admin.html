@@ -233,7 +233,106 @@
         type: 'doughnut',
         data: { labels: ['Ação', 'RPG', 'Esporte'], datasets: [{ data: [40, 35, 25], backgroundColor: ['#ef4444', '#22c55e', '#3b82f6'] }] }
     });
+// --- CONEXÃO COM SEU BANCO DE DADOS ---
+        const SB_URL = "https://grogiwbccvnbyjgxvafw.supabase.co/rest/v1/jogos";
+        const SB_HEADERS = {
+            'apikey': "sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14",
+            'Authorization': "Bearer sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14",
+            'Content-Type': 'application/json',
+            'Prefer': 'return=representation'
+        };
 
+        // --- FUNÇÕES DE NAVEGAÇÃO (Mantendo o que você tem) ---
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
+            document.getElementById(sectionId + '-section').classList.remove('hidden');
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.innerText.toLowerCase().includes(sectionId)) item.classList.add('active');
+            });
+        }
+
+        // --- CARREGAR PRODUTOS REAIS DO SUPABASE ---
+        async function renderProducts() {
+            const container = document.getElementById('products-container');
+            const res = await fetch(SB_URL + "?select=*", { headers: SB_HEADERS });
+            const produtos = await res.json();
+
+            // Atualiza Dashboard
+            document.getElementById('total-jogos').innerText = produtos.length;
+            const total = produtos.reduce((acc, p) => acc + parseFloat(p.preco || 0), 0);
+            document.getElementById('total-receita').innerText = `R$ ${total.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+
+            container.innerHTML = produtos.map(p => {
+                // Cores por jogo (Ação: Vermelho, RPG: Verde, Esporte: Azul)
+                let cor = "#3b82f6"; 
+                if(p.categoria === 'Ação' || p.nome.toLowerCase().includes('fire')) cor = "#ef4444";
+                if(p.categoria === 'RPG' || p.nome.toLowerCase().includes('mine')) cor = "#22c55e";
+
+                return `
+                <div class="product-card" style="border-top: 4px solid ${cor}">
+                    <img src="${p.url_da_imagem || 'https://via.placeholder.com/400'}" class="product-image">
+                    <div class="p-4">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-xs font-medium px-2 py-1 rounded-full bg-blue-100 text-blue-700">${p.categoria || 'Geral'}</span>
+                        </div>
+                        <h3 class="font-semibold text-gray-900" style="color: ${cor}">${p.nome}</h3>
+                        <p class="text-xl font-bold text-gray-900 mt-2">R$ ${parseFloat(p.preco).toLocaleString('pt-BR', {minimumFractionDigits: 2})}</p>
+                        <div class="flex gap-2 mt-4">
+                            <button onclick="deleteProduct(${p.id})" class="btn" style="border: 1px solid #fca5a5; color: #dc2626; width: 100%; padding: 8px; border-radius: 6px;">
+                                <i class="fas fa-trash mr-2"></i>Excluir
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            }).join('');
+        }
+
+        // --- SALVAR NO BANCO ---
+        async function saveProduct(e) {
+            e.preventDefault();
+            const novo = {
+                nome: document.getElementById('product-nome').value,
+                preco: parseFloat(document.getElementById('product-preco').value),
+                categoria: document.getElementById('product-categoria').value,
+                url_da_imagem: "https://via.placeholder.com/400"
+            };
+
+            await fetch(SB_URL, {
+                method: 'POST',
+                headers: SB_HEADERS,
+                body: JSON.stringify(novo)
+            });
+
+            closeProductModal();
+            renderProducts();
+            showToast('Jogo adicionado com sucesso!');
+        }
+
+        // --- DELETAR DO BANCO ---
+        async function deleteProduct(id) {
+            if(!confirm("Deseja mesmo excluir?")) return;
+            await fetch(`${SB_URL}?id=eq.${id}`, { method: 'DELETE', headers: SB_HEADERS });
+            renderProducts();
+            showToast('Jogo removido!');
+        }
+
+        // --- AUXILIARES (Design Nuvemshop) ---
+        function openProductModal() { document.getElementById('product-modal').classList.add('active'); }
+        function closeProductModal() { document.getElementById('product-modal').classList.remove('active'); }
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-message').innerText = msg;
+            toast.classList.add('active');
+            setTimeout(() => toast.classList.remove('active'), 3000);
+        }
+
+        // Inicialização
+        renderProducts();
+    </script>
+</body>
+</html>
     carregar();
 </script>
 </body>
