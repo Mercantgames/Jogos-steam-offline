@@ -3,86 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel Admin - MercantGames</title>
+    <title>Painel Admin - MercantGames PRO</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; background-color: #f9fafb; }
-        .sidebar { width: 256px; background: white; border-right: 1px solid #e5e7eb; height: 100vh; position: fixed; left: 0; top: 0; overflow-y: auto; }
-        .header { height: 64px; background: white; border-bottom: 1px solid #e5e7eb; position: fixed; top: 0; left: 256px; right: 0; z-index: 10; display: flex; align-items: center; padding: 0 24px; justify-content: space-between; }
-        .main-content { margin-left: 256px; margin-top: 64px; min-height: calc(100vh - 64px); padding: 24px; }
-        .menu-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; margin-bottom: 4px; border-radius: 8px; cursor: pointer; transition: all 0.2s; color: #374151; text-decoration: none; }
+        body { font-family: 'Inter', sans-serif; background-color: #f9fafb; color: #1f2937; }
+        .sidebar { width: 256px; background: white; border-right: 1px solid #e5e7eb; height: 100vh; position: fixed; left: 0; top: 0; z-index: 50; }
+        .header { height: 64px; background: white; border-bottom: 1px solid #e5e7eb; position: fixed; top: 0; left: 256px; right: 0; z-index: 40; display: flex; align-items: center; padding: 0 24px; justify-content: space-between; }
+        .main-content { margin-left: 256px; margin-top: 64px; padding: 24px; }
+        .menu-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; margin-bottom: 4px; border-radius: 8px; cursor: pointer; transition: 0.2s; color: #4b5563; text-decoration: none; font-weight: 500; }
         .menu-item:hover { background-color: #f3f4f6; }
         .menu-item.active { background-color: #eff6ff; color: #2563eb; }
-        .stat-card { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 24px; }
-        .btn { padding: 8px 16px; border-radius: 8px; font-weight: 500; cursor: pointer; transition: all 0.2s; border: none; font-size: 14px; }
-        .btn-primary { background-color: #2563eb; color: white; }
-        .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); z-index: 50; align-items: center; justify-content: center; padding: 16px; }
+        .stat-card { background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .btn-primary { background-color: #2563eb; color: white; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; border: none; }
+        .product-card { background: white; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; border-top-width: 6px; transition: 0.3s; }
+        .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); z-index: 100; align-items: center; justify-content: center; }
         .modal.active { display: flex; }
-        .modal-content { background: white; border-radius: 12px; max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto; }
-        .toast { position: fixed; top: 24px; right: 24px; background: white; padding: 16px 24px; border-radius: 8px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); display: none; z-index: 100; border-left: 4px solid #10b981; }
-        .toast.active { display: block; }
         .hidden { display: none !important; }
-        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
-        .product-card { background: white; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; border-top-width: 4px; }
-        input, select { width: 100%; padding: 8px 16px; border: 1px solid #d1d5db; border-radius: 8px; }
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 12px; border-bottom: 2px solid #f3f4f6; color: #6b7280; font-size: 13px; text-transform: uppercase; }
+        td { padding: 12px; border-bottom: 1px solid #f3f4f6; }
     </style>
 </head>
 <body>
-    <div id="toast" class="toast"><div class="flex items-center gap-2"><i class="fas fa-check-circle text-green-600"></i><span id="toast-message"></span></div></div>
 
     <aside class="sidebar">
-        <div class="h-16 flex items-center px-6 border-b border-gray-200">
-            <div class="flex items-center gap-2"><div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center"><i class="fas fa-store text-white"></i></div><span class="font-semibold text-lg">MercantGames</span></div>
+        <div class="h-16 flex items-center px-6 border-b border-gray-100">
+            <div class="flex items-center gap-2"><div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center"><i class="fas fa-gamepad text-white"></i></div><span class="font-bold text-xl tracking-tight">MercantGames</span></div>
         </div>
         <nav class="p-4">
-            <a href="#" class="menu-item active" onclick="showSection('dashboard')"><i class="fas fa-home w-5"></i><span>Dashboard</span></a>
-            <a href="#" class="menu-item" onclick="showSection('produtos')"><i class="fas fa-box w-5"></i><span>Meus Jogos</span></a>
+            <div onclick="showSection('dashboard')" class="menu-item active" id="m-dash"><i class="fas fa-home w-5"></i><span>Dashboard</span></div>
+            <div onclick="showSection('produtos')" class="menu-item" id="m-prod"><i class="fas fa-box w-5"></i><span>Meus Jogos</span></div>
+            <div onclick="showSection('pedidos')" class="menu-item" id="m-pedi"><i class="fas fa-shopping-cart w-5"></i><span>Pedidos</span></div>
+            <div onclick="showSection('clientes')" class="menu-item" id="m-clie"><i class="fas fa-users w-5"></i><span>Clientes</span></div>
         </nav>
     </aside>
 
     <header class="header">
-        <div style="flex: 1; max-width: 600px;"><input type="text" id="search-global" placeholder="Buscar no banco..." onkeyup="carregar()" style="padding-left: 15px;"></div>
-        <div class="flex items-center gap-4"><button class="btn btn-primary">Ver Loja</button></div>
+        <div class="flex-1 max-w-xl"><input type="text" id="search-global" placeholder="Pesquisar no banco de dados..." onkeyup="carregar()" class="w-full bg-gray-100 border-none rounded-lg px-4 py-2 outline-none focus:ring-2 ring-blue-500"></div>
+        <div class="flex items-center gap-4"><span class="text-sm font-medium text-gray-500">Admin</span><div class="w-8 h-8 bg-blue-100 rounded-full"></div></div>
     </header>
 
     <main class="main-content">
         <div id="dashboard-section" class="section">
-            <h1 class="text-2xl font-bold text-gray-900 mb-6">Visão Geral</h1>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-                <div class="stat-card"><p class="text-sm text-gray-500 mb-1">Faturamento Bruto</p><h2 id="dash-money" class="text-3xl font-bold text-gray-900">R$ 0,00</h2></div>
-                <div class="stat-card"><p class="text-sm text-gray-500 mb-1">Total de Jogos</p><h2 id="dash-count" class="text-3xl font-bold text-gray-900">0</h2></div>
-                <div class="stat-card"><p class="text-sm text-gray-500 mb-1">Status do Banco</p><h2 class="text-xl font-bold text-green-600">Online</h2></div>
+            <h1 class="text-2xl font-bold mb-6">Dashboard</h1>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="stat-card border-l-4 border-blue-600">
+                    <p class="text-gray-500 text-sm">Faturamento</p>
+                    <h2 id="dash-money" class="text-3xl font-bold">R$ 0,00</h2>
+                </div>
+                <div class="stat-card border-l-4 border-green-600">
+                    <p class="text-gray-500 text-sm">Total de Jogos</p>
+                    <h2 id="dash-count" class="text-3xl font-bold">0</h2>
+                </div>
+                <div class="stat-card border-l-4 border-orange-600">
+                    <p class="text-gray-500 text-sm">Clientes Ativos</p>
+                    <h2 id="dash-cust" class="text-3xl font-bold">0</h2>
+                </div>
+            </div>
+            <div class="stat-card">
+                <h3 class="font-bold mb-4">Últimas Vendas</h3>
+                <table><thead><tr><th>Cliente</th><th>Data</th><th>Valor</th><th>Status</th></tr></thead><tbody id="last-sales"></tbody></table>
             </div>
         </div>
 
         <div id="produtos-section" class="section hidden">
             <div class="flex items-center justify-between mb-6">
-                <div><h1 class="text-2xl font-bold text-gray-900">Catálogo de Jogos</h1></div>
-                <button class="btn btn-primary" onclick="openProductModal()"><i class="fas fa-plus mr-2"></i>Novo Jogo</button>
+                <h1 class="text-2xl font-bold">Gestão de Jogos</h1>
+                <button class="btn-primary" onclick="toggleModal(true)"><i class="fas fa-plus mr-2"></i>Novo Jogo</button>
             </div>
-            <div class="product-grid" id="products-container"></div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="products-container"></div>
+        </div>
+
+        <div id="pedidos-section" class="section hidden">
+            <h1 class="text-2xl font-bold mb-6">Pedidos Realizados</h1>
+            <div class="stat-card"><table><thead><tr><th>ID</th><th>Data</th><th>Total</th><th>Pagamento</th></tr></thead><tbody id="orders-list"></tbody></table></div>
+        </div>
+
+        <div id="clientes-section" class="section hidden">
+            <h1 class="text-2xl font-bold mb-6">Lista de Clientes</h1>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="customers-list"></div>
         </div>
     </main>
 
-    <div id="product-modal" class="modal">
-        <div class="modal-content p-6">
-            <h2 class="text-xl font-bold mb-4">Adicionar Jogo ao Supabase</h2>
+    <div id="modal" class="modal">
+        <div class="bg-white p-8 rounded-xl w-[450px] shadow-2xl">
+            <h2 class="text-xl font-bold mb-6">Cadastrar no Supabase</h2>
             <div class="space-y-4">
-                <input type="text" id="p-nome" placeholder="Nome do Jogo">
-                <input type="number" id="p-preco" placeholder="Preço (R$)">
-                <select id="p-categoria">
+                <input type="text" id="p-nome" placeholder="Nome do Jogo" class="w-full border p-3 rounded-lg">
+                <input type="number" id="p-preco" placeholder="Preço (R$)" class="w-full border p-3 rounded-lg">
+                <select id="p-categoria" class="w-full border p-3 rounded-lg">
                     <option value="Ação">Ação (Vermelho)</option>
                     <option value="RPG">RPG (Verde)</option>
                     <option value="Aventura">Aventura (Laranja)</option>
                     <option value="Esporte">Esporte (Azul)</option>
                 </select>
-                <input type="text" id="p-img" placeholder="URL da Imagem">
+                <input type="text" id="p-img" placeholder="URL da Imagem" class="w-full border p-3 rounded-lg">
             </div>
-            <div class="flex gap-2 mt-6">
-                <button onclick="closeProductModal()" class="btn border flex-1">Cancelar</button>
-                <button onclick="salvar()" class="btn btn-primary flex-1">Publicar Agora</button>
+            <div class="flex gap-3 mt-8">
+                <button onclick="toggleModal(false)" class="flex-1 py-3 text-gray-500 font-bold">Cancelar</button>
+                <button onclick="salvar()" class="flex-1 btn-primary py-3">Publicar</button>
             </div>
         </div>
     </div>
@@ -100,40 +122,43 @@
             document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
             document.getElementById(id + '-section').classList.remove('hidden');
             document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
-            event.currentTarget.classList.add('active');
+            const activeMenu = { 'dashboard': 'm-dash', 'produtos': 'm-prod', 'pedidos': 'm-pedi', 'clientes': 'm-clie' };
+            document.getElementById(activeMenu[id]).classList.add('active');
         }
 
-        function openProductModal() { document.getElementById('product-modal').classList.add('active'); }
-        function closeProductModal() { document.getElementById('product-modal').classList.remove('active'); }
+        function toggleModal(show) { document.getElementById('modal').classList.toggle('active', show); }
 
         async function carregar() {
-            const res = await fetch(SB_URL + "?select=*", { headers: SB_HEADERS });
-            const dados = await res.json();
+            try {
+                const res = await fetch(SB_URL + "?select=*", { headers: SB_HEADERS });
+                const dados = await res.json();
+                
+                // Dashboard Stats
+                document.getElementById('dash-count').innerText = dados.length;
+                const total = dados.reduce((acc, j) => acc + parseFloat(j.preco || 0), 0);
+                document.getElementById('dash-money').innerText = `R$ ${total.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
 
-            // Dashboard
-            document.getElementById('dash-count').innerText = dados.length;
-            const total = dados.reduce((acc, j) => acc + parseFloat(j.preco || 0), 0);
-            document.getElementById('dash-money').innerText = `R$ ${total.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+                // Grid de Jogos com as CORES solicitadas
+                const container = document.getElementById('products-container');
+                container.innerHTML = dados.map(j => {
+                    let cor = "#3b82f6";
+                    if(j.categoria === 'Ação') cor = "#ef4444";
+                    if(j.categoria === 'RPG') cor = "#22c55e";
+                    if(j.categoria === 'Aventura') cor = "#f97316";
 
-            // Grid com CORES POR JOGO
-            const container = document.getElementById('products-container');
-            container.innerHTML = dados.map(j => {
-                let cor = "#3b82f6";
-                if(j.categoria === 'Ação') cor = "#ef4444";
-                if(j.categoria === 'RPG') cor = "#22c55e";
-                if(j.categoria === 'Aventura') cor = "#f97316";
+                    return `
+                    <div class="product-card" style="border-top-color: ${cor}">
+                        <img src="${j.url_da_imagem || 'https://via.placeholder.com/400'}" class="w-full h-40 object-cover bg-gray-100">
+                        <div class="p-4">
+                            <span class="text-[10px] font-bold px-2 py-1 rounded-md bg-gray-50" style="color: ${cor}">${j.categoria}</span>
+                            <h3 class="font-bold text-gray-800 mt-2 truncate">${j.nome}</h3>
+                            <p class="text-blue-600 font-black text-lg">R$ ${parseFloat(j.preco).toFixed(2)}</p>
+                            <button onclick="excluir(${j.id})" class="mt-4 w-full text-red-500 text-xs font-bold py-2 border border-red-100 rounded-lg hover:bg-red-50">DELETAR</button>
+                        </div>
+                    </div>`;
+                }).join('');
 
-                return `
-                <div class="product-card" style="border-top-color: ${cor}">
-                    <img src="${j.url_da_imagem || 'https://via.placeholder.com/400'}" class="w-full h-48 object-cover">
-                    <div class="p-4">
-                        <span class="text-[10px] uppercase font-bold px-2 py-1 rounded bg-gray-100" style="color: ${cor}">${j.categoria}</span>
-                        <h3 class="font-bold text-gray-900 mt-2">${j.nome}</h3>
-                        <p class="text-xl font-bold text-blue-600 mt-1">R$ ${parseFloat(j.preco).toFixed(2)}</p>
-                        <button onclick="excluir(${j.id})" class="mt-4 w-full text-red-500 text-xs font-bold py-2 border border-red-100 rounded hover:bg-red-50">EXCLUIR</button>
-                    </div>
-                </div>`;
-            }).join('');
+            } catch(e) { console.log("Erro banco:", e); }
         }
 
         async function salvar() {
@@ -144,16 +169,17 @@
                 url_da_imagem: document.getElementById('p-img').value
             };
             await fetch(SB_URL, { method: 'POST', headers: SB_HEADERS, body: JSON.stringify(payload) });
-            closeProductModal();
+            toggleModal(false);
             carregar();
         }
 
         async function excluir(id) {
-            if(!confirm("Deletar jogo?")) return;
+            if(!confirm("Remover do Supabase?")) return;
             await fetch(`${SB_URL}?id=eq.${id}`, { method: 'DELETE', headers: SB_HEADERS });
             carregar();
         }
 
+        // Inicializa o Painel
         carregar();
     </script>
 </body>
