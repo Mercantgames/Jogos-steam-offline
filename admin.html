@@ -1,256 +1,53 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel Pro - MercantGames</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        :root { --primary: #0077ff; --bg: #f4f6f8; --border: #e1e8ed; }
-        body { background: var(--bg); font-family: 'Inter', sans-serif; overflow-x: hidden; }
-        
-        /* Sidebar Estilo Nuvemshop */
-        .sidebar { width: 260px; height: 100vh; position: fixed; background: #fff; border-right: 1px solid var(--border); z-index: 100; }
-        .main-content { margin-left: 260px; padding: 2rem; margin-top: 60px; }
-        .header-top { height: 60px; position: fixed; top:0; right:0; left:260px; background:#fff; border-bottom:1px solid var(--border); display:flex; align-items:center; padding: 0 2rem; z-index: 90; justify-content: space-between; }
-        
-        /* Cards e Botões */
-        .card { background: #fff; border-radius: 8px; border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        .btn-primary { background: var(--primary); color: white; padding: 10px 20px; border-radius: 6px; font-weight: 600; transition: 0.2s; border: none; cursor: pointer; }
-        .btn-primary:hover { background: #0056b3; }
-        
-        .nav-link { display: flex; align-items: center; padding: 12px 15px; color: #666; border-radius: 8px; margin-bottom: 5px; transition: 0.2s; cursor: pointer; }
-        .nav-link:hover, .nav-link.active { background: #f0f7ff; color: var(--primary); font-weight: 600; }
-        
-        /* Efeito nos Jogos */
-        .game-card { transition: 0.3s; border-top: 5px solid #ccc; }
-        .game-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        
-        /* Modal e Toast */
-        .modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:1000; align-items:center; justify-content:center; }
-        .modal.active { display:flex; }
-        #toast { position:fixed; bottom:20px; right:20px; padding:15px 25px; background:#10b981; color:white; border-radius:8px; display:none; z-index:2000; font-weight: bold; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-    </style>
-</head>
-<body>
+import { useState } from 'react';
+import { Sidebar } from '@/app/components/Sidebar';
+import { Header } from '@/app/components/Header';
+import { Dashboard } from '@/app/components/Dashboard';
+import { Pedidos } from '@/app/components/Pedidos';
+import { Produtos } from '@/app/components/Produtos';
+import { Clientes } from '@/app/components/Clientes';
+import { Relatorios } from '@/app/components/Relatorios';
+import { Configuracoes } from '@/app/components/Configuracoes';
+import { Toaster } from 'sonner';
 
-<aside class="sidebar p-6">
-    <div class="flex items-center gap-2 mb-10">
-        <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white">
-            <i class="fas fa-rocket text-xl"></i>
-        </div>
-        <span class="text-xl font-bold text-gray-800">MercantGames</span>
+export default function App() {
+  const [activeSection, setActiveSection] = useState('dashboard');
+
+  const renderContent = () => {
+    switch (activeSection) {
+      case 'dashboard':
+        return <Dashboard />;
+      case 'pedidos':
+        return <Pedidos />;
+      case 'produtos':
+        return <Produtos />;
+      case 'clientes':
+        return <Clientes />;
+      case 'relatorios':
+        return <Relatorios />;
+      case 'configuracoes':
+        return <Configuracoes />;
+      default:
+        return (
+          <div className="p-6">
+            <div className="bg-white rounded-lg border border-gray-200 p-12 text-center">
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                {activeSection.charAt(0).toUpperCase() + activeSection.slice(1)}
+              </h2>
+              <p className="text-gray-500">Esta seção está em desenvolvimento</p>
+            </div>
+          </div>
+        );
+    }
+  };
+
+  return (
+    <div className="size-full bg-gray-50">
+      <Toaster position="top-right" richColors />
+      <Sidebar activeSection={activeSection} onSectionChange={setActiveSection} />
+      <Header />
+      <main className="ml-64 mt-16 min-h-screen">
+        {renderContent()}
+      </main>
     </div>
-    <nav>
-        <div onclick="showSection('dash')" class="nav-link active" id="btn-dash"><i class="fas fa-chart-line mr-3"></i> Dashboard</div>
-        <div onclick="showSection('prod')" class="nav-link" id="btn-prod"><i class="fas fa-gamepad mr-3"></i> Meus Jogos</div>
-        <div class="nav-link text-gray-400 cursor-not-allowed"><i class="fas fa-shopping-basket mr-3"></i> Vendas (Breve)</div>
-    </nav>
-</aside>
-
-<header class="header-top">
-    <div class="flex items-center bg-gray-100 px-4 py-2 rounded-full w-96">
-        <i class="fas fa-search text-gray-400 mr-2"></i>
-        <input type="text" id="search" placeholder="Buscar jogo no banco..." class="bg-transparent outline-none w-full text-sm" onkeyup="filterGames()">
-    </div>
-    <div class="flex items-center gap-4">
-        <span class="text-sm font-medium text-gray-600">Olá, <strong>Admin</strong></span>
-        <div class="w-9 h-9 bg-blue-100 border border-blue-200 rounded-full flex items-center justify-center text-blue-600">
-            <i class="fas fa-user"></i>
-        </div>
-    </div>
-</header>
-
-<main class="main-content">
-    
-    <section id="sec-dash">
-        <h2 class="text-2xl font-bold mb-6">Visão Geral</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div class="card p-6 border-l-4 border-blue-500">
-                <p class="text-gray-500 text-sm">Faturamento Estimado</p>
-                <h2 id="dash-money" class="text-3xl font-bold text-gray-800">R$ 0,00</h2>
-            </div>
-            <div class="card p-6 border-l-4 border-green-500">
-                <p class="text-gray-500 text-sm">Jogos no Catálogo</p>
-                <h2 id="dash-count" class="text-3xl font-bold text-gray-800">0</h2>
-            </div>
-            <div class="card p-6 border-l-4 border-purple-500">
-                <p class="text-gray-500 text-sm">Status do Servidor</p>
-                <h2 class="text-xl font-bold text-green-600">Online <i class="fas fa-circle text-[10px] ml-1"></i></h2>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div class="card p-6">
-                <h3 class="font-bold mb-4 text-gray-700">Fluxo de Vendas</h3>
-                <canvas id="chartVendas" height="150"></canvas>
-            </div>
-            <div class="card p-6">
-                <h3 class="font-bold mb-4 text-gray-700">Mix de Categorias</h3>
-                <canvas id="chartPizza" height="150"></canvas>
-            </div>
-        </div>
-    </section>
-
-    <section id="sec-prod" style="display:none;">
-        <div class="flex justify-between items-center mb-8">
-            <div>
-                <h2 class="text-2xl font-bold text-gray-800">Meus Jogos</h2>
-                <p class="text-gray-500 text-sm">Gerencie o inventário do seu Supabase</p>
-            </div>
-            <button onclick="toggleModal(true)" class="btn-primary shadow-lg shadow-blue-200"><i class="fas fa-plus mr-2"></i> Novo Produto</button>
-        </div>
-        
-        <div id="grid-jogos" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            </div>
-    </section>
-
-</main>
-
-<div id="modal" class="modal">
-    <div class="bg-white p-8 rounded-xl w-[450px] shadow-2xl relative">
-        <button onclick="toggleModal(false)" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fas fa-times text-xl"></i></button>
-        <h2 class="text-2xl font-bold mb-6 text-gray-800">Cadastrar Jogo</h2>
-        <div class="space-y-4">
-            <div><label class="block text-xs font-bold uppercase text-gray-500 mb-1">Nome</label><input type="text" id="in-nome" class="w-full border p-3 rounded-lg focus:ring-2 ring-blue-500 outline-none"></div>
-            <div class="grid grid-cols-2 gap-4">
-                <div><label class="block text-xs font-bold uppercase text-gray-500 mb-1">Preço (R$)</label><input type="number" id="in-preco" class="w-full border p-3 rounded-lg outline-none"></div>
-                <div>
-                    <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Categoria</label>
-                    <select id="in-cat" class="w-full border p-3 rounded-lg outline-none">
-                        <option value="Ação">Ação</option>
-                        <option value="RPG">RPG</option>
-                        <option value="Aventura">Aventura</option>
-                        <option value="Esporte">Esporte</option>
-                    </select>
-                </div>
-            </div>
-            <div><label class="block text-xs font-bold uppercase text-gray-500 mb-1">URL da Imagem</label><input type="text" id="in-img" class="w-full border p-3 rounded-lg outline-none" placeholder="https://imagem.jpg"></div>
-        </div>
-        <button onclick="salvar()" class="w-full btn-primary mt-8 py-4">Salvar Jogo no Banco</button>
-    </div>
-</div>
-
-<div id="toast">Ação realizada!</div>
-
-<script>
-    const API = "https://grogiwbccvnbyjgxvafw.supabase.co/rest/v1/jogos";
-    const HEADERS = {
-        'apikey': "sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14",
-        'Authorization': "Bearer sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14",
-        'Content-Type': 'application/json',
-        'Prefer': 'return=representation'
-    };
-
-    let cacheJogos = [];
-
-    // --- SISTEMA DE NAVEGAÇÃO ---
-    function showSection(tipo) {
-        document.getElementById('sec-dash').style.display = tipo === 'dash' ? 'block' : 'none';
-        document.getElementById('sec-prod').style.display = tipo === 'prod' ? 'block' : 'none';
-        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-        document.getElementById(tipo === 'dash' ? 'btn-dash' : 'btn-prod').classList.add('active');
-    }
-
-    function toggleModal(show) { document.getElementById('modal').classList.toggle('active', show); }
-
-    function notify(msg) {
-        const t = document.getElementById('toast');
-        t.innerText = msg; t.style.display = 'block';
-        setTimeout(() => t.style.display = 'none', 3000);
-    }
-
-    // --- CONEXÃO SUPABASE ---
-    async function carregar() {
-        try {
-            const res = await fetch(API + "?select=*", { headers: HEADERS });
-            cacheJogos = await res.json();
-            renderizar(cacheJogos);
-            atualizarDashboard();
-        } catch (e) { console.error("Erro Supabase:", e); }
-    }
-
-    function renderizar(dados) {
-        const grid = document.getElementById('grid-jogos');
-        if(!grid) return;
-
-        grid.innerHTML = dados.map(j => {
-            // REGRA DE CORES
-            let cor = "#3b82f6"; // Azul
-            if(j.categoria === 'Ação' || j.nome.toLowerCase().includes('fire')) cor = "#ef4444"; // Vermelho
-            if(j.categoria === 'RPG' || j.nome.toLowerCase().includes('mine')) cor = "#22c55e"; // Verde
-            if(j.categoria === 'Aventura') cor = "#f97316"; // Laranja
-
-            return `
-            <div class="card game-card overflow-hidden" style="border-top-color: ${cor}">
-                <img src="${j.url_da_imagem || 'https://via.placeholder.com/400x200'}" class="w-full h-40 object-cover bg-gray-100">
-                <div class="p-4">
-                    <span class="text-[10px] uppercase font-black px-2 py-1 rounded-md bg-gray-50" style="color: ${cor}">${j.categoria}</span>
-                    <h3 class="font-bold text-gray-800 mt-2 truncate">${j.nome}</h3>
-                    <p class="text-blue-600 font-black text-xl mt-1">R$ ${parseFloat(j.preco).toFixed(2)}</p>
-                    <div class="flex gap-2 mt-4">
-                        <button onclick="excluir(${j.id})" class="flex-1 bg-red-50 text-red-500 py-2 rounded-lg text-sm font-bold hover:bg-red-100 transition">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>`;
-        }).join('');
-    }
-
-    async function salvar() {
-        const nome = document.getElementById('in-nome').value;
-        const preco = document.getElementById('in-preco').value;
-        if(!nome || !preco) return alert("Preencha Nome e Preço!");
-
-        const payload = {
-            nome: nome,
-            preco: parseFloat(preco),
-            url_da_imagem: document.getElementById('in-img').value || "",
-            categoria: document.getElementById('in-cat').value
-        };
-
-        const res = await fetch(API, { method: 'POST', headers: HEADERS, body: JSON.stringify(payload) });
-        if(res.ok) {
-            toggleModal(false);
-            notify("Jogo adicionado com sucesso!");
-            carregar();
-        }
-    }
-
-    async function excluir(id) {
-        if(!confirm("Deseja apagar esse jogo do banco de dados?")) return;
-        await fetch(`${API}?id=eq.${id}`, { method: 'DELETE', headers: HEADERS });
-        notify("Jogo removido!");
-        carregar();
-    }
-
-    function filterGames() {
-        const termo = document.getElementById('search').value.toLowerCase();
-        const filtrados = cacheJogos.filter(j => j.nome.toLowerCase().includes(termo));
-        renderizar(filtrados);
-    }
-
-    function atualizarDashboard() {
-        const total = cacheJogos.reduce((acc, j) => acc + parseFloat(j.preco), 0);
-        if(document.getElementById('dash-money')) document.getElementById('dash-money').innerText = `R$ ${total.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-        if(document.getElementById('dash-count')) document.getElementById('dash-count').innerText = cacheJogos.length;
-    }
-
-    // --- GRÁFICOS ---
-    window.onload = () => {
-        carregar();
-        new Chart(document.getElementById('chartVendas'), {
-            type: 'line',
-            data: { labels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab', 'Dom'], datasets: [{ label: 'Vendas (R$)', data: [800, 1500, 1100, 3000, 2200, 4500, 3800], borderColor: '#0077ff', backgroundColor: 'rgba(0,119,255,0.1)', fill: true, tension: 0.4 }] }
-        });
-        new Chart(document.getElementById('chartPizza'), {
-            type: 'doughnut',
-            data: { labels: ['Ação', 'RPG', 'Outros'], datasets: [{ data: [55, 30, 15], backgroundColor: ['#ef4444', '#22c55e', '#3b82f6'] }] }
-        });
-    };
-</script>
-</body>
-</html>
+  );
+}
