@@ -3,43 +3,232 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel Admin - Nuvemshop Style</title>
+    <title>Painel Admin - MercantGames</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* MANTIDO TODO O SEU CSS ORIGINAL */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; background-color: #f9fafb; }
-        .sidebar { width: 256px; background: white; border-right: 1px solid #e5e7eb; height: 100vh; position: fixed; left: 0; top: 0; overflow-y: auto; }
-        .header { height: 64px; background: white; border-bottom: 1px solid #e5e7eb; position: fixed; top: 0; left: 256px; right: 0; z-index: 10; display: flex; align-items: center; padding: 0 24px; justify-content: space-between; }
-        .main-content { margin-left: 256px; margin-top: 64px; min-height: calc(100vh - 64px); padding: 24px; }
-        .menu-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; margin-bottom: 4px; border-radius: 8px; cursor: pointer; transition: all 0.2s; color: #374151; text-decoration: none; }
-        .menu-item:hover { background-color: #f3f4f6; }
-        .menu-item.active { background-color: #eff6ff; color: #2563eb; }
-        .stat-card { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 24px; }
-        .btn { padding: 8px 16px; border-radius: 8px; font-weight: 500; cursor: pointer; transition: all 0.2s; border: none; font-size: 14px; }
-        .btn-primary { background-color: #2563eb; color: white; }
-        .btn-primary:hover { background-color: #1d4ed8; }
-        .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); z-index: 50; align-items: center; justify-content: center; padding: 16px; }
+        /* Base Styles (Inspirado Nuvemshop) */
+        :root {
+            --nuvemshop-blue: #0077ff;
+            --nuvemshop-dark-blue: #0056b3;
+            --nuvemshop-gray: #f4f6f8;
+            --nuvemshop-text-dark: #333;
+            --nuvemshop-text-light: #666;
+            --nuvemshop-border: #e1e8ed;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+            background-color: var(--nuvemshop-gray);
+            margin: 0;
+            padding: 0;
+            color: var(--nuvemshop-text-dark);
+        }
+
+        .sidebar {
+            width: 260px;
+            background: #fff;
+            border-right: 1px solid var(--nuvemshop-border);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            overflow-y: auto;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.02);
+            z-index: 20;
+        }
+
+        .header {
+            height: 64px;
+            background: #fff;
+            border-bottom: 1px solid var(--nuvemshop-border);
+            position: fixed;
+            top: 0;
+            left: 260px;
+            right: 0;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            justify-content: space-between;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+
+        .main-content {
+            margin-left: 260px;
+            margin-top: 64px;
+            min-height: calc(100vh - 64px);
+            padding: 24px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            margin-bottom: 4px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--nuvemshop-text-light);
+            text-decoration: none;
+        }
+        .menu-item:hover { background-color: var(--nuvemshop-gray); color: var(--nuvemshop-text-dark); }
+        .menu-item.active { background-color: rgba(0, 119, 255, 0.1); color: var(--nuvemshop-blue); font-weight: 600; }
+        .menu-item.active i { color: var(--nuvemshop-blue); }
+
+        .card {
+            background: white;
+            border: 1px solid var(--nuvemshop-border);
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            font-size: 14px;
+        }
+        .btn-primary { background-color: var(--nuvemshop-blue); color: white; }
+        .btn-primary:hover { background-color: var(--nuvemshop-dark-blue); }
+        .btn-secondary { background-color: #f0f2f5; color: var(--nuvemshop-text-dark); border: 1px solid var(--nuvemshop-border); }
+        .btn-secondary:hover { background-color: #e0e2e5; }
+        .btn-danger { background-color: #ef4444; color: white; }
+        .btn-danger:hover { background-color: #dc2626; }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 50;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
         .modal.active { display: flex; }
-        .modal-content { background: white; border-radius: 12px; max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto; }
-        .toast { position: fixed; top: 24px; right: 24px; background: white; padding: 16px 24px; border-radius: 8px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); display: none; z-index: 100; border-left: 4px solid #10b981; }
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--nuvemshop-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-body { padding: 24px; }
+
+        .toast {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            background: white;
+            padding: 16px 24px;
+            border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            display: none;
+            z-index: 100;
+            border-left: 4px solid #10b981; /* Green success */
+        }
         .toast.active { display: block; animation: slideIn 0.3s ease; }
         @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
         .hidden { display: none !important; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid #f3f4f6; }
-        th { background-color: #f9fafb; font-weight: 500; color: #6b7280; font-size: 14px; }
-        tr:hover { background-color: #f9fafb; }
-        .badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; border-radius: 9999px; font-size: 12px; font-weight: 500; }
-        .badge-success { background-color: #d1fae5; color: #065f46; }
-        .badge-warning { background-color: #fef3c7; color: #92400e; }
-        .badge-danger { background-color: #fee2e2; color: #991b1b; }
-        input, select { width: 100%; padding: 8px 16px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; }
-        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; }
-        .product-card { background: white; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; transition: all 0.2s; }
-        .product-card:hover { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
-        .product-image { width: 100%; aspect-ratio: 1; background-color: #f3f4f6; object-fit: cover; }
+
+        input[type="text"], input[type="number"], select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--nuvemshop-border);
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+        input[type="text"]:focus, input[type="number"]:focus, select:focus {
+            outline: none;
+            border-color: var(--nuvemshop-blue);
+            box-shadow: 0 0 0 1px var(--nuvemshop-blue);
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+        }
+        .product-card {
+            background: white;
+            border: 1px solid var(--nuvemshop-border);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.2s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .product-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+        }
+        .product-image {
+            width: 100%;
+            height: 180px; /* Altura fixa para as imagens */
+            object-fit: cover;
+            background-color: #f0f2f5;
+            border-bottom: 1px solid var(--nuvemshop-border);
+        }
+
+        /* Cores dos cards por categoria */
+        .category-acao { border-left: 4px solid #ef4444; } /* Vermelho */
+        .category-rpg { border-left: 4px solid #22c55e; } /* Verde */
+        .category-esporte { border-left: 4px solid #3b82f6; } /* Azul */
+        .category-estrategia { border-left: 4px solid #f97316; } /* Laranja */
+        .category-aventura { border-left: 4px solid #6366f1; } /* Roxo */
+        .category-indie { border-left: 4px solid #a855f7; } /* Violeta */
+        .category-outros { border-left: 4px solid #6b7280; } /* Cinza */
+
+        /* Input de busca no header */
+        .search-input-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+        }
+        .search-input-wrapper input {
+            padding-left: 40px;
+            border-radius: 9999px; /* Pill shape */
+            background-color: var(--nuvemshop-gray);
+            border: 1px solid transparent;
+        }
+        .search-input-wrapper input:focus {
+            background-color: white;
+            border-color: var(--nuvemshop-blue);
+            box-shadow: 0 0 0 1px var(--nuvemshop-blue);
+        }
+        .search-input-wrapper i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--nuvemshop-text-light);
+        }
+
+        .chart-container {
+            width: 100%;
+            height: 300px;
+            margin: auto;
+        }
     </style>
 </head>
 <body>
@@ -53,155 +242,305 @@
     <aside class="sidebar">
         <div class="h-16 flex items-center px-6 border-b border-gray-200">
             <div class="flex items-center gap-2">
-                <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                    <i class="fas fa-store text-white"></i>
+                <div class="w-9 h-9 bg-blue-600 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-gamepad text-white text-lg"></i>
                 </div>
-                <span class="font-semibold text-lg">MercantGames</span>
+                <span class="font-bold text-xl text-gray-900">MercantGames</span>
             </div>
         </div>
         <nav class="p-4">
-            <a href="#" class="menu-item active" data-section="dashboard"><i class="fas fa-home w-5"></i><span>Dashboard</span></a>
+            <a href="#" class="menu-item active" data-section="dashboard"><i class="fas fa-tachometer-alt w-5"></i><span>Dashboard</span></a>
             <a href="#" class="menu-item" data-section="produtos"><i class="fas fa-box w-5"></i><span>Produtos</span></a>
+            <a href="#" class="menu-item" data-section="vendas"><i class="fas fa-shopping-cart w-5"></i><span>Vendas</span></a>
+            <a href="#" class="menu-item" data-section="clientes"><i class="fas fa-users w-5"></i><span>Clientes</span></a>
+            <a href="#" class="menu-item" data-section="configuracoes"><i class="fas fa-cog w-5"></i><span>Configurações</span></a>
         </nav>
     </aside>
 
     <header class="header">
-        <div style="flex: 1; max-width: 600px;">
-            <div style="position: relative;">
-                <i class="fas fa-search" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #9ca3af;"></i>
-                <input type="text" placeholder="Buscar produtos..." onkeyup="filterProducts()" id="search-input-header">
-            </div>
+        <div class="search-input-wrapper">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Buscar produtos, pedidos, clientes..." onkeyup="filterProducts()" id="search-input-header">
+        </div>
+        <div class="flex items-center gap-4">
+            <button class="btn-secondary flex items-center gap-2">
+                <i class="fas fa-bell"></i>
+            </button>
+            <button class="btn-secondary flex items-center gap-2">
+                <i class="fas fa-user-circle"></i> Meu Perfil
+            </button>
         </div>
     </header>
 
     <main class="main-content">
-        <div id="dashboard-section" class="section">
-            <h1 class="text-2xl font-bold text-gray-900 mb-6">Dashboard</h1>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                <div class="stat-card">
-                    <p class="text-2xl font-bold text-gray-900" id="total-receita">R$ 0,00</p>
-                    <p class="text-sm text-gray-500 mt-1">Receita Total (Jogos)</p>
+        <section id="dashboard-section" class="section">
+            <h1 class="text-3xl font-bold text-gray-900 mb-8">Dashboard</h1>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="card p-6">
+                    <p class="text-sm text-gray-500 mb-2">Faturamento Total</p>
+                    <p class="text-3xl font-bold text-gray-900" id="total-faturamento">R$ 0,00</p>
+                    <span class="text-sm text-green-600 font-medium mt-2 block">+12% vs. mês passado</span>
                 </div>
-                <div class="stat-card">
-                    <p class="text-2xl font-bold text-gray-900" id="total-jogos">0</p>
-                    <p class="text-sm text-gray-500 mt-1">Jogos Cadastrados</p>
+                <div class="card p-6">
+                    <p class="text-sm text-gray-500 mb-2">Jogos Cadastrados</p>
+                    <p class="text-3xl font-bold text-gray-900" id="total-jogos">0</p>
+                    <span class="text-sm text-gray-500 font-medium mt-2 block">Sempre em crescimento!</span>
+                </div>
+                <div class="card p-6">
+                    <p class="text-sm text-gray-500 mb-2">Vendas Últimos 30 Dias</p>
+                    <p class="text-3xl font-bold text-gray-900">125</p>
+                    <span class="text-sm text-green-600 font-medium mt-2 block">+5% vs. mês passado</span>
+                </div>
+                <div class="card p-6">
+                    <p class="text-sm text-gray-500 mb-2">Novos Clientes</p>
+                    <p class="text-3xl font-bold text-gray-900">42</p>
+                    <span class="text-sm text-green-600 font-medium mt-2 block">+8% vs. mês passado</span>
                 </div>
             </div>
-        </div>
 
-        <div id="produtos-section" class="section hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <div class="card p-6">
+                    <h2 class="text-lg font-semibold mb-4">Vendas por Mês</h2>
+                    <div class="chart-container">
+                        <canvas id="salesChart"></canvas>
+                    </div>
+                </div>
+                <div class="card p-6">
+                    <h2 class="text-lg font-semibold mb-4">Categorias de Jogos</h2>
+                    <div class="chart-container">
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card p-6">
+                <h2 class="text-lg font-semibold mb-4">Atividade Recente</h2>
+                <ul class="divide-y divide-gray-100">
+                    <li class="py-3 flex justify-between items-center">
+                        <span class="flex items-center gap-2"><i class="fas fa-shopping-cart text-green-500"></i> Novo Pedido #1234 de "The Witcher 3"</span>
+                        <span class="text-gray-500 text-sm">2 min atrás</span>
+                    </li>
+                    <li class="py-3 flex justify-between items-center">
+                        <span class="flex items-center gap-2"><i class="fas fa-box text-blue-500"></i> "Cyberpunk 2077" editado</span>
+                        <span class="text-gray-500 text-sm">1 hora atrás</span>
+                    </li>
+                    <li class="py-3 flex justify-between items-center">
+                        <span class="flex items-center gap-2"><i class="fas fa-user-plus text-purple-500"></i> Novo cliente: Maria Silva</span>
+                        <span class="text-gray-500 text-sm">3 horas atrás</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="produtos-section" class="section hidden">
             <div class="flex items-center justify-between mb-6">
-                <h1 class="text-2xl font-bold text-gray-900">Produtos</h1>
+                <h1 class="text-3xl font-bold text-gray-900">Catálogo de Produtos</h1>
                 <button class="btn btn-primary" onclick="openProductModal()"><i class="fas fa-plus mr-2"></i>Novo Jogo</button>
             </div>
             <div class="product-grid" id="products-container">
-                </div>
-        </div>
+                <p class="col-span-full text-center text-gray-500 p-8">Carregando jogos...</p>
+            </div>
+        </section>
+
+        <section id="vendas-section" class="section hidden">
+            <h1 class="text-3xl font-bold text-gray-900 mb-6">Vendas</h1>
+            <p class="text-gray-600">Aqui você verá todos os seus pedidos.</p>
+        </section>
+        <section id="clientes-section" class="section hidden">
+            <h1 class="text-3xl font-bold text-gray-900 mb-6">Clientes</h1>
+            <p class="text-gray-600">Gerencie sua base de clientes.</p>
+        </section>
+        <section id="configuracoes-section" class="section hidden">
+            <h1 class="text-3xl font-bold text-gray-900 mb-6">Configurações</h1>
+            <p class="text-gray-600">Ajuste as configurações da sua loja.</p>
+        </section>
+
     </main>
 
     <div id="product-modal" class="modal">
         <div class="modal-content">
-            <div class="p-6 border-b border-gray-200 flex items-center justify-between">
-                <h2 class="text-xl font-bold text-gray-900">Novo Jogo</h2>
-                <button onclick="closeProductModal()"><i class="fas fa-times text-gray-500"></i></button>
+            <div class="modal-header">
+                <h2 class="text-xl font-bold text-gray-900" id="modal-title">Novo Jogo</h2>
+                <button onclick="closeProductModal()"><i class="fas fa-times text-gray-500 hover:text-gray-700"></i></button>
             </div>
-            <form onsubmit="saveProduct(event)" class="p-6">
+            <form onsubmit="saveProduct(event)" class="modal-body">
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700 mb-2">Nome do Jogo *</label>
                     <input type="text" id="product-nome" required>
                 </div>
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700 mb-2">Preço (R$) *</label>
-                    <input type="number" id="product-preco" step="0.01" required>
+                    <input type="number" id="product-preco" step="0.01" min="0" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Categoria *</label>
+                    <select id="product-categoria" required>
+                        <option value="acao">Ação</option>
+                        <option value="rpg">RPG</option>
+                        <option value="esporte">Esporte</option>
+                        <option value="estrategia">Estratégia</option>
+                        <option value="aventura">Aventura</option>
+                        <option value="indie">Indie</option>
+                        <option value="outros">Outros</option>
+                    </select>
                 </div>
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700 mb-2">URL da Imagem</label>
-                    <input type="text" id="product-imagem" placeholder="https://...">
+                    <input type="text" id="product-imagem" placeholder="https://exemplo.com/imagem-do-jogo.jpg">
                 </div>
-                <button type="submit" class="btn btn-primary w-full">Criar Jogo</button>
+                <div class="flex justify-end gap-3 mt-6">
+                    <button type="button" class="btn btn-secondary" onclick="closeProductModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" id="save-product-btn">Criar Jogo</button>
+                </div>
             </form>
         </div>
     </div>
 
     <script>
-        const SB_URL = "https://grogiwbccvnbyjgxvafw.supabase.co";
-        const SB_KEY = "sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14";
-        const HEADERS = { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`, 'Content-Type': 'application/json' };
+        // --- SUPABASE CONFIGURAÇÕES ---
+        const SB_URL = "https://grogiwbccvnbyjgxvafw.supabase.co"; // Seu URL do Supabase
+        const SB_KEY = "sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14"; // Sua Chave Pública do Supabase
+        const SB_HEADERS = {
+            'apikey': SB_KEY,
+            'Authorization': `Bearer ${SB_KEY}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=representation' // Retorna os dados do item inserido/atualizado
+        };
 
-        // Navegação (Mantenho sua lógica)
+        // --- DADOS DE EXEMPLO (PARA INICIAR SE O BANCO ESTIVER VAZIO) ---
+        const EXAMPLE_GAMES = [
+            { nome: 'Fireball Adventure', preco: 59.90, categoria: 'acao', url_da_imagem: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+            { nome: 'MineCraft Legends', preco: 129.99, categoria: 'rpg', url_da_imagem: 'https://images.unsplash.com/photo-1629859585973-ac1156d95958?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+            { nome: 'FIFA 25 Ultimate', preco: 299.99, categoria: 'esporte', url_da_imagem: 'https://images.unsplash.com/photo-1559893085-f538562d98dc?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+            { nome: 'Starship Tycoon', preco: 89.90, categoria: 'estrategia', url_da_imagem: 'https://images.unsplash.com/photo-1586282035318-c2b6e1544a0e?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+            { nome: 'Lost Jungle Explorer', preco: 75.00, categoria: 'aventura', url_da_imagem: 'https://images.unsplash.com/photo-1511512595808-d2e23d18080c?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+        ];
+
+        // --- CORES POR CATEGORIA (Para os cards de produtos) ---
+        const CATEGORY_COLORS = {
+            'acao': '#ef4444',       // Vermelho
+            'rpg': '#22c55e',        // Verde
+            'esporte': '#3b82f6',    // Azul
+            'estrategia': '#f97316', // Laranja
+            'aventura': '#6366f1',   // Roxo
+            'indie': '#a855f7',      // Violeta
+            'outros': '#6b7280'      // Cinza
+        };
+
+        let allProducts = []; // Guarda todos os produtos para filtragem
+
+        // --- NAVEGAÇÃO ENTRE SEÇÕES ---
         document.querySelectorAll('.menu-item').forEach(item => {
             item.addEventListener('click', function(e) {
                 e.preventDefault();
-                const section = this.getAttribute('data-section');
+                const sectionId = this.getAttribute('data-section');
+
+                // Remove 'active' de todos e adiciona no clicado
                 document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
                 this.classList.add('active');
+
+                // Esconde todas as seções e mostra a selecionada
                 document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
-                document.getElementById(section + '-section').classList.remove('hidden');
-                if(section === 'produtos') renderProducts();
-                if(section === 'dashboard') updateStats();
+                document.getElementById(sectionId + '-section').classList.remove('hidden');
+
+                // Ações específicas ao mudar de seção
+                if (sectionId === 'produtos') {
+                    renderProducts(); // Recarrega a lista de produtos
+                } else if (sectionId === 'dashboard') {
+                    updateDashboardStats(); // Atualiza os gráficos e stats
+                }
             });
         });
 
-        async function updateStats() {
-            const res = await fetch(`${SB_URL}/rest/v1/jogos`, { headers: HEADERS });
-            const jogos = await res.json();
-            const total = jogos.reduce((acc, j) => acc + parseFloat(j.preco || 0), 0);
-            document.getElementById('total-jogos').innerText = jogos.length;
-            document.getElementById('total-receita').innerText = `R$ ${total.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-        }
+        // --- FUNÇÕES DE DASHBOARD (Gráficos e Estatísticas) ---
+        let salesChartInstance;
+        let categoryChartInstance;
 
-        async function renderProducts() {
-            const container = document.getElementById('products-container');
-            const res = await fetch(`${SB_URL}/rest/v1/jogos?select=*`, { headers: HEADERS });
-            const produtos = await res.json();
+        async function updateDashboardStats() {
+            const products = await fetchProductsFromDB();
+            
+            // Faturamento Total
+            const totalFaturamento = products.reduce((sum, p) => sum + parseFloat(p.preco || 0), 0);
+            document.getElementById('total-faturamento').innerText = `R$ ${totalFaturamento.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+            document.getElementById('total-jogos').innerText = products.length;
 
-            container.innerHTML = produtos.map(p => `
-                <div class="product-card">
-                    <img src="${p.url_da_imagem || 'https://via.placeholder.com/400'}" class="product-image">
-                    <div class="p-4">
-                        <h3 class="font-semibold text-gray-900">${p.nome}</h3>
-                        <p class="text-xl font-bold text-gray-900 mt-2">R$ ${parseFloat(p.preco).toLocaleString('pt-BR', {minimumFractionDigits: 2})}</p>
-                        <div class="flex gap-2 mt-4">
-                            <button onclick="deleteProduct(${p.id})" class="btn" style="border: 1px solid #fca5a5; color: #dc2626; width: 100%;">
-                                <i class="fas fa-trash mr-2"></i>Excluir
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        async function saveProduct(e) {
-            e.preventDefault();
-            const body = {
-                nome: document.getElementById('product-nome').value,
-                preco: document.getElementById('product-preco').value,
-                url_da_imagem: document.getElementById('product-imagem').value || 'https://via.placeholder.com/400'
+            // Dados Simulados para Gráficos
+            const salesData = {
+                labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+                datasets: [{
+                    label: 'Vendas (R$)',
+                    data: [1200, 1900, 3000, 5000, 2300, 4500],
+                    backgroundColor: 'rgba(0, 119, 255, 0.6)',
+                    borderColor: 'rgba(0, 119, 255, 1)',
+                    borderWidth: 1
+                }]
             };
-            await fetch(`${SB_URL}/rest/v1/jogos`, { method: 'POST', headers: HEADERS, body: JSON.stringify(body) });
-            closeProductModal();
-            renderProducts();
-            showToast("Jogo adicionado!");
+
+            const categoryCounts = products.reduce((acc, p) => {
+                acc[p.categoria] = (acc[p.categoria] || 0) + 1;
+                return acc;
+            }, {});
+
+            const categoryChartData = {
+                labels: Object.keys(categoryCounts),
+                datasets: [{
+                    data: Object.values(categoryCounts),
+                    backgroundColor: Object.keys(categoryCounts).map(cat => CATEGORY_COLORS[cat] || CATEGORY_COLORS['outros']),
+                    hoverOffset: 4
+                }]
+            };
+
+            // Renderizar Gráfico de Vendas
+            if (salesChartInstance) salesChartInstance.destroy();
+            const salesCtx = document.getElementById('salesChart').getContext('2d');
+            salesChartInstance = new Chart(salesCtx, {
+                type: 'bar',
+                data: salesData,
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
+            });
+
+            // Renderizar Gráfico de Categorias
+            if (categoryChartInstance) categoryChartInstance.destroy();
+            const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+            categoryChartInstance = new Chart(categoryCtx, {
+                type: 'pie',
+                data: categoryChartData,
+                options: { responsive: true, maintainAspectRatio: false }
+            });
         }
 
-        async function deleteProduct(id) {
-            if(confirm("Deseja excluir?")) {
-                await fetch(`${SB_URL}/rest/v1/jogos?id=eq.${id}`, { method: 'DELETE', headers: HEADERS });
-                renderProducts();
-                showToast("Jogo removido!");
+        // --- FUNÇÕES DE PRODUTOS ---
+
+        // Buscar produtos do Supabase
+        async function fetchProductsFromDB() {
+            try {
+                const response = await fetch(`${SB_URL}/rest/v1/jogos?select=*`, { headers: SB_HEADERS });
+                if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error("Erro ao buscar produtos:", error);
+                showToast(`Erro ao carregar produtos: ${error.message}`, 'error');
+                return [];
             }
         }
 
-        function openProductModal() { document.getElementById('product-modal').classList.add('active'); }
-        function closeProductModal() { document.getElementById('product-modal').classList.remove('active'); }
-        function showToast(msg) { 
-            const t = document.getElementById('toast'); 
-            document.getElementById('toast-message').innerText = msg;
-            t.classList.add('active'); 
-            setTimeout(() => t.classList.remove('active'), 3000); 
-        }
+        // Renderizar produtos na UI
+        async function renderProducts() {
+            const container = document.getElementById('products-container');
+            container.innerHTML = `<p class="col-span-full text-center text-gray-500 p-8">Carregando jogos...</p>`; // Loading state
 
-        window.onload = () => { updateStats(); };
-    </script>
-</body>
-</html>
+            allProducts = await fetchProductsFromDB();
+
+            // Se não houver produtos no banco, adiciona os exemplos
+            if (allProducts.length === 0) {
+                for (const game of EXAMPLE_GAMES) {
+                    await fetch(`${SB_URL}/rest/v1/jogos`, {
+                        method: 'POST',
+                        headers: SB_HEADERS,
+                        body: JSON.stringify(game)
+                    });
+                }
+                allProducts = await fetchProductsFromDB(); // Recarrega após inserir exemplos
+                showToast("Dados de exemplo adicionados ao seu banco!");
