@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel Admin - Nuvemshop Style</title>
+    <title>Painel Admin - MercantGames</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -18,29 +18,15 @@
         .stat-card { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 24px; }
         .btn { padding: 8px 16px; border-radius: 8px; font-weight: 500; cursor: pointer; transition: all 0.2s; border: none; font-size: 14px; }
         .btn-primary { background-color: #2563eb; color: white; }
-        .btn-primary:hover { background-color: #1d4ed8; }
         .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); z-index: 50; align-items: center; justify-content: center; padding: 16px; }
         .modal.active { display: flex; }
         .modal-content { background: white; border-radius: 12px; max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto; }
         .toast { position: fixed; top: 24px; right: 24px; background: white; padding: 16px 24px; border-radius: 8px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); display: none; z-index: 100; border-left: 4px solid #10b981; }
-        .toast.active { display: block; animation: slideIn 0.3s ease; }
-        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        .toast.active { display: block; }
         .hidden { display: none !important; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid #f3f4f6; }
-        th { background-color: #f9fafb; font-weight: 500; color: #6b7280; font-size: 14px; }
-        tr:hover { background-color: #f9fafb; }
-        .badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; border-radius: 9999px; font-size: 12px; font-weight: 500; }
-        .badge-success { background-color: #d1fae5; color: #065f46; }
-        .badge-warning { background-color: #fef3c7; color: #92400e; }
-        .badge-info { background-color: #dbeafe; color: #1e40af; }
-        .badge-danger { background-color: #fee2e2; color: #991b1b; }
-        input, select { width: 100%; padding: 8px 16px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; }
-        input:focus, select:focus { outline: none; border-color: #2563eb; ring: 2px; ring-color: #2563eb; }
-        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; }
-        .product-card { background: white; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; transition: all 0.2s; }
-        .product-card:hover { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
-        .product-image { width: 100%; aspect-ratio: 1; background-color: #f3f4f6; object-fit: cover; }
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
+        .product-card { background: white; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; border-top-width: 4px; }
+        input, select { width: 100%; padding: 8px 16px; border: 1px solid #d1d5db; border-radius: 8px; }
     </style>
 </head>
 <body>
@@ -48,105 +34,127 @@
 
     <aside class="sidebar">
         <div class="h-16 flex items-center px-6 border-b border-gray-200">
-            <div class="flex items-center gap-2"><div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center"><i class="fas fa-store text-white"></i></div><span class="font-semibold text-lg">Minha Loja</span></div>
+            <div class="flex items-center gap-2"><div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center"><i class="fas fa-store text-white"></i></div><span class="font-semibold text-lg">MercantGames</span></div>
         </div>
         <nav class="p-4">
-            <a href="#" class="menu-item active" data-section="dashboard"><i class="fas fa-home w-5"></i><span>Dashboard</span></a>
-            <a href="#" class="menu-item" data-section="pedidos"><i class="fas fa-shopping-cart w-5"></i><span>Pedidos</span></a>
-            <a href="#" class="menu-item" data-section="produtos"><i class="fas fa-box w-5"></i><span>Produtos</span></a>
-            <a href="#" class="menu-item" data-section="clientes"><i class="fas fa-users w-5"></i><span>Clientes</span></a>
-            <a href="#" class="menu-item" data-section="relatorios"><i class="fas fa-chart-bar w-5"></i><span>Relatórios</span></a>
-            <a href="#" class="menu-item" data-section="configuracoes"><i class="fas fa-cog w-5"></i><span>Configurações</span></a>
+            <a href="#" class="menu-item active" onclick="showSection('dashboard')"><i class="fas fa-home w-5"></i><span>Dashboard</span></a>
+            <a href="#" class="menu-item" onclick="showSection('produtos')"><i class="fas fa-box w-5"></i><span>Meus Jogos</span></a>
         </nav>
-        <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 16px; border-top: 1px solid #e5e7eb; background: white;">
-            <div class="flex items-center gap-3 px-4 py-2"><div class="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center"><span class="text-sm font-medium text-gray-700">AD</span></div><div><p class="text-sm font-medium text-gray-900">Admin</p><p class="text-xs text-gray-500">admin@loja.com</p></div></div>
-        </div>
     </aside>
 
     <header class="header">
-        <div style="flex: 1; max-width: 600px;"><div style="position: relative;"><i class="fas fa-search" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #9ca3af;"></i><input type="text" placeholder="Buscar pedidos, produtos, clientes..." style="padding-left: 40px;"></div></div>
-        <div class="flex items-center gap-4"><button class="p-2 hover:bg-gray-100 rounded-lg" style="position: relative;"><i class="fas fa-bell text-gray-600"></i><span style="position: absolute; top: 4px; right: 4px; width: 8px; height: 8px; background-color: #ef4444; border-radius: 50%;"></span></button><button class="btn btn-primary">Ver Loja</button></div>
+        <div style="flex: 1; max-width: 600px;"><input type="text" id="search-global" placeholder="Buscar no banco..." onkeyup="carregar()" style="padding-left: 15px;"></div>
+        <div class="flex items-center gap-4"><button class="btn btn-primary">Ver Loja</button></div>
     </header>
 
     <main class="main-content">
         <div id="dashboard-section" class="section">
-            <h1 class="text-2xl font-bold text-gray-900 mb-6">Dashboard</h1>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                <div class="stat-card"><div class="flex items-center justify-between mb-4"><div class="bg-green-500 w-12 h-12 rounded-lg flex items-center justify-center"><i class="fas fa-dollar-sign text-white"></i></div><span class="text-sm text-green-600 font-medium">+12,5%</span></div><p class="text-2xl font-bold text-gray-900">R$ 12.847,00</p><p class="text-sm text-gray-500 mt-1">Vendas Hoje</p></div>
-                <div class="stat-card"><div class="flex items-center justify-between mb-4"><div class="bg-blue-500 w-12 h-12 rounded-lg flex items-center justify-center"><i class="fas fa-shopping-cart text-white"></i></div><span class="text-sm text-green-600 font-medium">+8,2%</span></div><p class="text-2xl font-bold text-gray-900">156</p><p class="text-sm text-gray-500 mt-1">Pedidos</p></div>
-                <div class="stat-card"><div class="flex items-center justify-between mb-4"><div class="bg-purple-500 w-12 h-12 rounded-lg flex items-center justify-center"><i class="fas fa-box text-white"></i></div><span class="text-sm text-green-600 font-medium">+3</span></div><p class="text-2xl font-bold text-gray-900">1.247</p><p class="text-sm text-gray-500 mt-1">Produtos</p></div>
-                <div class="stat-card"><div class="flex items-center justify-between mb-4"><div class="bg-orange-500 w-12 h-12 rounded-lg flex items-center justify-center"><i class="fas fa-eye text-white"></i></div><span class="text-sm text-red-600 font-medium">-2,4%</span></div><p class="text-2xl font-bold text-gray-900">8.429</p><p class="text-sm text-gray-500 mt-1">Visitantes</p></div>
-            </div>
-            <div class="stat-card"><div class="flex items-center justify-between mb-6"><div><h3 class="text-lg font-semibold text-gray-900">Pedidos Recentes</h3><p class="text-sm text-gray-500">Últimas transações</p></div><button class="text-sm font-medium text-blue-600 hover:text-blue-700">Ver Todos</button></div>
-                <div style="overflow-x: auto;"><table><thead><tr><th>Pedido</th><th>Cliente</th><th>Produto</th><th>Valor</th><th>Status</th></tr></thead><tbody><tr><td class="font-medium">#1234</td><td>João Silva</td><td>iPhone 14 Pro</td><td class="font-medium">R$ 7.499,00</td><td><span class="badge badge-success">Pago</span></td></tr><tr><td class="font-medium">#1233</td><td>Maria Santos</td><td>Notebook Dell</td><td class="font-medium">R$ 4.299,00</td><td><span class="badge badge-warning">Processando</span></td></tr><tr><td class="font-medium">#1232</td><td>Pedro Costa</td><td>Fone Bluetooth</td><td class="font-medium">R$ 299,00</td><td><span class="badge badge-success">Pago</span></td></tr><tr><td class="font-medium">#1231</td><td>Ana Paula</td><td>Smart TV 55"</td><td class="font-medium">R$ 2.899,00</td><td><span class="badge badge-success">Pago</span></td></tr><tr><td class="font-medium">#1230</td><td>Carlos Lima</td><td>Cadeira Gamer</td><td class="font-medium">R$ 1.499,00</td><td><span class="badge badge-info">Enviado</span></td></tr></tbody></table></div>
+            <h1 class="text-2xl font-bold text-gray-900 mb-6">Visão Geral</h1>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                <div class="stat-card"><p class="text-sm text-gray-500 mb-1">Faturamento Bruto</p><h2 id="dash-money" class="text-3xl font-bold text-gray-900">R$ 0,00</h2></div>
+                <div class="stat-card"><p class="text-sm text-gray-500 mb-1">Total de Jogos</p><h2 id="dash-count" class="text-3xl font-bold text-gray-900">0</h2></div>
+                <div class="stat-card"><p class="text-sm text-gray-500 mb-1">Status do Banco</p><h2 class="text-xl font-bold text-green-600">Online</h2></div>
             </div>
         </div>
 
         <div id="produtos-section" class="section hidden">
-            <div class="flex items-center justify-between mb-6"><div><h1 class="text-2xl font-bold text-gray-900">Produtos</h1><p class="text-sm text-gray-500 mt-1">Gerencie seu catálogo de produtos</p></div><button class="btn btn-primary" onclick="openProductModal()"><i class="fas fa-plus mr-2"></i>Novo Produto</button></div>
-            <div class="stat-card mb-6"><div class="flex gap-4 mb-4"><div style="flex: 1;"><input type="text" id="search-produtos" placeholder="Buscar produtos..." onkeyup="filterProducts()"></div><select id="filter-categoria" onchange="filterProducts()" class="w-auto"><option value="">Todas categorias</option><option>Eletrônicos</option><option>Áudio</option><option>Móveis</option></select></div><p class="text-sm text-gray-500" id="product-count">Mostrando 6 produtos</p></div>
+            <div class="flex items-center justify-between mb-6">
+                <div><h1 class="text-2xl font-bold text-gray-900">Catálogo de Jogos</h1></div>
+                <button class="btn btn-primary" onclick="openProductModal()"><i class="fas fa-plus mr-2"></i>Novo Jogo</button>
+            </div>
             <div class="product-grid" id="products-container"></div>
         </div>
-
-        <div id="pedidos-section" class="section hidden">
-            <div class="flex items-center justify-between mb-6"><div><h1 class="text-2xl font-bold text-gray-900">Pedidos</h1><p class="text-sm text-gray-500 mt-1">Gerencie todos os seus pedidos</p></div><button class="btn btn-primary"><i class="fas fa-download mr-2"></i>Exportar</button></div>
-            <div class="stat-card mb-6"><input type="text" id="search-pedidos" placeholder="Buscar pedidos..." onkeyup="filterOrders()" class="mb-4"><div class="flex gap-2 overflow-x-auto"><button class="btn status-filter active" data-status="todos" onclick="filterOrdersByStatus('todos')">Todos</button><button class="btn status-filter" data-status="pago" onclick="filterOrdersByStatus('pago')">Pago</button><button class="btn status-filter" data-status="processando" onclick="filterOrdersByStatus('processando')">Processando</button><button class="btn status-filter" data-status="enviado" onclick="filterOrdersByStatus('enviado')">Enviado</button><button class="btn status-filter" data-status="entregue" onclick="filterOrdersByStatus('entregue')">Entregue</button></div></div>
-            <div class="stat-card"><div style="overflow-x: auto;"><table id="orders-table"><thead><tr><th>Pedido</th><th>Data</th><th>Cliente</th><th>Valor</th><th>Pagamento</th><th>Status</th><th>Ações</th></tr></thead><tbody id="orders-tbody"></tbody></table></div></div>
-        </div>
-
-        <div id="clientes-section" class="section hidden">
-            <div class="flex items-center justify-between mb-6"><div><h1 class="text-2xl font-bold text-gray-900">Clientes</h1><p class="text-sm text-gray-500 mt-1">Gerencie seus clientes</p></div><button class="btn btn-primary"><i class="fas fa-plus mr-2"></i>Novo Cliente</button></div>
-            <div class="stat-card mb-6"><input type="text" id="search-clientes" placeholder="Buscar clientes..." onkeyup="filterClientes()"></div>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="clientes-container"></div>
-        </div>
-
-        <div id="relatorios-section" class="section hidden"><h1 class="text-2xl font-bold text-gray-900 mb-6">Relatórios</h1><div class="stat-card text-center py-12"><i class="fas fa-chart-bar text-6xl text-gray-300 mb-4"></i><h3 class="text-lg font-semibold text-gray-900 mb-2">Relatórios</h3><p class="text-gray-500">Esta seção está em desenvolvimento</p></div></div>
-        <div id="configuracoes-section" class="section hidden"><h1 class="text-2xl font-bold text-gray-900 mb-6">Configurações</h1><div class="stat-card text-center py-12"><i class="fas fa-cog text-6xl text-gray-300 mb-4"></i><h3 class="text-lg font-semibold text-gray-900 mb-2">Configurações</h3><p class="text-gray-500">Esta seção está em desenvolvimento</p></div></div>
     </main>
 
-    <div id="product-modal" class="modal"><div class="modal-content"><div class="p-6 border-b border-gray-200 flex items-center justify-between"><h2 class="text-xl font-bold text-gray-900">Novo Produto</h2><button onclick="closeProductModal()" class="p-2 hover:bg-gray-100 rounded-lg"><i class="fas fa-times text-gray-500"></i></button></div><form onsubmit="saveProduct(event)" class="p-6"><div class="mb-4"><label class="block text-sm font-medium text-gray-700 mb-2">Nome do Produto *</label><input type="text" id="product-nome" required></div><div class="grid grid-cols-2 gap-4 mb-4"><div><label class="block text-sm font-medium text-gray-700 mb-2">Categoria *</label><select id="product-categoria" required><option>Eletrônicos</option><option>Áudio</option><option>Móveis</option><option>Periféricos</option></select></div><div><label class="block text-sm font-medium text-gray-700 mb-2">Status *</label><select id="product-status" required><option value="ativo">Ativo</option><option value="inativo">Inativo</option></select></div></div><div class="grid grid-cols-2 gap-4 mb-4"><div><label class="block text-sm font-medium text-gray-700 mb-2">Preço (R$) *</label><input type="number" id="product-preco" step="0.01" required></div><div><label class="block text-sm font-medium text-gray-700 mb-2">Estoque *</label><input type="number" id="product-estoque" required></div></div><div class="flex gap-3 pt-4 border-t border-gray-200 mt-6"><button type="button" onclick="closeProductModal()" class="btn" style="flex: 1; border: 1px solid #d1d5db;">Cancelar</button><button type="submit" class="btn btn-primary" style="flex: 1;">Criar Produto</button></div></form></div></div>
+    <div id="product-modal" class="modal">
+        <div class="modal-content p-6">
+            <h2 class="text-xl font-bold mb-4">Adicionar Jogo ao Supabase</h2>
+            <div class="space-y-4">
+                <input type="text" id="p-nome" placeholder="Nome do Jogo">
+                <input type="number" id="p-preco" placeholder="Preço (R$)">
+                <select id="p-categoria">
+                    <option value="Ação">Ação (Vermelho)</option>
+                    <option value="RPG">RPG (Verde)</option>
+                    <option value="Aventura">Aventura (Laranja)</option>
+                    <option value="Esporte">Esporte (Azul)</option>
+                </select>
+                <input type="text" id="p-img" placeholder="URL da Imagem">
+            </div>
+            <div class="flex gap-2 mt-6">
+                <button onclick="closeProductModal()" class="btn border flex-1">Cancelar</button>
+                <button onclick="salvar()" class="btn btn-primary flex-1">Publicar Agora</button>
+            </div>
+        </div>
+    </div>
 
     <script>
-        let produtos = [
-            { id: 1, nome: 'iPhone 14 Pro', categoria: 'Eletrônicos', preco: 7499.00, estoque: 45, status: 'ativo', vendas: 127 },
-            { id: 2, nome: 'Notebook Dell', categoria: 'Eletrônicos', preco: 4299.00, estoque: 23, status: 'ativo', vendas: 89 },
-            { id: 3, nome: 'Fone Bluetooth', categoria: 'Áudio', preco: 299.00, estoque: 0, status: 'inativo', vendas: 234 },
-            { id: 4, nome: 'Smart TV 55"', categoria: 'Eletrônicos', preco: 2899.00, estoque: 12, status: 'ativo', vendas: 56 },
-            { id: 5, nome: 'Cadeira Gamer', categoria: 'Móveis', preco: 1499.00, estoque: 8, status: 'ativo', vendas: 45 },
-            { id: 6, nome: 'Mouse Logitech', categoria: 'Periféricos', preco: 399.00, estoque: 67, status: 'ativo', vendas: 178 }
-        ];
-        let pedidos = [
-            { id: '#1234', data: '25/01/2026', cliente: 'João Silva', email: 'joao@email.com', valor: 7499.00, pagamento: 'Cartão', status: 'pago' },
-            { id: '#1233', data: '25/01/2026', cliente: 'Maria Santos', email: 'maria@email.com', valor: 4299.00, pagamento: 'PIX', status: 'processando' },
-            { id: '#1232', data: '24/01/2026', cliente: 'Pedro Costa', email: 'pedro@email.com', valor: 1299.00, pagamento: 'Boleto', status: 'enviado' },
-            { id: '#1231', data: '24/01/2026', cliente: 'Ana Paula', email: 'ana@email.com', valor: 2899.00, pagamento: 'Cartão', status: 'entregue' },
-            { id: '#1230', data: '23/01/2026', cliente: 'Carlos Lima', email: 'carlos@email.com', valor: 1499.00, pagamento: 'PIX', status: 'pago' }
-        ];
-        let clientes = [
-            { id: 1, nome: 'João Silva', email: 'joao@email.com', telefone: '(11) 98765-4321', cidade: 'São Paulo, SP', pedidos: 12, total: 24580 },
-            { id: 2, nome: 'Maria Santos', email: 'maria@email.com', telefone: '(21) 97654-3210', cidade: 'Rio de Janeiro, RJ', pedidos: 8, total: 15240 },
-            { id: 3, nome: 'Pedro Costa', email: 'pedro@email.com', telefone: '(31) 96543-2109', cidade: 'Belo Horizonte, MG', pedidos: 15, total: 32150 },
-            { id: 4, nome: 'Ana Paula', email: 'ana@email.com', telefone: '(41) 95432-1098', cidade: 'Curitiba, PR', pedidos: 5, total: 8990 },
-            { id: 5, nome: 'Carlos Lima', email: 'carlos@email.com', telefone: '(51) 94321-0987', cidade: 'Porto Alegre, RS', pedidos: 20, total: 45780 },
-            { id: 6, nome: 'Beatriz Souza', email: 'beatriz@email.com', telefone: '(85) 93210-9876', cidade: 'Fortaleza, CE', pedidos: 3, total: 4560 }
-        ];
-        document.querySelectorAll('.menu-item').forEach(item => { item.addEventListener('click', function(e) { e.preventDefault(); const section = this.getAttribute('data-section'); document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active')); this.classList.add('active'); document.querySelectorAll('.section').forEach(s => s.classList.add('hidden')); document.getElementById(section + '-section').classList.remove('hidden'); }); });
-        function showToast(message) { const toast = document.getElementById('toast'); document.getElementById('toast-message').textContent = message; toast.classList.add('active'); setTimeout(() => toast.classList.remove('active'), 3000); }
-        function renderProducts() { const container = document.getElementById('products-container'); const searchTerm = document.getElementById('search-produtos').value.toLowerCase(); const categoria = document.getElementById('filter-categoria').value; let filtered = produtos.filter(p => { const matchSearch = p.nome.toLowerCase().includes(searchTerm); const matchCategoria = !categoria || p.categoria === categoria; return matchSearch && matchCategoria; }); container.innerHTML = filtered.map(p => `<div class="product-card"><img src="https://via.placeholder.com/400x400?text=${encodeURIComponent(p.nome)}" class="product-image" alt="${p.nome}"><div class="p-4"><div class="flex items-start justify-between mb-2"><div><h3 class="font-semibold text-gray-900">${p.nome}</h3><p class="text-sm text-gray-500">${p.categoria}</p></div><span class="badge ${p.status === 'ativo' ? 'badge-success' : 'badge-danger'}">${p.status === 'ativo' ? 'Ativo' : 'Inativo'}</span></div><div class="flex items-center justify-between mb-4"><div><p class="text-xl font-bold text-gray-900">R$ ${p.preco.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</p><p class="text-xs text-gray-500">${p.vendas} vendas</p></div><div class="text-right"><p class="text-sm font-medium ${p.estoque > 0 ? 'text-gray-900' : 'text-red-600'}">${p.estoque > 0 ? p.estoque + ' em estoque' : 'Sem estoque'}</p></div></div><div class="flex gap-2 pt-3 border-t border-gray-100"><button onclick="editProduct(${p.id})" class="btn" style="flex: 1; border: 1px solid #d1d5db; font-size: 12px;"><i class="fas fa-edit mr-1"></i>Editar</button><button onclick="deleteProduct(${p.id})" class="btn" style="border: 1px solid #fca5a5; color: #dc2626; font-size: 12px;"><i class="fas fa-trash"></i></button></div></div></div>`).join(''); document.getElementById('product-count').textContent = `Mostrando ${filtered.length} de ${produtos.length} produtos`; }
-        function filterProducts() { renderProducts(); }
+        const SB_URL = "https://grogiwbccvnbyjgxvafw.supabase.co/rest/v1/jogos";
+        const SB_HEADERS = {
+            'apikey': "sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14",
+            'Authorization': "Bearer sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14",
+            'Content-Type': 'application/json',
+            'Prefer': 'return=representation'
+        };
+
+        function showSection(id) {
+            document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
+            document.getElementById(id + '-section').classList.remove('hidden');
+            document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+        }
+
         function openProductModal() { document.getElementById('product-modal').classList.add('active'); }
-        function closeProductModal() { document.getElementById('product-modal').classList.remove('active'); document.getElementById('product-nome').value = ''; document.getElementById('product-preco').value = ''; document.getElementById('product-estoque').value = ''; }
-        function saveProduct(e) { e.preventDefault(); const newProduct = { id: produtos.length + 1, nome: document.getElementById('product-nome').value, categoria: document.getElementById('product-categoria').value, preco: parseFloat(document.getElementById('product-preco').value), estoque: parseInt(document.getElementById('product-estoque').value), status: document.getElementById('product-status').value, vendas: 0 }; produtos.push(newProduct); renderProducts(); closeProductModal(); showToast('Produto criado com sucesso!'); }
-        function deleteProduct(id) { if (confirm('Tem certeza que deseja excluir este produto?')) { produtos = produtos.filter(p => p.id !== id); renderProducts(); showToast('Produto excluído com sucesso!'); } }
-        function editProduct(id) { showToast('Função de edição em desenvolvimento'); }
-        let currentOrderStatus = 'todos';
-        function renderOrders() { const tbody = document.getElementById('orders-tbody'); const searchTerm = document.getElementById('search-pedidos').value.toLowerCase(); let filtered = pedidos.filter(p => { const matchSearch = p.id.toLowerCase().includes(searchTerm) || p.cliente.toLowerCase().includes(searchTerm) || p.email.toLowerCase().includes(searchTerm); const matchStatus = currentOrderStatus === 'todos' || p.status === currentOrderStatus; return matchSearch && matchStatus; }); tbody.innerHTML = filtered.map(p => { let badgeClass = 'badge-success'; if (p.status === 'processando') badgeClass = 'badge-warning'; if (p.status === 'enviado') badgeClass = 'badge-info'; return `<tr><td class="font-medium">${p.id}</td><td>${p.data}</td><td><div><p class="font-medium">${p.cliente}</p><p class="text-xs text-gray-500">${p.email}</p></div></td><td class="font-medium">R$ ${p.valor.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td><td>${p.pagamento}</td><td><span class="badge ${badgeClass}">${p.status.charAt(0).toUpperCase() + p.status.slice(1)}</span></td><td><button class="p-2 hover:bg-gray-100 rounded-lg"><i class="fas fa-eye text-gray-600"></i></button></td></tr>`; }).join(''); }
-        function filterOrders() { renderOrders(); }
-        function filterOrdersByStatus(status) { currentOrderStatus = status; document.querySelectorAll('.status-filter').forEach(btn => { btn.classList.remove('active'); if (btn.getAttribute('data-status') === status) { btn.classList.add('active'); } }); renderOrders(); }
-        function renderClientes() { const container = document.getElementById('clientes-container'); const searchTerm = document.getElementById('search-clientes').value.toLowerCase(); let filtered = clientes.filter(c => { return c.nome.toLowerCase().includes(searchTerm) || c.email.toLowerCase().includes(searchTerm) || c.telefone.includes(searchTerm); }); const colors = ['bg-blue-500', 'bg-purple-500', 'bg-pink-500', 'bg-orange-500', 'bg-green-500', 'bg-indigo-500']; container.innerHTML = filtered.map((c, index) => `<div class="stat-card"><div class="flex items-start gap-4 mb-4"><div class="${colors[index % colors.length]} w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold">${c.nome.split(' ').map(n => n[0]).join('')}</div><div style="flex: 1; min-width: 0;"><h3 class="font-semibold text-gray-900">${c.nome}</h3><p class="text-sm text-gray-500 truncate">${c.email}</p></div></div><div class="space-y-2 mb-4"><div class="flex items-center gap-2 text-sm text-gray-600"><i class="fas fa-phone text-gray-400"></i>${c.telefone}</div><div class="flex items-center gap-2 text-sm text-gray-600"><i class="fas fa-map-marker-alt text-gray-400"></i>${c.cidade}</div></div><div class="grid grid-cols-2 gap-4 pt-4 border-t border-gray-100"><div><p class="text-xs text-gray-500">Total Gasto</p><p class="text-sm font-semibold text-gray-900 mt-1">R$ ${c.total.toLocaleString('pt-BR')}</p></div><div><p class="text-xs text-gray-500">Pedidos</p><p class="text-sm font-semibold text-gray-900 mt-1">${c.pedidos}</p></div></div></div>`).join(''); }
-        function filterClientes() { renderClientes(); }
-        renderProducts(); renderOrders(); renderClientes();
-        const style = document.createElement('style'); style.textContent = `.status-filter { background: white; border: 1px solid #d1d5db; color: #6b7280; } .status-filter.active { background: #eff6ff; color: #2563eb; border-color: #2563eb; } .status-filter:hover { background: #f9fafb; }`; document.head.appendChild(style);
+        function closeProductModal() { document.getElementById('product-modal').classList.remove('active'); }
+
+        async function carregar() {
+            const res = await fetch(SB_URL + "?select=*", { headers: SB_HEADERS });
+            const dados = await res.json();
+
+            // Dashboard
+            document.getElementById('dash-count').innerText = dados.length;
+            const total = dados.reduce((acc, j) => acc + parseFloat(j.preco || 0), 0);
+            document.getElementById('dash-money').innerText = `R$ ${total.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+
+            // Grid com CORES POR JOGO
+            const container = document.getElementById('products-container');
+            container.innerHTML = dados.map(j => {
+                let cor = "#3b82f6";
+                if(j.categoria === 'Ação') cor = "#ef4444";
+                if(j.categoria === 'RPG') cor = "#22c55e";
+                if(j.categoria === 'Aventura') cor = "#f97316";
+
+                return `
+                <div class="product-card" style="border-top-color: ${cor}">
+                    <img src="${j.url_da_imagem || 'https://via.placeholder.com/400'}" class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <span class="text-[10px] uppercase font-bold px-2 py-1 rounded bg-gray-100" style="color: ${cor}">${j.categoria}</span>
+                        <h3 class="font-bold text-gray-900 mt-2">${j.nome}</h3>
+                        <p class="text-xl font-bold text-blue-600 mt-1">R$ ${parseFloat(j.preco).toFixed(2)}</p>
+                        <button onclick="excluir(${j.id})" class="mt-4 w-full text-red-500 text-xs font-bold py-2 border border-red-100 rounded hover:bg-red-50">EXCLUIR</button>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        async function salvar() {
+            const payload = {
+                nome: document.getElementById('p-nome').value,
+                preco: parseFloat(document.getElementById('p-preco').value),
+                categoria: document.getElementById('p-categoria').value,
+                url_da_imagem: document.getElementById('p-img').value
+            };
+            await fetch(SB_URL, { method: 'POST', headers: SB_HEADERS, body: JSON.stringify(payload) });
+            closeProductModal();
+            carregar();
+        }
+
+        async function excluir(id) {
+            if(!confirm("Deletar jogo?")) return;
+            await fetch(`${SB_URL}?id=eq.${id}`, { method: 'DELETE', headers: SB_HEADERS });
+            carregar();
+        }
+
+        carregar();
     </script>
 </body>
 </html>
