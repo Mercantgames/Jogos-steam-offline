@@ -1,714 +1,257 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>MercantGames - Painel Admin</title>
-
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- FontAwesome -->
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-  />
-
-  <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
-        Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-      background-color: #f9fafb;
-      --cor-principal: #2563eb;
-    }
-    .sidebar {
-      width: 256px;
-      background: white;
-      border-right: 1px solid #e5e7eb;
-      height: 100vh;
-      position: fixed;
-      left: 0;
-      top: 0;
-      overflow-y: auto;
-    }
-    .header {
-      height: 64px;
-      background: white;
-      border-bottom: 1px solid #e5e7eb;
-      position: fixed;
-      top: 0;
-      left: 256px;
-      right: 0;
-      z-index: 10;
-      display: flex;
-      align-items: center;
-      padding: 0 24px;
-      justify-content: space-between;
-    }
-    .main-content {
-      margin-left: 256px;
-      margin-top: 64px;
-      min-height: calc(100vh - 64px);
-      padding: 24px;
-    }
-    .menu-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 16px;
-      margin-bottom: 4px;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.2s;
-      color: #374151;
-      text-decoration: none;
-    }
-    .menu-item:hover {
-      background-color: #f3f4f6;
-    }
-    .menu-item.active {
-      background-color: #eff6ff;
-      color: var(--cor-principal);
-    }
-    .stat-card {
-      background: white;
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
-      padding: 24px;
-    }
-    .btn {
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s;
-      border: none;
-      font-size: 14px;
-    }
-    .btn-primary {
-      background-color: var(--cor-principal);
-      color: white;
-    }
-    .btn-primary:hover {
-      background-color: #1d4ed8;
-    }
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 50;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-    }
-    .modal.active {
-      display: flex;
-    }
-    .modal-content {
-      background: white;
-      border-radius: 12px;
-      max-width: 600px;
-      width: 100%;
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-    .toast {
-      position: fixed;
-      top: 24px;
-      right: 24px;
-      background: white;
-      padding: 16px 24px;
-      border-radius: 8px;
-      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-      display: none;
-      z-index: 100;
-      border-left: 4px solid #10b981;
-    }
-    .toast.active {
-      display: block;
-      animation: slideIn 0.3s ease;
-    }
-    @keyframes slideIn {
-      from {
-        transform: translateX(100%);
-        opacity: 0;
-      }
-      to {
-        transform: translateX(0);
-        opacity: 1;
-      }
-    }
-    .hidden {
-      display: none !important;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    th,
-    td {
-      padding: 12px 16px;
-      text-align: left;
-      border-bottom: 1px solid #f3f4f6;
-    }
-    th {
-      background-color: #f9fafb;
-      font-weight: 500;
-      color: #6b7280;
-      font-size: 14px;
-    }
-    tr:hover {
-      background-color: #f9fafb;
-    }
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 4px 8px;
-      border-radius: 9999px;
-      font-size: 12px;
-      font-weight: 500;
-    }
-    .badge-success {
-      background-color: #d1fae5;
-      color: #065f46;
-    }
-    .badge-warning {
-      background-color: #fef3c7;
-      color: #92400e;
-    }
-    .badge-info {
-      background-color: #dbeafe;
-      color: #1e40af;
-    }
-    .badge-danger {
-      background-color: #fee2e2;
-      color: #991b1b;
-    }
-    input,
-    select {
-      width: 100%;
-      padding: 8px 16px;
-      border: 1px solid #d1d5db;
-      border-radius: 8px;
-      font-size: 14px;
-    }
-    input:focus,
-    select:focus {
-      outline: none;
-      border-color: var(--cor-principal);
-      ring: 2px;
-      ring-color: var(--cor-principal);
-    }
-    .product-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 24px;
-    }
-    .product-card {
-      background: white;
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
-      overflow: hidden;
-      transition: all 0.2s;
-    }
-    .product-card:hover {
-      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-    }
-    .product-image {
-      width: 100%;
-      aspect-ratio: 1;
-      background-color: #f3f4f6;
-      object-fit: cover;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel Admin - MercantGames</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  * {margin:0; padding:0; box-sizing:border-box;}
+  body {font-family: 'Inter', sans-serif; background-color:#f9fafb;}
+  .sidebar {width:256px; background:white; border-right:1px solid #e5e7eb; height:100vh; position:fixed; left:0; top:0; overflow-y:auto;}
+  .header {height:64px; background:white; border-bottom:1px solid #e5e7eb; position:fixed; top:0; left:256px; right:0; z-index:10; display:flex; align-items:center; padding:0 24px; justify-content:space-between;}
+  .main-content {margin-left:256px; margin-top:64px; min-height:calc(100vh - 64px); padding:24px;}
+  .menu-item {display:flex; align-items:center; gap:12px; padding:12px 16px; margin-bottom:4px; border-radius:8px; cursor:pointer; transition:all 0.2s; color:#374151; text-decoration:none;}
+  .menu-item:hover {background-color:#f3f4f6;}
+  .menu-item.active {background-color:#eff6ff; color:#2563eb;}
+  .stat-card {background:white; border:1px solid #e5e7eb; border-radius:8px; padding:24px;}
+  .btn {padding:8px 16px; border-radius:8px; font-weight:500; cursor:pointer; transition:all 0.2s; border:none; font-size:14px;}
+  .btn-primary {background-color:#2563eb; color:white;}
+  .btn-primary:hover {background-color:#1d4ed8;}
+  .modal {display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:50; align-items:center; justify-content:center; padding:16px;}
+  .modal.active {display:flex;}
+  .modal-content {background:white; border-radius:12px; max-width:600px; width:100%; max-height:90vh; overflow-y:auto;}
+  .toast {position:fixed; top:24px; right:24px; background:white; padding:16px 24px; border-radius:8px; box-shadow:0 10px 15px -3px rgba(0,0,0,0.1); display:none; z-index:100; border-left:4px solid #10b981;}
+  .toast.active {display:block; animation:slideIn 0.3s ease;}
+  @keyframes slideIn {from {transform:translateX(100%); opacity:0;} to {transform:translateX(0); opacity:1;}}
+  .hidden {display:none !important;}
+  table {width:100%; border-collapse:collapse;}
+  th, td {padding:12px 16px; text-align:left; border-bottom:1px solid #f3f4f6;}
+  th {background-color:#f9fafb; font-weight:500; color:#6b7280; font-size:14px;}
+  tr:hover {background-color:#f9fafb;}
+  .badge {display:inline-flex; align-items:center; gap:4px; padding:4px 8px; border-radius:9999px; font-size:12px; font-weight:500;}
+  .badge-success {background-color:#d1fae5; color:#065f46;}
+  .badge-warning {background-color:#fef3c7; color:#92400e;}
+  .badge-info {background-color:#dbeafe; color:#1e40af;}
+  .badge-danger {background-color:#fee2e2; color:#991b1b;}
+  input, select, textarea {width:100%; padding:8px 16px; border:1px solid #d1d5db; border-radius:8px; font-size:14px;}
+  input:focus, select:focus, textarea:focus {outline:none; border-color:#2563eb;}
+  .product-grid {display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:24px;}
+  .product-card {background:white; border:1px solid #e5e7eb; border-radius:8px; overflow:hidden; transition:all 0.2s;}
+  .product-card:hover {box-shadow:0 10px 15px -3px rgba(0,0,0,0.1);}
+  .product-image {width:100%; aspect-ratio:1; background-color:#f3f4f6; object-fit:cover;}
+</style>
 </head>
 <body>
-  <div id="toast" class="toast">
-    <div class="flex items-center gap-2">
-      <i class="fas fa-check-circle text-green-600"></i>
-      <span id="toast-message"></span>
+<div id="toast" class="toast"><div class="flex items-center gap-2"><i class="fas fa-check-circle text-green-600"></i><span id="toast-message"></span></div></div>
+
+<aside class="sidebar">
+  <div class="h-16 flex items-center px-6 border-b border-gray-200">
+    <div class="flex items-center gap-2"><div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center"><i class="fas fa-store text-white"></i></div><span class="font-semibold text-lg">MercantGames</span></div>
+  </div>
+  <nav class="p-4">
+    <a href="#" class="menu-item active" data-section="dashboard"><i class="fas fa-home w-5"></i><span>Dashboard</span></a>
+    <a href="#" class="menu-item" data-section="pedidos"><i class="fas fa-shopping-cart w-5"></i><span>Pedidos</span></a>
+    <a href="#" class="menu-item" data-section="produtos"><i class="fas fa-box w-5"></i><span>Jogos</span></a>
+    <a href="#" class="menu-item" data-section="clientes"><i class="fas fa-users w-5"></i><span>Clientes</span></a>
+    <a href="#" class="menu-item" data-section="minha-loja"><i class="fas fa-store-alt w-5"></i><span>Minha Loja</span></a>
+    <a href="#" class="menu-item" data-section="relatorios"><i class="fas fa-chart-bar w-5"></i><span>Relatórios</span></a>
+    <a href="#" class="menu-item" data-section="configuracoes"><i class="fas fa-cog w-5"></i><span>Configurações</span></a>
+  </nav>
+  <div style="position:absolute; bottom:0; left:0; right:0; padding:16px; border-top:1px solid #e5e7eb; background:white;">
+    <div class="flex items-center gap-3 px-4 py-2"><div class="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center"><span class="text-sm font-medium text-gray-700">AD</span></div><div><p class="text-sm font-medium text-gray-900">Admin</p><p class="text-xs text-gray-500">admin@mercantgames.com</p></div></div>
+  </div>
+</aside>
+
+<header class="header">
+  <div style="flex:1; max-width:600px;"><div style="position:relative;"><i class="fas fa-search" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#9ca3af;"></i><input type="text" placeholder="Buscar pedidos, jogos, clientes..." style="padding-left:40px;"></div></div>
+  <div class="flex items-center gap-4"><button class="p-2 hover:bg-gray-100 rounded-lg" style="position:relative;"><i class="fas fa-bell text-gray-600"></i><span style="position:absolute; top:4px; right:4px; width:8px; height:8px; background-color:#ef4444; border-radius:50%;"></span></button><button class="btn btn-primary" id="btn-ver-loja">Ver Loja</button></div>
+</header>
+
+<main class="main-content">
+  <!-- Dashboard -->
+  <div id="dashboard" class="section">
+    <h1 class="text-2xl font-bold text-gray-900 mb-6">Dashboard</h1>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <div class="stat-card"><p class="text-sm text-gray-500">Total de Jogos</p><p id="dash-count" class="text-2xl font-bold text-gray-900">0</p></div>
+      <div class="stat-card"><p class="text-sm text-gray-500">Faturamento</p><p id="dash-money" class="text-2xl font-bold text-gray-900">R$0</p></div>
+      <div class="stat-card"><p class="text-sm text-gray-500">Clientes</p><p id="dash-clientes" class="text-2xl font-bold text-gray-900">0</p></div>
+      <div class="stat-card"><p class="text-sm text-gray-500">Pedidos</p><p id="dash-pedidos" class="text-2xl font-bold text-gray-900">0</p></div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="stat-card"><canvas id="grafico-faturamento"></canvas></div>
+      <div class="stat-card"><canvas id="grafico-categorias"></canvas></div>
+      <div class="stat-card md:col-span-2"><canvas id="grafico-vendas-categorias"></canvas></div>
     </div>
   </div>
 
-  <aside class="sidebar">
-    <div class="h-16 flex items-center px-6 border-b border-gray-200">
-      <div class="flex items-center gap-2">
-        <div
-          class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center"
-        >
-          <i class="fas fa-store text-white"></i>
-        </div>
-        <span class="font-semibold text-lg">MercantGames</span>
+  <!-- Produtos / Jogos -->
+  <div id="produtos" class="section hidden">
+    <h1 class="text-2xl font-bold text-gray-900 mb-6">Jogos</h1>
+    <div class="product-grid" id="lista-jogos"></div>
+  </div>
+
+  <!-- Pedidos -->
+  <div id="pedidos" class="section hidden">
+    <h1 class="text-2xl font-bold text-gray-900 mb-6">Pedidos</h1>
+    <table>
+      <thead>
+        <tr><th>ID</th><th>Cliente</th><th>Total</th><th>Status</th></tr>
+      </thead>
+      <tbody id="lista-pedidos"></tbody>
+    </table>
+  </div>
+
+  <!-- Clientes -->
+  <div id="clientes" class="section hidden">
+    <h1 class="text-2xl font-bold text-gray-900 mb-6">Clientes</h1>
+    <table>
+      <thead><tr><th>Nome</th><th>Email</th><th>Pedidos</th></tr></thead>
+      <tbody id="lista-clientes"></tbody>
+    </table>
+  </div>
+
+  <!-- Minha Loja -->
+  <div id="minha-loja" class="section hidden">
+    <h1 class="text-2xl font-bold text-gray-900 mb-6">Minha Loja</h1>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <label>Nome da Loja</label>
+        <input type="text" id="nome-loja" placeholder="Nome da Loja">
+        <label class="mt-2">Cor Primária</label>
+        <input type="color" id="cor-loja">
+        <label class="mt-2">Fonte</label>
+        <select id="fonte-loja"><option value="Inter">Inter</option><option value="Arial">Arial</option></select>
+        <label class="mt-2">Banner (URL)</label>
+        <input type="text" id="banner-loja" placeholder="URL do banner">
+        <label class="mt-2">Logo (URL)</label>
+        <input type="text" id="logo-loja" placeholder="URL do logo">
+        <label class="mt-2">Políticas da Loja</label>
+        <textarea id="politicas-loja" rows="5"></textarea>
+      </div>
+      <div>
+        <h2 class="font-bold mb-2">Preview da Loja</h2>
+        <div id="banner-preview" class="w-full h-48 bg-gray-200 rounded-lg mb-2 flex items-center justify-center">Banner</div>
+        <img id="logo-preview" class="w-32 h-32 mb-2" src="">
+        <h3 id="nome-loja-preview" class="text-xl font-bold"></h3>
+        <p id="politicas-preview" class="text-gray-700"></p>
       </div>
     </div>
-    <nav class="p-4">
-      <a href="#" class="menu-item active" data-section="dashboard"
-        ><i class="fas fa-home w-5"></i><span>Dashboard</span></a
-      >
-      <a href="#" class="menu-item" data-section="jogos"
-        ><i class="fas fa-gamepad w-5"></i><span>Jogos</span></a
-      >
-      <a href="#" class="menu-item" data-section="minha-loja"
-        ><i class="fas fa-store w-5"></i><span>Minha Loja</span></a
-      >
-    </nav>
-    <div
-      style="
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        padding: 16px;
-        border-top: 1px solid #e5e7eb;
-        background: white;
-      "
-    >
-      <div class="flex items-center gap-3 px-4 py-2">
-        <div
-          class="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center"
-        >
-          <span class="text-sm font-medium text-gray-700">AD</span>
-        </div>
-        <div>
-          <p class="text-sm font-medium text-gray-900">Admin</p>
-          <p class="text-xs text-gray-500">admin@mercantgames.com</p>
-        </div>
-      </div>
-    </div>
-  </aside>
+  </div>
 
-  <header class="header">
-    <div style="flex: 1; max-width: 600px">
-      <div style="position: relative">
-        <i
-          class="fas fa-search"
-          style="
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #9ca3af;
-          "
-        ></i>
-        <input
-          type="text"
-          placeholder="Buscar jogos..."
-          id="input-busca"
-          style="padding-left: 40px"
-        />
-      </div>
-    </div>
-    <div class="flex items-center gap-4">
-      <button
-        class="p-2 hover:bg-gray-100 rounded-lg"
-        style="position: relative"
-        title="Notificações"
-      >
-        <i class="fas fa-bell text-gray-600"></i>
-        <span
-          style="
-            position: absolute;
-            top: 4px;
-            right: 4px;
-            width: 8px;
-            height: 8px;
-            background-color: #ef4444;
-            border-radius: 50%;
-          "
-        ></span>
-      </button>
-      <button class="btn btn-primary" id="btn-ver-loja">Ver Loja</button>
-    </div>
-  </header>
+  <!-- Relatórios -->
+  <div id="relatorios" class="section hidden">
+    <h1 class="text-2xl font-bold text-gray-900 mb-6">Relatórios</h1>
+    <p>Relatórios detalhados de vendas, produtos e clientes (simulados).</p>
+  </div>
 
-  <main class="main-content">
-    <!-- Dashboard -->
-    <section id="dashboard" class="section">
-      <h1 class="text-2xl font-bold text-gray-900 mb-6">Dashboard</h1>
+  <!-- Configurações -->
+  <div id="configuracoes" class="section hidden">
+    <h1 class="text-2xl font-bold text-gray-900 mb-6">Configurações</h1>
+    <p>Configurações gerais da loja.</p>
+  </div>
+</main>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <div class="stat-card">
-          <div class="flex items-center justify-between mb-4">
-            <div
-              class="bg-green-500 w-12 h-12 rounded-lg flex items-center justify-center"
-            >
-              <i class="fas fa-dollar-sign text-white"></i>
-            </div>
-            <span class="text-sm text-green-600 font-medium">Faturamento</span>
+<script>
+  const sections = document.querySelectorAll(".section");
+  document.querySelectorAll(".menu-item").forEach(item => {
+    item.addEventListener("click", e => {
+      document.querySelector(".menu-item.active").classList.remove("active");
+      item.classList.add("active");
+      sections.forEach(sec => sec.classList.add("hidden"));
+      document.getElementById(item.dataset.section).classList.remove("hidden");
+    });
+  });
+
+  const toast = document.getElementById("toast");
+  function showToast(msg) {
+    document.getElementById("toast-message").innerText = msg;
+    toast.classList.add("active");
+    setTimeout(() => toast.classList.remove("active"), 3000);
+  }
+
+  // Supabase setup
+  const URL = "https://grogiwbccvnbyjgxvafw.supabase.co/rest/v1/jogos";
+  const headers = {
+    "apikey":"sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14",
+    "Authorization":"Bearer sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14"
+  };
+
+  const listaJogos = document.getElementById("lista-jogos");
+  const cores = {"Ação":"#ef4444","RPG":"#22c55e","Aventura":"#f97316","Esporte":"#3b82f6"};
+
+  let chartFaturamento, chartCategorias, chartVendasCategorias;
+
+  async function carregarJogos() {
+    try {
+      const r = await fetch(URL+"?select=*", {headers});
+      if(!r.ok) throw new Error("Erro Supabase: "+r.status);
+      const dados = await r.json();
+
+      let total=0; let contagemCategorias={}; let vendasCategorias={}; let faturamentoMensal=new Array(12).fill(0);
+      listaJogos.innerHTML="";
+
+      dados.forEach(j=>{
+        total+=Number(j.preco);
+        if(!contagemCategorias[j.categoria]) contagemCategorias[j.categoria]=0;
+        contagemCategorias[j.categoria]++;
+        if(!vendasCategorias[j.categoria]) vendasCategorias[j.categoria]=0;
+        vendasCategorias[j.categoria]+=Number(j.preco);
+        const mes=Math.floor(Math.random()*12);
+        faturamentoMensal[mes]+=Number(j.preco);
+
+        const cor=cores[j.categoria]||"#9ca3af";
+        listaJogos.innerHTML+=`
+          <div class="product-card" style="border-top:4px solid ${cor}; padding:16px;">
+            <b>${j.nome}</b>
+            <p class="text-gray-600">${j.categoria}</p>
+            <p class="text-gray-900 font-semibold">R$ ${Number(j.preco).toFixed(2)}</p>
           </div>
-          <p id="dash-money" class="text-2xl font-bold text-gray-900">R$ 0,00</p>
-          <p class="text-sm text-gray-500 mt-1">Total em vendas</p>
-        </div>
-        <div class="stat-card">
-          <div class="flex items-center justify-between mb-4">
-            <div
-              class="bg-blue-500 w-12 h-12 rounded-lg flex items-center justify-center"
-            >
-              <i class="fas fa-gamepad text-white"></i>
-            </div>
-            <span class="text-sm text-blue-600 font-medium">Jogos</span>
-          </div>
-          <p id="dash-count" class="text-2xl font-bold text-gray-900">0</p>
-          <p class="text-sm text-gray-500 mt-1">Total de jogos</p>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="stat-card">
-          <h2 class="text-lg font-semibold mb-4">Faturamento Mensal</h2>
-          <canvas id="grafico-faturamento"></canvas>
-        </div>
-        <div class="stat-card">
-          <h2 class="text-lg font-semibold mb-4">Jogos por Categoria</h2>
-          <canvas id="grafico-categorias"></canvas>
-        </div>
-      </div>
-
-      <div class="stat-card mt-6">
-        <h2 class="text-lg font-semibold mb-4">Vendas por Categoria (Simuladas)</h2>
-        <canvas id="grafico-vendas-categorias"></canvas>
-      </div>
-    </section>
-
-    <!-- Jogos -->
-    <section id="jogos" class="section hidden">
-      <h1 class="text-2xl font-bold text-gray-900 mb-6">Jogos</h1>
-      <div id="lista-jogos" class="product-grid"></div>
-      <button
-        id="btn-novo-jogo"
-        class="btn btn-primary mt-6"
-        style="float: right"
-      >
-        Novo Jogo
-      </button>
-    </section>
-
-    <!-- Minha Loja -->
-    <section id="minha-loja" class="section hidden">
-      <h1 class="text-2xl font-bold text-gray-900 mb-6">Minha Loja</h1>
-      <form id="form-loja" class="space-y-4 max-w-xl">
-        <div>
-          <label for="nome-loja" class="block font-medium mb-1">Nome da Loja</label>
-          <input id="nome-loja" type="text" />
-        </div>
-        <div>
-          <label for="cor-loja" class="block font-medium mb-1">Cor Principal (hex)</label>
-          <input id="cor-loja" type="color" />
-        </div>
-        <div>
-          <label for="fonte-loja" class="block font-medium mb-1">Fonte da Loja</label>
-          <select id="fonte-loja">
-            <option value="Inter, sans-serif">Inter (Padrão)</option>
-            <option value="'Segoe UI', Tahoma, Geneva, Verdana, sans-serif">Segoe UI</option>
-            <option value="'Courier New', Courier, monospace">Courier New</option>
-            <option value="'Comic Sans MS', cursive, sans-serif">Comic Sans MS</option>
-          </select>
-        </div>
-        <div>
-          <label for="banner-loja" class="block font-medium mb-1">URL do Banner</label>
-          <input id="banner-loja" type="url" />
-        </div>
-        <div>
-          <label for="logo-loja" class="block font-medium mb-1">URL do Logo</label>
-          <input id="logo-loja" type="url" />
-        </div>
-        <div>
-          <label for="politicas-loja" class="block font-medium mb-1">Políticas da Loja</label>
-          <textarea id="politicas-loja" rows="5" class="w-full p-2 border rounded"></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary">Salvar Configurações</button>
-      </form>
-
-      <div id="preview-loja" class="mt-6">
-        <h2 class="text-xl font-semibold mb-3">Preview Loja</h2>
-        <div
-          id="banner-preview"
-          style="width: 100%; height: 150px; background-size: cover; background-position: center; border-radius: 8px; margin-bottom: 16px;"
-        ></div>
-        <div class="flex items-center gap-4">
-          <img
-            id="logo-preview"
-            src=""
-            alt="Logo da Loja"
-            style="height: 64px; border-radius: 8px; object-fit: contain"
-          />
-          <h3 id="nome-loja-preview" class="text-2xl font-bold"></h3>
-        </div>
-        <div class="mt-4 p-4 bg-gray-100 rounded" id="politicas-preview"></div>
-      </div>
-    </section>
-  </main>
-
-  <script>
-    // Configurações Supabase
-    const URL = "https://grogiwbccvnbyjgxvafw.supabase.co/rest/v1/jogos";
-    const API_KEY =
-      "sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14";
-
-    const headers = {
-      apikey: API_KEY,
-      Authorization: `Bearer ${API_KEY}`,
-      "Content-Type": "application/json",
-      Prefer: "return=representation",
-    };
-
-    // Cores por categoria
-    const cores = {
-      Ação: "#ef4444",
-      RPG: "#22c55e",
-      Aventura: "#f97316",
-      Esporte: "#3b82f6",
-    };
-
-    // Elementos
-    const menuItems = document.querySelectorAll(".menu-item");
-    const sections = document.querySelectorAll(".section");
-    const listaJogos = document.getElementById("lista-jogos");
-    const formLoja = document.getElementById("form-loja");
-
-    // Toast
-    function showToast(msg) {
-      const toast = document.getElementById("toast");
-      const toastMsg = document.getElementById("toast-message");
-      toastMsg.textContent = msg;
-      toast.classList.add("active");
-      setTimeout(() => toast.classList.remove("active"), 2500);
-    }
-
-    // Navegação entre seções
-    menuItems.forEach((item) => {
-      item.addEventListener("click", (e) => {
-        e.preventDefault();
-        const section = item.getAttribute("data-section");
-
-        menuItems.forEach((i) => i.classList.remove("active"));
-        sections.forEach((s) => s.classList.add("hidden"));
-
-        item.classList.add("active");
-        document.getElementById(section).classList.remove("hidden");
+        `;
       });
+
+      document.getElementById("dash-count").innerText=dados.length;
+      document.getElementById("dash-money").innerText="R$ "+total.toFixed(2);
+      atualizarGraficos(faturamentoMensal, contagemCategorias, vendasCategorias);
+    } catch(e){console.error(e); showToast("Erro ao carregar jogos");}
+  }
+
+  function atualizarGraficos(faturamentoMensal, contagemCategorias, vendasCategorias){
+    const meses=["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"];
+    if(chartFaturamento) chartFaturamento.destroy();
+    if(chartCategorias) chartCategorias.destroy();
+    if(chartVendasCategorias) chartVendasCategorias.destroy();
+
+    chartFaturamento=new Chart(document.getElementById("grafico-faturamento").getContext("2d"),{
+      type:"line",
+      data:{labels:meses,datasets:[{label:"Faturamento (R$)", data:faturamentoMensal.map(v=>v.toFixed(2)), borderColor:"#2563eb", backgroundColor:"rgba(37,99,235,0.2)", fill:true, tension:0.3,}]},
+      options:{responsive:true, plugins:{legend:{display:true}}}
     });
 
-    // Variáveis globais dos gráficos
-    let chartFaturamento, chartCategorias, chartVendasCategorias;
-
-    // Função para carregar jogos e atualizar dashboard
-    async function carregarJogos() {
-      try {
-        const r = await fetch(URL + "?select=*", { headers });
-        if (!r.ok) throw new Error("Erro Supabase: " + r.status);
-
-        const dados = await r.json();
-
-        let total = 0;
-        listaJogos.innerHTML = "";
-
-        const contagemCategorias = {};
-        const vendasCategorias = {};
-        const faturamentoMensal = new Array(12).fill(0);
-
-        dados.forEach((j) => {
-          total += Number(j.preco);
-
-          // Contagem jogos por categoria
-          if (!contagemCategorias[j.categoria]) contagemCategorias[j.categoria] = 0;
-          contagemCategorias[j.categoria]++;
-
-          // Vendas por categoria (simulação)
-          if (!vendasCategorias[j.categoria]) vendasCategorias[j.categoria] = 0;
-          vendasCategorias[j.categoria] += Number(j.preco);
-
-          // Simulação faturamento mensal aleatório (substitua com seus dados reais)
-          const mes = Math.floor(Math.random() * 12);
-          faturamentoMensal[mes] += Number(j.preco);
-
-          const cor = cores[j.categoria] || "#9ca3af";
-
-          // Preenche lista jogos só na aba jogos
-          if (!document.getElementById("jogos").classList.contains("hidden")) {
-            listaJogos.innerHTML += `
-              <div class="product-card" style="border-top: 4px solid ${cor}; padding: 16px;">
-                <b>${j.nome}</b>
-                <p class="text-gray-600">${j.categoria}</p>
-                <p class="text-gray-900 font-semibold">R$ ${Number(j.preco).toFixed(2)}</p>
-              </div>
-            `;
-          }
-        });
-
-        document.getElementById("dash-count").innerText = dados.length;
-        document.getElementById("dash-money").innerText = "R$ " + total.toFixed(2);
-
-        atualizarGraficos(faturamentoMensal, contagemCategorias, vendasCategorias);
-      } catch (e) {
-        console.error("Erro ao carregar jogos:", e);
-        showToast("Erro ao carregar jogos");
-      }
-    }
-
-    // Função para atualizar os gráficos
-    function atualizarGraficos(faturamentoMensal, contagemCategorias, vendasCategorias) {
-      const meses = [
-        "Jan",
-        "Fev",
-        "Mar",
-        "Abr",
-        "Mai",
-        "Jun",
-        "Jul",
-        "Ago",
-        "Set",
-        "Out",
-        "Nov",
-        "Dez",
-      ];
-
-      if (chartFaturamento) chartFaturamento.destroy();
-      if (chartCategorias) chartCategorias.destroy();
-      if (chartVendasCategorias) chartVendasCategorias.destroy();
-
-      const ctxFaturamento = document
-        .getElementById("grafico-faturamento")
-        .getContext("2d");
-      chartFaturamento = new Chart(ctxFaturamento, {
-        type: "line",
-        data: {
-          labels: meses,
-          datasets: [
-            {
-              label: "Faturamento (R$)",
-              data: faturamentoMensal.map((v) => v.toFixed(2)),
-              borderColor: "#2563eb",
-              backgroundColor: "rgba(37, 99, 235, 0.2)",
-              fill: true,
-              tension: 0.3,
-              pointRadius: 5,
-            },
-          ],
-        },
-        options: {
-          responsive: true,
-          scales: {
-            y: {
-              beginAtZero: true,
-              ticks: {
-                callback: (val) => `R$ ${val}`,
-              },
-            },
-          },
-          plugins: {
-            legend: { display: true },
-          },
-        },
-      });
-
-      const ctxCategorias = document
-        .getElementById("grafico-categorias")
-        .getContext("2d");
-      chartCategorias = new Chart(ctxCategorias, {
-        type: "doughnut",
-        data: {
-          labels: Object.keys(contagemCategorias),
-          datasets: [
-            {
-              data: Object.values(contagemCategorias),
-              backgroundColor: Object.keys(contagemCategorias).map(
-                (cat) => cores[cat] || "#9ca3af"
-              ),
-              hoverOffset: 20,
-            },
-          ],
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: { position: "bottom" },
-          },
-        },
-      });
-
-      const ctxVendasCategorias = document
-        .getElementById("grafico-vendas-categorias")
-        .getContext("2d");
-      chartVendasCategorias = new Chart(ctxVendasCategorias, {
-        type: "bar",
-        data: {
-          labels: Object.keys(vendasCategorias),
-          datasets: [
-            {
-              label: "Vendas (R$)",
-              data: Object.values(vendasCategorias).map((v) => v.toFixed(2)),
-              backgroundColor: Object.keys(vendasCategorias).map(
-                (cat) => cores[cat] || "#9ca3af"
-              ),
-            },
-          ],
-        },
-        options: {
-          responsive: true,
-          scales: {
-            y: {
-              beginAtZero: true,
-              ticks: {
-                callback: (val) => `R$ ${val}`,
-              },
-            },
-          },
-          plugins: {
-            legend: { display: false },
-          },
-        },
-      });
-    }
-
-    // Inicializa
-    carregarJogos();
-
-    // Alterna visibilidade da lista de jogos ao trocar aba
-    document.querySelectorAll(".menu-item").forEach((item) => {
-      item.addEventListener("click", () => {
-        if (item.dataset.section === "jogos") {
-          carregarJogos();
-        }
-      });
+    chartCategorias=new Chart(document.getElementById("grafico-categorias").getContext("2d"),{
+      type:"doughnut",
+      data:{labels:Object.keys(contagemCategorias), datasets:[{data:Object.values(contagemCategorias), backgroundColor:Object.keys(contagemCategorias).map(c=>cores[c]||"#9ca3af")}]},
+      options:{responsive:true}
     });
 
-    // Botão Ver Loja abre nova aba
-    document.getElementById("btn-ver-loja").addEventListener("click", () => {
-      window.open("https://mercantgames.vercel.app", "_blank");
+    chartVendasCategorias=new Chart(document.getElementById("grafico-vendas-categorias").getContext("2d"),{
+      type:"bar",
+      data:{labels:Object.keys(vendasCategorias), datasets:[{label:"Vendas (R$)", data:Object.values(vendasCategorias).map(v=>v.toFixed(2)), backgroundColor:Object.keys(vendasCategorias).map(c=>cores[c]||"#9ca3af")}]},
+      options:{responsive:true}
     });
+  }
 
-    // Form Loja preview
-    formLoja.addEventListener("input", () => {
-      const nomeLoja = document.getElementById("nome-loja").value;
-      const corLoja = document.getElementById("cor-loja").value;
-      const fonteLoja = document.getElementById("fonte-loja").value;
-      const bannerLoja = document.getElementById("banner-loja").value;
-      const logoLoja = document.getElementById("logo-loja").value;
-      const politicasLoja = document.getElementById("politicas-loja").value;
+  carregarJogos();
 
-      document.getElementById("nome-loja-preview").innerText = nomeLoja;
-      document.getElementById("banner-preview").style.backgroundImage = bannerLoja
-        ? `url(${bannerLoja})`
-        : "none";
-      document.getElementById("logo-preview").src = logoLoja || "";
-      document.getElementById("politicas-preview").innerText = politicasLoja;
-      document.body.style.setProperty("--cor-principal", corLoja);
-      document.body.style.fontFamily = fonteLoja;
-    });
-  </script>
+  // Minha Loja live preview
+  document.getElementById("nome-loja").addEventListener("input", e=>document.getElementById("nome-loja-preview").innerText=e.target.value);
+  document.getElementById("banner-loja").addEventListener("input", e=>document.getElementById("banner-preview").style.backgroundImage=`url(${e.target.value})`);
+  document.getElementById("logo-loja").addEventListener("input", e=>document.getElementById("logo-preview").src=e.target.value);
+  document.getElementById("politicas-loja").addEventListener("input", e=>document.getElementById("politicas-preview").innerText=e.target.value);
+  document.getElementById("cor-loja").addEventListener("input", e=>document.body.style.setProperty('--cor-primaria', e.target.value));
+  document.getElementById("fonte-loja").addEventListener("change", e=>document.body.style.fontFamily=e.target.value);
+</script>
 </body>
 </html>
