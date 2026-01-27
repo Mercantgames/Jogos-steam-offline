@@ -1,186 +1,213 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel Admin - MercantGames PRO</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background-color: #f9fafb; color: #1f2937; }
-        .sidebar { width: 256px; background: white; border-right: 1px solid #e5e7eb; height: 100vh; position: fixed; left: 0; top: 0; z-index: 50; }
-        .header { height: 64px; background: white; border-bottom: 1px solid #e5e7eb; position: fixed; top: 0; left: 256px; right: 0; z-index: 40; display: flex; align-items: center; padding: 0 24px; justify-content: space-between; }
-        .main-content { margin-left: 256px; margin-top: 64px; padding: 24px; }
-        .menu-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; margin-bottom: 4px; border-radius: 8px; cursor: pointer; transition: 0.2s; color: #4b5563; text-decoration: none; font-weight: 500; }
-        .menu-item:hover { background-color: #f3f4f6; }
-        .menu-item.active { background-color: #eff6ff; color: #2563eb; }
-        .stat-card { background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .btn-primary { background-color: #2563eb; color: white; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; border: none; }
-        .product-card { background: white; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; border-top-width: 6px; transition: 0.3s; }
-        .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); z-index: 100; align-items: center; justify-content: center; }
-        .modal.active { display: flex; }
-        .hidden { display: none !important; }
-        table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; padding: 12px; border-bottom: 2px solid #f3f4f6; color: #6b7280; font-size: 13px; text-transform: uppercase; }
-        td { padding: 12px; border-bottom: 1px solid #f3f4f6; }
-    </style>
+<meta charset="UTF-8">
+<title>Admin da Loja</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+:root{--cor-loja:#2563eb}
+body{font-family:system-ui;background:#f9fafb}
+.sidebar{width:260px;height:100vh;position:fixed;background:#fff;border-right}
+.header{height:64px;position:fixed;left:260px;right:0;background:#fff;border-bottom;display:flex;align-items:center;justify-content:space-between;padding:0 24px}
+.main{margin-left:260px;margin-top:64px;padding:24px}
+.menu-item{padding:12px 16px;border-radius:8px;cursor:pointer;display:flex;gap:12px}
+.menu-item.active{background:#eff6ff;color:var(--cor-loja)}
+.section{display:none}
+.section.active{display:block}
+.card{background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:20px}
+.toast{position:fixed;top:24px;right:24px;background:#fff;padding:16px;border-left:4px solid #22c55e;display:none;z-index:99}
+.toast.active{display:block}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center}
+.modal.active{display:flex}
+button.primary{background:var(--cor-loja);color:#fff;padding:8px 16px;border-radius:8px}
+</style>
 </head>
+
 <body>
 
-    <aside class="sidebar">
-        <div class="h-16 flex items-center px-6 border-b border-gray-100">
-            <div class="flex items-center gap-2"><div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center"><i class="fas fa-gamepad text-white"></i></div><span class="font-bold text-xl tracking-tight">MercantGames</span></div>
-        </div>
-        <nav class="p-4">
-            <div onclick="showSection('dashboard')" class="menu-item active" id="m-dash"><i class="fas fa-home w-5"></i><span>Dashboard</span></div>
-            <div onclick="showSection('produtos')" class="menu-item" id="m-prod"><i class="fas fa-box w-5"></i><span>Meus Jogos</span></div>
-            <div onclick="showSection('pedidos')" class="menu-item" id="m-pedi"><i class="fas fa-shopping-cart w-5"></i><span>Pedidos</span></div>
-            <div onclick="showSection('clientes')" class="menu-item" id="m-clie"><i class="fas fa-users w-5"></i><span>Clientes</span></div>
-        </nav>
-    </aside>
+<div id="toast" class="toast">✔ Salvo com sucesso</div>
 
-    <header class="header">
-        <div class="flex-1 max-w-xl"><input type="text" id="search-global" placeholder="Pesquisar no banco de dados..." onkeyup="carregar()" class="w-full bg-gray-100 border-none rounded-lg px-4 py-2 outline-none focus:ring-2 ring-blue-500"></div>
-        <div class="flex items-center gap-4"><span class="text-sm font-medium text-gray-500">Admin</span><div class="w-8 h-8 bg-blue-100 rounded-full"></div></div>
-    </header>
+<!-- MODAL PRODUTO -->
+<div id="modalProduto" class="modal">
+<div class="bg-white p-6 rounded w-96">
+<h2 class="font-bold mb-4">Novo Produto</h2>
+<input id="pNome" class="border p-2 w-full mb-2" placeholder="Nome">
+<input id="pPreco" class="border p-2 w-full mb-4" placeholder="Preço">
+<button onclick="addProduto()" class="primary w-full">Salvar</button>
+</div>
+</div>
 
-    <main class="main-content">
-        <div id="dashboard-section" class="section">
-            <h1 class="text-2xl font-bold mb-6">Dashboard</h1>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="stat-card border-l-4 border-blue-600">
-                    <p class="text-gray-500 text-sm">Faturamento</p>
-                    <h2 id="dash-money" class="text-3xl font-bold">R$ 0,00</h2>
-                </div>
-                <div class="stat-card border-l-4 border-green-600">
-                    <p class="text-gray-500 text-sm">Total de Jogos</p>
-                    <h2 id="dash-count" class="text-3xl font-bold">0</h2>
-                </div>
-                <div class="stat-card border-l-4 border-orange-600">
-                    <p class="text-gray-500 text-sm">Clientes Ativos</p>
-                    <h2 id="dash-cust" class="text-3xl font-bold">0</h2>
-                </div>
-            </div>
-            <div class="stat-card">
-                <h3 class="font-bold mb-4">Últimas Vendas</h3>
-                <table><thead><tr><th>Cliente</th><th>Data</th><th>Valor</th><th>Status</th></tr></thead><tbody id="last-sales"></tbody></table>
-            </div>
-        </div>
+<!-- SIDEBAR -->
+<aside class="sidebar p-4">
+<h2 id="tituloLoja" class="font-bold text-lg mb-6">Minha Loja</h2>
 
-        <div id="produtos-section" class="section hidden">
-            <div class="flex items-center justify-between mb-6">
-                <h1 class="text-2xl font-bold">Gestão de Jogos</h1>
-                <button class="btn-primary" onclick="toggleModal(true)"><i class="fas fa-plus mr-2"></i>Novo Jogo</button>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="products-container"></div>
-        </div>
+<div class="menu-item active" data-section="dashboard"><i class="fa fa-home"></i>Dashboard</div>
+<div class="menu-item" data-section="produtos"><i class="fa fa-box"></i>Produtos</div>
+<div class="menu-item" data-section="pedidos"><i class="fa fa-cart-shopping"></i>Pedidos</div>
+<div class="menu-item" data-section="clientes"><i class="fa fa-users"></i>Clientes</div>
+<div class="menu-item" data-section="loja"><i class="fa fa-store"></i>Minha Loja</div>
+</aside>
 
-        <div id="pedidos-section" class="section hidden">
-            <h1 class="text-2xl font-bold mb-6">Pedidos Realizados</h1>
-            <div class="stat-card"><table><thead><tr><th>ID</th><th>Data</th><th>Total</th><th>Pagamento</th></tr></thead><tbody id="orders-list"></tbody></table></div>
-        </div>
+<header class="header">
+<input class="border px-4 py-2 rounded w-96" placeholder="Buscar...">
+<button onclick="showToast('Tudo funcionando')" class="primary">Teste</button>
+</header>
 
-        <div id="clientes-section" class="section hidden">
-            <h1 class="text-2xl font-bold mb-6">Lista de Clientes</h1>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="customers-list"></div>
-        </div>
-    </main>
+<main class="main">
 
-    <div id="modal" class="modal">
-        <div class="bg-white p-8 rounded-xl w-[450px] shadow-2xl">
-            <h2 class="text-xl font-bold mb-6">Cadastrar no Supabase</h2>
-            <div class="space-y-4">
-                <input type="text" id="p-nome" placeholder="Nome do Jogo" class="w-full border p-3 rounded-lg">
-                <input type="number" id="p-preco" placeholder="Preço (R$)" class="w-full border p-3 rounded-lg">
-                <select id="p-categoria" class="w-full border p-3 rounded-lg">
-                    <option value="Ação">Ação (Vermelho)</option>
-                    <option value="RPG">RPG (Verde)</option>
-                    <option value="Aventura">Aventura (Laranja)</option>
-                    <option value="Esporte">Esporte (Azul)</option>
-                </select>
-                <input type="text" id="p-img" placeholder="URL da Imagem" class="w-full border p-3 rounded-lg">
-            </div>
-            <div class="flex gap-3 mt-8">
-                <button onclick="toggleModal(false)" class="flex-1 py-3 text-gray-500 font-bold">Cancelar</button>
-                <button onclick="salvar()" class="flex-1 btn-primary py-3">Publicar</button>
-            </div>
-        </div>
-    </div>
+<section id="dashboard" class="section active">
+<div class="grid grid-cols-4 gap-4">
+<div class="card">💰 Vendas<br><b>R$ 12.847</b></div>
+<div class="card">📦 Pedidos<br><b>32</b></div>
+<div class="card">👥 Clientes<br><b>845</b></div>
+<div class="card">📈 Conversão<br><b>3.1%</b></div>
+</div>
+</section>
 
-    <script>
-        const SB_URL = "https://grogiwbccvnbyjgxvafw.supabase.co/rest/v1/jogos";
-        const SB_HEADERS = {
-            'apikey': "sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14",
-            'Authorization': "Bearer sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14",
-            'Content-Type': 'application/json',
-            'Prefer': 'return=representation'
-        };
+<section id="produtos" class="section">
+<div class="flex justify-between mb-4">
+<h1 class="text-xl font-bold">Produtos</h1>
+<button onclick="openModal()" class="primary">Novo Produto</button>
+</div>
+<table class="w-full bg-white rounded">
+<thead><tr><th>Nome</th><th>Preço</th><th>Ações</th></tr></thead>
+<tbody id="listaProdutos"></tbody>
+</table>
+</section>
 
-        function showSection(id) {
-            document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
-            document.getElementById(id + '-section').classList.remove('hidden');
-            document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
-            const activeMenu = { 'dashboard': 'm-dash', 'produtos': 'm-prod', 'pedidos': 'm-pedi', 'clientes': 'm-clie' };
-            document.getElementById(activeMenu[id]).classList.add('active');
-        }
+<section id="pedidos" class="section">
+<h1 class="text-xl font-bold mb-4">Pedidos</h1>
+<div class="card mb-2">Pedido #1023 — <span class="text-green-600">Pago</span></div>
+<div class="card">Pedido #1024 — <span class="text-yellow-600">Pendente</span></div>
+</section>
 
-        function toggleModal(show) { document.getElementById('modal').classList.toggle('active', show); }
+<section id="clientes" class="section">
+<h1 class="text-xl font-bold mb-4">Clientes</h1>
+<div class="card mb-2">João Silva</div>
+<div class="card">Maria Souza</div>
+</section>
 
-        async function carregar() {
-            try {
-                const res = await fetch(SB_URL + "?select=*", { headers: SB_HEADERS });
-                const dados = await res.json();
-                
-                // Dashboard Stats
-                document.getElementById('dash-count').innerText = dados.length;
-                const total = dados.reduce((acc, j) => acc + parseFloat(j.preco || 0), 0);
-                document.getElementById('dash-money').innerText = `R$ ${total.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+<section id="loja" class="section">
+<h1 class="text-2xl font-bold mb-6">Minha Loja</h1>
 
-                // Grid de Jogos com as CORES solicitadas
-                const container = document.getElementById('products-container');
-                container.innerHTML = dados.map(j => {
-                    let cor = "#3b82f6";
-                    if(j.categoria === 'Ação') cor = "#ef4444";
-                    if(j.categoria === 'RPG') cor = "#22c55e";
-                    if(j.categoria === 'Aventura') cor = "#f97316";
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                    return `
-                    <div class="product-card" style="border-top-color: ${cor}">
-                        <img src="${j.url_da_imagem || 'https://via.placeholder.com/400'}" class="w-full h-40 object-cover bg-gray-100">
-                        <div class="p-4">
-                            <span class="text-[10px] font-bold px-2 py-1 rounded-md bg-gray-50" style="color: ${cor}">${j.categoria}</span>
-                            <h3 class="font-bold text-gray-800 mt-2 truncate">${j.nome}</h3>
-                            <p class="text-blue-600 font-black text-lg">R$ ${parseFloat(j.preco).toFixed(2)}</p>
-                            <button onclick="excluir(${j.id})" class="mt-4 w-full text-red-500 text-xs font-bold py-2 border border-red-100 rounded-lg hover:bg-red-50">DELETAR</button>
-                        </div>
-                    </div>`;
-                }).join('');
+<div class="card">
+<h2 class="font-bold mb-4">Informações</h2>
+<input id="lojaNome" class="border p-2 w-full mb-2" placeholder="Nome da loja">
+<input id="lojaLogo" class="border p-2 w-full mb-2" placeholder="URL do Logo">
+<input id="lojaBanner" class="border p-2 w-full mb-4" placeholder="URL do Banner">
+<button onclick="salvarLoja()" class="primary w-full">Salvar</button>
+</div>
 
-            } catch(e) { console.log("Erro banco:", e); }
-        }
+<div class="card">
+<h2 class="font-bold mb-4">Design</h2>
+<label>Cor primária</label>
+<input type="color" id="corPrimaria" class="w-full mb-3">
+<label>Fonte</label>
+<select id="fonteLoja" class="border p-2 w-full mb-4">
+<option value="system-ui">Padrão</option>
+<option value="Arial">Arial</option>
+<option value="Poppins">Poppins</option>
+<option value="Montserrat">Montserrat</option>
+</select>
+<button onclick="salvarDesign()" class="primary w-full">Salvar</button>
+</div>
 
-        async function salvar() {
-            const payload = {
-                nome: document.getElementById('p-nome').value,
-                preco: parseFloat(document.getElementById('p-preco').value),
-                categoria: document.getElementById('p-categoria').value,
-                url_da_imagem: document.getElementById('p-img').value
-            };
-            await fetch(SB_URL, { method: 'POST', headers: SB_HEADERS, body: JSON.stringify(payload) });
-            toggleModal(false);
-            carregar();
-        }
+<div class="card md:col-span-2">
+<h2 class="font-bold mb-4">Políticas</h2>
+<textarea id="politicaPrivacidade" class="border p-2 w-full mb-2" rows="3" placeholder="Privacidade"></textarea>
+<textarea id="politicaTroca" class="border p-2 w-full mb-2" rows="3" placeholder="Troca e devolução"></textarea>
+<textarea id="politicaTermos" class="border p-2 w-full mb-4" rows="3" placeholder="Termos de uso"></textarea>
+<button onclick="salvarPoliticas()" class="primary w-full">Salvar Políticas</button>
+</div>
 
-        async function excluir(id) {
-            if(!confirm("Remover do Supabase?")) return;
-            await fetch(`${SB_URL}?id=eq.${id}`, { method: 'DELETE', headers: SB_HEADERS });
-            carregar();
-        }
+</div>
+</section>
 
-        // Inicializa o Painel
-        carregar();
-    </script>
+</main>
+
+<script>
+const menu=document.querySelectorAll('.menu-item')
+const sections=document.querySelectorAll('.section')
+menu.forEach(m=>m.onclick=()=>{
+menu.forEach(i=>i.classList.remove('active'))
+sections.forEach(s=>s.classList.remove('active'))
+m.classList.add('active')
+document.getElementById(m.dataset.section).classList.add('active')
+})
+
+function showToast(msg){
+const t=document.getElementById('toast')
+t.innerText=msg
+t.classList.add('active')
+setTimeout(()=>t.classList.remove('active'),3000)
+}
+
+function openModal(){modalProduto.classList.add('active')}
+function closeModal(){modalProduto.classList.remove('active')}
+
+let produtos=JSON.parse(localStorage.getItem('produtos'))||[]
+
+function renderProdutos(){
+listaProdutos.innerHTML=''
+produtos.forEach((p,i)=>{
+listaProdutos.innerHTML+=`<tr>
+<td>${p.nome}</td>
+<td>R$ ${p.preco}</td>
+<td><button onclick="delProduto(${i})" class="text-red-600">Excluir</button></td>
+</tr>`
+})
+localStorage.setItem('produtos',JSON.stringify(produtos))
+}
+function addProduto(){
+produtos.push({nome:pNome.value,preco:pPreco.value})
+pNome.value='';pPreco.value=''
+closeModal();renderProdutos();showToast('Produto adicionado')
+}
+function delProduto(i){produtos.splice(i,1);renderProdutos();showToast('Produto removido')}
+renderProdutos()
+
+let loja=JSON.parse(localStorage.getItem('loja'))||{}
+
+function salvarLoja(){
+loja.nome=lojaNome.value
+localStorage.setItem('loja',JSON.stringify(loja))
+aplicarLoja();showToast('Loja salva')
+}
+function salvarDesign(){
+loja.cor=corPrimaria.value
+loja.fonte=fonteLoja.value
+localStorage.setItem('loja',JSON.stringify(loja))
+aplicarLoja();showToast('Design salvo')
+}
+function salvarPoliticas(){
+loja.privacidade=politicaPrivacidade.value
+loja.troca=politicaTroca.value
+loja.termos=politicaTermos.value
+localStorage.setItem('loja',JSON.stringify(loja))
+showToast('Políticas salvas')
+}
+function aplicarLoja(){
+if(loja.nome)tituloLoja.innerText=loja.nome
+if(loja.cor)document.documentElement.style.setProperty('--cor-loja',loja.cor)
+if(loja.fonte)document.body.style.fontFamily=loja.fonte
+}
+function carregarLoja(){
+lojaNome.value=loja.nome||''
+corPrimaria.value=loja.cor||'#2563eb'
+fonteLoja.value=loja.fonte||'system-ui'
+politicaPrivacidade.value=loja.privacidade||''
+politicaTroca.value=loja.troca||''
+politicaTermos.value=loja.termos||''
+aplicarLoja()
+}
+carregarLoja()
+</script>
+
 </body>
 </html>
