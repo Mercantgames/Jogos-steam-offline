@@ -2,211 +2,168 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Admin da Loja</title>
+<title>MercantGames Admin</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
-:root{--cor-loja:#2563eb}
-body{font-family:system-ui;background:#f9fafb}
+:root{--primary:#2563eb}
+body{font-family:Inter,system-ui;background:#f9fafb}
 .sidebar{width:260px;height:100vh;position:fixed;background:#fff;border-right}
 .header{height:64px;position:fixed;left:260px;right:0;background:#fff;border-bottom;display:flex;align-items:center;justify-content:space-between;padding:0 24px}
 .main{margin-left:260px;margin-top:64px;padding:24px}
 .menu-item{padding:12px 16px;border-radius:8px;cursor:pointer;display:flex;gap:12px}
-.menu-item.active{background:#eff6ff;color:var(--cor-loja)}
+.menu-item.active{background:#eff6ff;color:var(--primary)}
 .section{display:none}
 .section.active{display:block}
 .card{background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:20px}
-.toast{position:fixed;top:24px;right:24px;background:#fff;padding:16px;border-left:4px solid #22c55e;display:none;z-index:99}
+.game-card{border-top:5px solid #e5e7eb}
+.toast{position:fixed;top:24px;right:24px;background:#fff;padding:16px;border-left:4px solid #22c55e;display:none;z-index:50}
 .toast.active{display:block}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center}
 .modal.active{display:flex}
-button.primary{background:var(--cor-loja);color:#fff;padding:8px 16px;border-radius:8px}
+button.primary{background:var(--primary);color:#fff;padding:8px 16px;border-radius:8px}
 </style>
 </head>
 
 <body>
 
-<div id="toast" class="toast">✔ Salvo com sucesso</div>
+<div id="toast" class="toast">✔ Ação realizada</div>
 
-<!-- MODAL PRODUTO -->
-<div id="modalProduto" class="modal">
+<!-- MODAL -->
+<div id="modal" class="modal">
 <div class="bg-white p-6 rounded w-96">
-<h2 class="font-bold mb-4">Novo Produto</h2>
-<input id="pNome" class="border p-2 w-full mb-2" placeholder="Nome">
-<input id="pPreco" class="border p-2 w-full mb-4" placeholder="Preço">
-<button onclick="addProduto()" class="primary w-full">Salvar</button>
+<h2 class="font-bold mb-4">Novo Jogo</h2>
+<input id="jogoNome" class="border p-2 w-full mb-2" placeholder="Nome">
+<input id="jogoPreco" class="border p-2 w-full mb-2" placeholder="Preço">
+<select id="jogoCategoria" class="border p-2 w-full mb-4">
+<option value="Ação">Ação</option>
+<option value="RPG">RPG</option>
+<option value="Aventura">Aventura</option>
+<option value="Esporte">Esporte</option>
+</select>
+<button onclick="criarJogo()" class="primary w-full">Salvar</button>
 </div>
 </div>
 
 <!-- SIDEBAR -->
 <aside class="sidebar p-4">
-<h2 id="tituloLoja" class="font-bold text-lg mb-6">Minha Loja</h2>
-
+<h2 class="font-bold text-lg mb-6">MercantGames</h2>
 <div class="menu-item active" data-section="dashboard"><i class="fa fa-home"></i>Dashboard</div>
-<div class="menu-item" data-section="produtos"><i class="fa fa-box"></i>Produtos</div>
-<div class="menu-item" data-section="pedidos"><i class="fa fa-cart-shopping"></i>Pedidos</div>
-<div class="menu-item" data-section="clientes"><i class="fa fa-users"></i>Clientes</div>
-<div class="menu-item" data-section="loja"><i class="fa fa-store"></i>Minha Loja</div>
+<div class="menu-item" data-section="produtos"><i class="fa fa-gamepad"></i>Jogos</div>
 </aside>
 
+<!-- HEADER -->
 <header class="header">
-<input class="border px-4 py-2 rounded w-96" placeholder="Buscar...">
-<button onclick="showToast('Tudo funcionando')" class="primary">Teste</button>
+<span class="font-semibold">Painel Administrativo</span>
+<button onclick="openModal()" class="primary">Novo Jogo</button>
 </header>
 
+<!-- MAIN -->
 <main class="main">
 
+<!-- DASHBOARD -->
 <section id="dashboard" class="section active">
-<div class="grid grid-cols-4 gap-4">
-<div class="card">💰 Vendas<br><b>R$ 12.847</b></div>
-<div class="card">📦 Pedidos<br><b>32</b></div>
-<div class="card">👥 Clientes<br><b>845</b></div>
-<div class="card">📈 Conversão<br><b>3.1%</b></div>
+<div class="grid grid-cols-2 gap-4">
+<div class="card">💰 Faturamento Total<br><b id="dash-money">R$ 0,00</b></div>
+<div class="card">🎮 Total de Jogos<br><b id="dash-count">0</b></div>
 </div>
 </section>
 
+<!-- PRODUTOS -->
 <section id="produtos" class="section">
-<div class="flex justify-between mb-4">
-<h1 class="text-xl font-bold">Produtos</h1>
-<button onclick="openModal()" class="primary">Novo Produto</button>
-</div>
-<table class="w-full bg-white rounded">
-<thead><tr><th>Nome</th><th>Preço</th><th>Ações</th></tr></thead>
-<tbody id="listaProdutos"></tbody>
-</table>
-</section>
-
-<section id="pedidos" class="section">
-<h1 class="text-xl font-bold mb-4">Pedidos</h1>
-<div class="card mb-2">Pedido #1023 — <span class="text-green-600">Pago</span></div>
-<div class="card">Pedido #1024 — <span class="text-yellow-600">Pendente</span></div>
-</section>
-
-<section id="clientes" class="section">
-<h1 class="text-xl font-bold mb-4">Clientes</h1>
-<div class="card mb-2">João Silva</div>
-<div class="card">Maria Souza</div>
-</section>
-
-<section id="loja" class="section">
-<h1 class="text-2xl font-bold mb-6">Minha Loja</h1>
-
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-<div class="card">
-<h2 class="font-bold mb-4">Informações</h2>
-<input id="lojaNome" class="border p-2 w-full mb-2" placeholder="Nome da loja">
-<input id="lojaLogo" class="border p-2 w-full mb-2" placeholder="URL do Logo">
-<input id="lojaBanner" class="border p-2 w-full mb-4" placeholder="URL do Banner">
-<button onclick="salvarLoja()" class="primary w-full">Salvar</button>
-</div>
-
-<div class="card">
-<h2 class="font-bold mb-4">Design</h2>
-<label>Cor primária</label>
-<input type="color" id="corPrimaria" class="w-full mb-3">
-<label>Fonte</label>
-<select id="fonteLoja" class="border p-2 w-full mb-4">
-<option value="system-ui">Padrão</option>
-<option value="Arial">Arial</option>
-<option value="Poppins">Poppins</option>
-<option value="Montserrat">Montserrat</option>
-</select>
-<button onclick="salvarDesign()" class="primary w-full">Salvar</button>
-</div>
-
-<div class="card md:col-span-2">
-<h2 class="font-bold mb-4">Políticas</h2>
-<textarea id="politicaPrivacidade" class="border p-2 w-full mb-2" rows="3" placeholder="Privacidade"></textarea>
-<textarea id="politicaTroca" class="border p-2 w-full mb-2" rows="3" placeholder="Troca e devolução"></textarea>
-<textarea id="politicaTermos" class="border p-2 w-full mb-4" rows="3" placeholder="Termos de uso"></textarea>
-<button onclick="salvarPoliticas()" class="primary w-full">Salvar Políticas</button>
-</div>
-
-</div>
+<div id="listaJogos" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
 </section>
 
 </main>
 
 <script>
-const menu=document.querySelectorAll('.menu-item')
-const sections=document.querySelectorAll('.section')
-menu.forEach(m=>m.onclick=()=>{
-menu.forEach(i=>i.classList.remove('active'))
-sections.forEach(s=>s.classList.remove('active'))
-m.classList.add('active')
-document.getElementById(m.dataset.section).classList.add('active')
+/* ================== CONFIG SUPABASE ================== */
+const SUPABASE_URL = "https://grogiwbccvnbyjgxvafw.supabase.co/rest/v1/jogos"
+const SUPABASE_KEY = "sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14"
+
+const headers = {
+"apikey": SUPABASE_KEY,
+"Authorization": "Bearer " + SUPABASE_KEY,
+"Content-Type": "application/json"
+}
+
+/* ================== NAVEGAÇÃO ================== */
+document.querySelectorAll('.menu-item').forEach(item=>{
+item.onclick=()=>{
+document.querySelectorAll('.menu-item').forEach(i=>i.classList.remove('active'))
+document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'))
+item.classList.add('active')
+document.getElementById(item.dataset.section).classList.add('active')
+}
 })
 
+/* ================== UTIL ================== */
 function showToast(msg){
 const t=document.getElementById('toast')
 t.innerText=msg
 t.classList.add('active')
 setTimeout(()=>t.classList.remove('active'),3000)
 }
+function openModal(){modal.classList.add('active')}
+function closeModal(){modal.classList.remove('active')}
 
-function openModal(){modalProduto.classList.add('active')}
-function closeModal(){modalProduto.classList.remove('active')}
+/* ================== CATEGORIA COR ================== */
+function corCategoria(cat){
+return {
+"Ação":"#ef4444",
+"RPG":"#22c55e",
+"Aventura":"#f97316",
+"Esporte":"#3b82f6"
+}[cat] || "#e5e7eb"
+}
 
-let produtos=JSON.parse(localStorage.getItem('produtos'))||[]
+/* ================== CRUD ================== */
+async function carregarJogos(){
+const res = await fetch(SUPABASE_URL + "?select=*", {headers})
+const jogos = await res.json()
 
-function renderProdutos(){
-listaProdutos.innerHTML=''
-produtos.forEach((p,i)=>{
-listaProdutos.innerHTML+=`<tr>
-<td>${p.nome}</td>
-<td>R$ ${p.preco}</td>
-<td><button onclick="delProduto(${i})" class="text-red-600">Excluir</button></td>
-</tr>`
+let total = 0
+listaJogos.innerHTML = ""
+
+jogos.forEach(j=>{
+total += Number(j.preco)
+
+listaJogos.innerHTML += `
+<div class="card game-card" style="border-top-color:${corCategoria(j.categoria)}">
+<h3 class="font-bold">${j.nome}</h3>
+<p class="text-sm text-gray-500">${j.categoria}</p>
+<b>R$ ${Number(j.preco).toFixed(2)}</b>
+</div>`
 })
-localStorage.setItem('produtos',JSON.stringify(produtos))
-}
-function addProduto(){
-produtos.push({nome:pNome.value,preco:pPreco.value})
-pNome.value='';pPreco.value=''
-closeModal();renderProdutos();showToast('Produto adicionado')
-}
-function delProduto(i){produtos.splice(i,1);renderProdutos();showToast('Produto removido')}
-renderProdutos()
 
-let loja=JSON.parse(localStorage.getItem('loja'))||{}
+document.getElementById("dash-count").innerText = jogos.length
+document.getElementById("dash-money").innerText = "R$ " + total.toFixed(2)
+}
 
-function salvarLoja(){
-loja.nome=lojaNome.value
-localStorage.setItem('loja',JSON.stringify(loja))
-aplicarLoja();showToast('Loja salva')
+async function criarJogo(){
+await fetch(SUPABASE_URL,{
+method:"POST",
+headers,
+body:JSON.stringify({
+nome:jogoNome.value,
+preco:jogoPreco.value,
+categoria:jogoCategoria.value
+})
+})
+jogoNome.value="";jogoPreco.value=""
+closeModal()
+showToast("Jogo criado")
+carregarJogos()
 }
-function salvarDesign(){
-loja.cor=corPrimaria.value
-loja.fonte=fonteLoja.value
-localStorage.setItem('loja',JSON.stringify(loja))
-aplicarLoja();showToast('Design salvo')
+
+/* ================== INIT ================== */
+async function init(){
+await carregarJogos()
 }
-function salvarPoliticas(){
-loja.privacidade=politicaPrivacidade.value
-loja.troca=politicaTroca.value
-loja.termos=politicaTermos.value
-localStorage.setItem('loja',JSON.stringify(loja))
-showToast('Políticas salvas')
-}
-function aplicarLoja(){
-if(loja.nome)tituloLoja.innerText=loja.nome
-if(loja.cor)document.documentElement.style.setProperty('--cor-loja',loja.cor)
-if(loja.fonte)document.body.style.fontFamily=loja.fonte
-}
-function carregarLoja(){
-lojaNome.value=loja.nome||''
-corPrimaria.value=loja.cor||'#2563eb'
-fonteLoja.value=loja.fonte||'system-ui'
-politicaPrivacidade.value=loja.privacidade||''
-politicaTroca.value=loja.troca||''
-politicaTermos.value=loja.termos||''
-aplicarLoja()
-}
-carregarLoja()
+init()
 </script>
 
 </body>
