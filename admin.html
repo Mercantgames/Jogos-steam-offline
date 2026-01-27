@@ -20,29 +20,29 @@ body{font-family:Inter,system-ui;background:#f9fafb}
 .section.active{display:block}
 .card{background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:20px}
 .game-card{border-top:5px solid #e5e7eb}
-.toast{position:fixed;top:24px;right:24px;background:#fff;padding:16px;border-left:4px solid #22c55e;display:none;z-index:50}
+button.primary{background:var(--primary);color:#fff;padding:8px 16px;border-radius:8px}
+.toast{position:fixed;top:24px;right:24px;background:#fff;padding:16px;border-left:4px solid #22c55e;display:none;z-index:99}
 .toast.active{display:block}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center}
 .modal.active{display:flex}
-button.primary{background:var(--primary);color:#fff;padding:8px 16px;border-radius:8px}
 </style>
 </head>
 
 <body>
 
-<div id="toast" class="toast">✔ Ação realizada</div>
+<div id="toast" class="toast">✔ OK</div>
 
-<!-- MODAL -->
-<div id="modal" class="modal">
+<!-- MODAL JOGO -->
+<div id="modalJogo" class="modal">
 <div class="bg-white p-6 rounded w-96">
 <h2 class="font-bold mb-4">Novo Jogo</h2>
-<input id="jogoNome" class="border p-2 w-full mb-2" placeholder="Nome">
-<input id="jogoPreco" class="border p-2 w-full mb-2" placeholder="Preço">
-<select id="jogoCategoria" class="border p-2 w-full mb-4">
-<option value="Ação">Ação</option>
-<option value="RPG">RPG</option>
-<option value="Aventura">Aventura</option>
-<option value="Esporte">Esporte</option>
+<input id="jNome" class="border p-2 w-full mb-2" placeholder="Nome">
+<input id="jPreco" class="border p-2 w-full mb-2" placeholder="Preço">
+<select id="jCategoria" class="border p-2 w-full mb-4">
+<option>Ação</option>
+<option>RPG</option>
+<option>Aventura</option>
+<option>Esporte</option>
 </select>
 <button onclick="criarJogo()" class="primary w-full">Salvar</button>
 </div>
@@ -50,117 +50,117 @@ button.primary{background:var(--primary);color:#fff;padding:8px 16px;border-radi
 
 <!-- SIDEBAR -->
 <aside class="sidebar p-4">
-<h2 class="font-bold text-lg mb-6">MercantGames</h2>
+<h2 id="nomeLoja" class="font-bold text-lg mb-6">MercantGames</h2>
 <div class="menu-item active" data-section="dashboard"><i class="fa fa-home"></i>Dashboard</div>
-<div class="menu-item" data-section="produtos"><i class="fa fa-gamepad"></i>Jogos</div>
+<div class="menu-item" data-section="jogos"><i class="fa fa-gamepad"></i>Jogos</div>
+<div class="menu-item" data-section="loja"><i class="fa fa-store"></i>Minha Loja</div>
 </aside>
 
 <!-- HEADER -->
 <header class="header">
 <span class="font-semibold">Painel Administrativo</span>
-<button onclick="openModal()" class="primary">Novo Jogo</button>
+<button onclick="abrirModal()" class="primary">Novo Jogo</button>
 </header>
 
 <!-- MAIN -->
 <main class="main">
 
-<!-- DASHBOARD -->
 <section id="dashboard" class="section active">
 <div class="grid grid-cols-2 gap-4">
-<div class="card">💰 Faturamento Total<br><b id="dash-money">R$ 0,00</b></div>
+<div class="card">💰 Faturamento<br><b id="dash-money">R$ 0,00</b></div>
 <div class="card">🎮 Total de Jogos<br><b id="dash-count">0</b></div>
 </div>
 </section>
 
-<!-- PRODUTOS -->
-<section id="produtos" class="section">
+<section id="jogos" class="section">
 <div id="listaJogos" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
+</section>
+
+<section id="loja" class="section">
+<div class="grid grid-cols-2 gap-6">
+<div class="card">
+<h3 class="font-bold mb-2">Dados da Loja</h3>
+<input id="lNome" class="border p-2 w-full mb-2" placeholder="Nome da loja">
+<input type="color" id="lCor" class="w-full mb-4">
+<button onclick="salvarLoja()" class="primary w-full">Salvar</button>
+</div>
+<div class="card">
+<h3 class="font-bold mb-2">Políticas</h3>
+<textarea id="lPolitica" class="border p-2 w-full h-32"></textarea>
+</div>
+</div>
 </section>
 
 </main>
 
 <script>
-/* ================== CONFIG SUPABASE ================== */
-const SUPABASE_URL = "https://grogiwbccvnbyjgxvafw.supabase.co/rest/v1/jogos"
-const SUPABASE_KEY = "sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14"
+/* SUPABASE */
+const URL="https://grogiwbccvnbyjgxvafw.supabase.co/rest/v1/jogos"
+const KEY="sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14"
+const headers={apikey:KEY,Authorization:"Bearer "+KEY,"Content-Type":"application/json"}
 
-const headers = {
-"apikey": SUPABASE_KEY,
-"Authorization": "Bearer " + SUPABASE_KEY,
-"Content-Type": "application/json"
-}
-
-/* ================== NAVEGAÇÃO ================== */
-document.querySelectorAll('.menu-item').forEach(item=>{
-item.onclick=()=>{
-document.querySelectorAll('.menu-item').forEach(i=>i.classList.remove('active'))
+/* NAV */
+document.querySelectorAll('.menu-item').forEach(i=>{
+i.onclick=()=>{
+document.querySelectorAll('.menu-item').forEach(m=>m.classList.remove('active'))
 document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'))
-item.classList.add('active')
-document.getElementById(item.dataset.section).classList.add('active')
+i.classList.add('active')
+document.getElementById(i.dataset.section).classList.add('active')
 }
 })
 
-/* ================== UTIL ================== */
-function showToast(msg){
-const t=document.getElementById('toast')
-t.innerText=msg
-t.classList.add('active')
-setTimeout(()=>t.classList.remove('active'),3000)
-}
-function openModal(){modal.classList.add('active')}
-function closeModal(){modal.classList.remove('active')}
+/* UTIL */
+function toast(m){toastEl.innerText=m;toastEl.classList.add('active');setTimeout(()=>toastEl.classList.remove('active'),3000)}
+const toastEl=document.getElementById('toast')
+function abrirModal(){modalJogo.classList.add('active')}
+function fecharModal(){modalJogo.classList.remove('active')}
 
-/* ================== CATEGORIA COR ================== */
-function corCategoria(cat){
-return {
-"Ação":"#ef4444",
-"RPG":"#22c55e",
-"Aventura":"#f97316",
-"Esporte":"#3b82f6"
-}[cat] || "#e5e7eb"
-}
+/* CORES */
+const cores={Ação:"#ef4444",RPG:"#22c55e",Aventura:"#f97316",Esporte:"#3b82f6"}
 
-/* ================== CRUD ================== */
+/* CRUD */
 async function carregarJogos(){
-const res = await fetch(SUPABASE_URL + "?select=*", {headers})
-const jogos = await res.json()
-
-let total = 0
-listaJogos.innerHTML = ""
-
-jogos.forEach(j=>{
-total += Number(j.preco)
-
-listaJogos.innerHTML += `
-<div class="card game-card" style="border-top-color:${corCategoria(j.categoria)}">
-<h3 class="font-bold">${j.nome}</h3>
-<p class="text-sm text-gray-500">${j.categoria}</p>
-<b>R$ ${Number(j.preco).toFixed(2)}</b>
+const r=await fetch(URL+"?select=*",{headers})
+const dados=await r.json()
+let total=0
+listaJogos.innerHTML=""
+dados.forEach(j=>{
+total+=Number(j.preco)
+listaJogos.innerHTML+=`
+<div class="card game-card" style="border-top-color:${cores[j.categoria]}">
+<b>${j.nome}</b>
+<p>${j.categoria}</p>
+<p>R$ ${Number(j.preco).toFixed(2)}</p>
 </div>`
 })
-
-document.getElementById("dash-count").innerText = jogos.length
-document.getElementById("dash-money").innerText = "R$ " + total.toFixed(2)
+dash-count.innerText=dados.length
+dash-money.innerText="R$ "+total.toFixed(2)
 }
 
 async function criarJogo(){
-await fetch(SUPABASE_URL,{
-method:"POST",
-headers,
-body:JSON.stringify({
-nome:jogoNome.value,
-preco:jogoPreco.value,
-categoria:jogoCategoria.value
-})
-})
-jogoNome.value="";jogoPreco.value=""
-closeModal()
-showToast("Jogo criado")
+await fetch(URL,{method:"POST",headers,body:JSON.stringify({
+nome:jNome.value,preco:jPreco.value,categoria:jCategoria.value
+})})
+jNome.value="";jPreco.value=""
+fecharModal();toast("Jogo criado")
 carregarJogos()
 }
 
-/* ================== INIT ================== */
+/* LOJA */
+function salvarLoja(){
+localStorage.setItem("loja",JSON.stringify({nome:lNome.value,cor:lCor.value,pol:lPolitica.value}))
+aplicarLoja();toast("Loja salva")
+}
+function aplicarLoja(){
+const l=JSON.parse(localStorage.getItem("loja"))||{}
+if(l.nome)nomeLoja.innerText=l.nome
+if(l.cor)document.documentElement.style.setProperty("--primary",l.cor)
+lNome.value=l.nome||"";lCor.value=l.cor||"#2563eb";lPolitica.value=l.pol||""
+}
+
+/* INIT */
 async function init(){
+aplicarLoja()
 await carregarJogos()
 }
 init()
