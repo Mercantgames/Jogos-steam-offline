@@ -405,4 +405,47 @@
     const politicas = localStorage.getItem("politicasLoja") || "";
 
     document.getElementById("nome-loja").value = nome;
-    document.getElementById("cor-lo
+    document.getElementById("cor-loja").value = cor;
+    document.getElementById("fonte-loja").value = fonte;
+    document.getElementById("banner-loja").value = banner;
+    document.getElementById("logo-loja").value = logo;
+    document.getElementById("politicas-loja").value = politicas;
+
+    // Aplicar estilos
+    document.body.style.setProperty("--cor-principal", cor);
+    document.body.style.fontFamily = fonte;
+  }
+
+  // Salvar configs
+  formLoja.addEventListener("submit", e => {
+    e.preventDefault();
+
+    localStorage.setItem("nomeLoja", document.getElementById("nome-loja").value);
+    localStorage.setItem("corLoja", document.getElementById("cor-loja").value);
+    localStorage.setItem("fonteLoja", document.getElementById("fonte-loja").value);
+    localStorage.setItem("bannerLoja", document.getElementById("banner-loja").value);
+    localStorage.setItem("logoLoja", document.getElementById("logo-loja").value);
+    localStorage.setItem("politicasLoja", document.getElementById("politicas-loja").value);
+
+    showToast("Configurações da loja salvas!");
+  });
+
+  // Botão Novo Jogo - só um alert básico, você pode expandir aqui
+  document.getElementById("btn-novo-jogo").addEventListener("click", () => {
+    alert("Funcionalidade para adicionar jogo ainda não implementada.");
+  });
+
+  // Botão Ver Loja - só exemplo para abrir loja (pode ser página separada)
+  document.getElementById("btn-ver-loja").addEventListener("click", () => {
+    alert("Funcionalidade para ver loja ainda não implementada.");
+  });
+
+  // Inicializa a página
+  window.onload = () => {
+    init();
+    carregarConfigLoja();
+  };
+</script>
+
+</body>
+</html>
