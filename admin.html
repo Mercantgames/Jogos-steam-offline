@@ -8,43 +8,46 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-  * {margin:0; padding:0; box-sizing:border-box;}
-  body {font-family: 'Inter', sans-serif; background-color:#f9fafb;}
-  .sidebar {width:256px; background:white; border-right:1px solid #e5e7eb; height:100vh; position:fixed; left:0; top:0; overflow-y:auto;}
-  .header {height:64px; background:white; border-bottom:1px solid #e5e7eb; position:fixed; top:0; left:256px; right:0; z-index:10; display:flex; align-items:center; padding:0 24px; justify-content:space-between;}
-  .main-content {margin-left:256px; margin-top:64px; min-height:calc(100vh - 64px); padding:24px;}
-  .menu-item {display:flex; align-items:center; gap:12px; padding:12px 16px; margin-bottom:4px; border-radius:8px; cursor:pointer; transition:all 0.2s; color:#374151; text-decoration:none;}
-  .menu-item:hover {background-color:#f3f4f6;}
-  .menu-item.active {background-color:#eff6ff; color:#2563eb;}
-  .stat-card {background:white; border:1px solid #e5e7eb; border-radius:8px; padding:24px;}
-  .btn {padding:8px 16px; border-radius:8px; font-weight:500; cursor:pointer; transition:all 0.2s; border:none; font-size:14px;}
-  .btn-primary {background-color:#2563eb; color:white;}
-  .btn-primary:hover {background-color:#1d4ed8;}
-  .modal {display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:50; align-items:center; justify-content:center; padding:16px;}
-  .modal.active {display:flex;}
-  .modal-content {background:white; border-radius:12px; max-width:600px; width:100%; max-height:90vh; overflow-y:auto;}
-  .toast {position:fixed; top:24px; right:24px; background:white; padding:16px 24px; border-radius:8px; box-shadow:0 10px 15px -3px rgba(0,0,0,0.1); display:none; z-index:100; border-left:4px solid #10b981;}
-  .toast.active {display:block; animation:slideIn 0.3s ease;}
-  @keyframes slideIn {from {transform:translateX(100%); opacity:0;} to {transform:translateX(0); opacity:1;}}
-  .hidden {display:none !important;}
-  table {width:100%; border-collapse:collapse;}
-  th, td {padding:12px 16px; text-align:left; border-bottom:1px solid #f3f4f6;}
-  th {background-color:#f9fafb; font-weight:500; color:#6b7280; font-size:14px;}
-  tr:hover {background-color:#f9fafb;}
-  .badge {display:inline-flex; align-items:center; gap:4px; padding:4px 8px; border-radius:9999px; font-size:12px; font-weight:500;}
-  .badge-success {background-color:#d1fae5; color:#065f46;}
-  .badge-warning {background-color:#fef3c7; color:#92400e;}
-  .badge-info {background-color:#dbeafe; color:#1e40af;}
-  .badge-danger {background-color:#fee2e2; color:#991b1b;}
-  input, select, textarea {width:100%; padding:8px 16px; border:1px solid #d1d5db; border-radius:8px; font-size:14px;}
-  input:focus, select:focus, textarea:focus {outline:none; border-color:#2563eb;}
-  .product-grid {display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:24px;}
-  .product-card {background:white; border:1px solid #e5e7eb; border-radius:8px; overflow:hidden; transition:all 0.2s;}
-  .product-card:hover {box-shadow:0 10px 15px -3px rgba(0,0,0,0.1);}
-  .product-image {width:100%; aspect-ratio:1; background-color:#f3f4f6; object-fit:cover;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background-color:#f9fafb;}
+.sidebar{width:256px;background:white;border-right:1px solid #e5e7eb;height:100vh;position:fixed;left:0;top:0;overflow-y:auto;}
+.header{height:64px;background:white;border-bottom:1px solid #e5e7eb;position:fixed;top:0;left:256px;right:0;z-index:10;display:flex;align-items:center;padding:0 24px;justify-content:space-between;}
+.main-content{margin-left:256px;margin-top:64px;min-height:calc(100vh - 64px);padding:24px;}
+.menu-item{display:flex;align-items:center;gap:12px;padding:12px 16px;margin-bottom:4px;border-radius:8px;cursor:pointer;transition:all 0.2s;color:#374151;text-decoration:none;}
+.menu-item:hover{background-color:#f3f4f6;}
+.menu-item.active{background-color:#eff6ff;color:#2563eb;}
+.stat-card{background:white;border:1px solid #e5e7eb;border-radius:8px;padding:24px;}
+.btn{padding:8px 16px;border-radius:8px;font-weight:500;cursor:pointer;transition:all 0.2s;border:none;font-size:14px;}
+.btn-primary{background-color:#2563eb;color:white;}
+.btn-primary:hover{background-color:#1d4ed8;}
+.modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:50;align-items:center;justify-content:center;padding:16px;}
+.modal.active{display:flex;}
+.modal-content{background:white;border-radius:12px;max-width:600px;width:100%;max-height:90vh;overflow-y:auto;padding:24px;position:relative;}
+.modal-content h2{margin-bottom:16px;}
+.modal-close{position:absolute;top:12px;right:12px;cursor:pointer;color:#6b7280;font-size:18px;}
+.toast{position:fixed;top:24px;right:24px;background:white;padding:16px 24px;border-radius:8px;box-shadow:0 10px 15px -3px rgba(0,0,0,0.1);display:none;z-index:100;border-left:4px solid #10b981;}
+.toast.active{display:block;animation:slideIn 0.3s ease;}
+@keyframes slideIn{from{transform:translateX(100%);opacity:0;}to{transform:translateX(0);opacity:1;}}
+.hidden{display:none !important;}
+table{width:100%;border-collapse:collapse;}
+th,td{padding:12px 16px;text-align:left;border-bottom:1px solid #f3f4f6;}
+th{background-color:#f9fafb;font-weight:500;color:#6b7280;font-size:14px;}
+tr:hover{background-color:#f9fafb;}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:9999px;font-size:12px;font-weight:500;}
+.badge-success{background-color:#d1fae5;color:#065f46;}
+.badge-warning{background-color:#fef3c7;color:#92400e;}
+.badge-info{background-color:#dbeafe;color:#1e40af;}
+.badge-danger{background-color:#fee2e2;color:#991b1b;}
+input, select, textarea{width:100%;padding:8px 16px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;}
+input:focus, select:focus, textarea:focus{outline:none;border-color:#2563eb;}
+.product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px;}
+.product-card{background:white;border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;transition:all 0.2s;padding:16px;}
+.product-card:hover{box-shadow:0 10px 15px -3px rgba(0,0,0,0.1);}
+.product-image{width:100%;aspect-ratio:1;background-color:#f3f4f6;object-fit:cover;border-radius:4px;}
 </style>
 </head>
 <body>
+
 <div id="toast" class="toast"><div class="flex items-center gap-2"><i class="fas fa-check-circle text-green-600"></i><span id="toast-message"></span></div></div>
 
 <aside class="sidebar">
@@ -89,8 +92,31 @@
 
   <!-- Produtos / Jogos -->
   <div id="produtos" class="section hidden">
-    <h1 class="text-2xl font-bold text-gray-900 mb-6">Jogos</h1>
+    <div class="flex justify-between items-center mb-4">
+      <h1 class="text-2xl font-bold text-gray-900">Jogos</h1>
+      <button class="btn btn-primary" id="btn-add-jogo">Adicionar Jogo</button>
+    </div>
     <div class="product-grid" id="lista-jogos"></div>
+  </div>
+
+  <!-- Modal Adicionar / Editar Jogo -->
+  <div id="modal-jogo" class="modal">
+    <div class="modal-content">
+      <span class="modal-close" id="modal-close">&times;</span>
+      <h2 id="modal-title">Adicionar Jogo</h2>
+      <input type="text" id="jogo-nome" placeholder="Nome do Jogo" class="mb-2">
+      <textarea id="jogo-desc" rows="3" placeholder="Descrição" class="mb-2"></textarea>
+      <input type="number" id="jogo-preco" placeholder="Preço" class="mb-2">
+      <input type="number" id="jogo-estoque" placeholder="Estoque" class="mb-2">
+      <select id="jogo-categoria" class="mb-2">
+        <option value="Ação">Ação</option>
+        <option value="RPG">RPG</option>
+        <option value="Aventura">Aventura</option>
+        <option value="Esporte">Esporte</option>
+      </select>
+      <input type="text" id="jogo-imagem" placeholder="URL da Imagem" class="mb-2">
+      <button class="btn btn-primary w-full" id="salvar-jogo">Salvar</button>
+    </div>
   </div>
 
   <!-- Pedidos -->
@@ -155,103 +181,130 @@
 </main>
 
 <script>
-  const sections = document.querySelectorAll(".section");
-  document.querySelectorAll(".menu-item").forEach(item => {
-    item.addEventListener("click", e => {
-      document.querySelector(".menu-item.active").classList.remove("active");
-      item.classList.add("active");
-      sections.forEach(sec => sec.classList.add("hidden"));
-      document.getElementById(item.dataset.section).classList.remove("hidden");
-    });
+const sections=document.querySelectorAll(".section");
+document.querySelectorAll(".menu-item").forEach(item=>{
+  item.addEventListener("click",e=>{
+    document.querySelector(".menu-item.active").classList.remove("active");
+    item.classList.add("active");
+    sections.forEach(sec=>sec.classList.add("hidden"));
+    document.getElementById(item.dataset.section).classList.remove("hidden");
   });
+});
 
-  const toast = document.getElementById("toast");
-  function showToast(msg) {
-    document.getElementById("toast-message").innerText = msg;
-    toast.classList.add("active");
-    setTimeout(() => toast.classList.remove("active"), 3000);
-  }
+const toast=document.getElementById("toast");
+function showToast(msg){document.getElementById("toast-message").innerText=msg;toast.classList.add("active");setTimeout(()=>toast.classList.remove("active"),3000);}
 
-  // Supabase setup
-  const URL = "https://grogiwbccvnbyjgxvafw.supabase.co/rest/v1/jogos";
-  const headers = {
-    "apikey":"sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14",
-    "Authorization":"Bearer sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14"
-  };
+// Supabase setup
+const URL="https://grogiwbccvnbyjgxvafw.supabase.co/rest/v1/jogos";
+const headers={"apikey":"sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14","Authorization":"Bearer sb_publishable_6XLbmbjPmopxhOm2-_iwRw_6o0mQg14"};
 
-  const listaJogos = document.getElementById("lista-jogos");
-  const cores = {"Ação":"#ef4444","RPG":"#22c55e","Aventura":"#f97316","Esporte":"#3b82f6"};
+const listaJogos=document.getElementById("lista-jogos");
+const cores={"Ação":"#ef4444","RPG":"#22c55e","Aventura":"#f97316","Esporte":"#3b82f6"};
 
-  let chartFaturamento, chartCategorias, chartVendasCategorias;
+let editingJogoId=null;
 
-  async function carregarJogos() {
-    try {
-      const r = await fetch(URL+"?select=*", {headers});
-      if(!r.ok) throw new Error("Erro Supabase: "+r.status);
-      const dados = await r.json();
-
-      let total=0; let contagemCategorias={}; let vendasCategorias={}; let faturamentoMensal=new Array(12).fill(0);
-      listaJogos.innerHTML="";
-
-      dados.forEach(j=>{
-        total+=Number(j.preco);
-        if(!contagemCategorias[j.categoria]) contagemCategorias[j.categoria]=0;
-        contagemCategorias[j.categoria]++;
-        if(!vendasCategorias[j.categoria]) vendasCategorias[j.categoria]=0;
-        vendasCategorias[j.categoria]+=Number(j.preco);
-        const mes=Math.floor(Math.random()*12);
-        faturamentoMensal[mes]+=Number(j.preco);
-
-        const cor=cores[j.categoria]||"#9ca3af";
-        listaJogos.innerHTML+=`
-          <div class="product-card" style="border-top:4px solid ${cor}; padding:16px;">
-            <b>${j.nome}</b>
-            <p class="text-gray-600">${j.categoria}</p>
-            <p class="text-gray-900 font-semibold">R$ ${Number(j.preco).toFixed(2)}</p>
-          </div>
-        `;
-      });
-
-      document.getElementById("dash-count").innerText=dados.length;
-      document.getElementById("dash-money").innerText="R$ "+total.toFixed(2);
-      atualizarGraficos(faturamentoMensal, contagemCategorias, vendasCategorias);
-    } catch(e){console.error(e); showToast("Erro ao carregar jogos");}
-  }
-
-  function atualizarGraficos(faturamentoMensal, contagemCategorias, vendasCategorias){
-    const meses=["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"];
-    if(chartFaturamento) chartFaturamento.destroy();
-    if(chartCategorias) chartCategorias.destroy();
-    if(chartVendasCategorias) chartVendasCategorias.destroy();
-
-    chartFaturamento=new Chart(document.getElementById("grafico-faturamento").getContext("2d"),{
-      type:"line",
-      data:{labels:meses,datasets:[{label:"Faturamento (R$)", data:faturamentoMensal.map(v=>v.toFixed(2)), borderColor:"#2563eb", backgroundColor:"rgba(37,99,235,0.2)", fill:true, tension:0.3,}]},
-      options:{responsive:true, plugins:{legend:{display:true}}}
+async function carregarJogos(){
+  try{
+    const r=await fetch(URL+"?select=*",{headers});
+    if(!r.ok)throw new Error("Erro Supabase: "+r.status);
+    const dados=await r.json();
+    listaJogos.innerHTML="";
+    dados.forEach(j=>{
+      const cor=cores[j.categoria]||"#9ca3af";
+      listaJogos.innerHTML+=`
+      <div class="product-card" style="border-top:4px solid ${cor};">
+        <img src="${j.imagem||''}" class="product-image mb-2">
+        <b>${j.nome}</b>
+        <p class="text-gray-600">${j.categoria}</p>
+        <p class="text-gray-900 font-semibold">R$ ${Number(j.preco).toFixed(2)}</p>
+        <p class="text-gray-500">Estoque: ${j.estoque}</p>
+        <p class="text-gray-700 text-sm">${j.descricao}</p>
+        <div class="flex gap-2 mt-2">
+          <button class="btn btn-primary btn-edit" data-id="${j.id}">Editar</button>
+          <button class="btn btn-danger btn-delete" data-id="${j.id}">Excluir</button>
+        </div>
+      </div>
+      `;
     });
-
-    chartCategorias=new Chart(document.getElementById("grafico-categorias").getContext("2d"),{
-      type:"doughnut",
-      data:{labels:Object.keys(contagemCategorias), datasets:[{data:Object.values(contagemCategorias), backgroundColor:Object.keys(contagemCategorias).map(c=>cores[c]||"#9ca3af")}]},
-      options:{responsive:true}
+    document.querySelectorAll(".btn-edit").forEach(btn=>{
+      btn.addEventListener("click",()=>abrirModalEditar(btn.dataset.id,dados.find(d=>d.id==btn.dataset.id)));
     });
-
-    chartVendasCategorias=new Chart(document.getElementById("grafico-vendas-categorias").getContext("2d"),{
-      type:"bar",
-      data:{labels:Object.keys(vendasCategorias), datasets:[{label:"Vendas (R$)", data:Object.values(vendasCategorias).map(v=>v.toFixed(2)), backgroundColor:Object.keys(vendasCategorias).map(c=>cores[c]||"#9ca3af")}]},
-      options:{responsive:true}
+    document.querySelectorAll(".btn-delete").forEach(btn=>{
+      btn.addEventListener("click",()=>excluirJogo(btn.dataset.id));
     });
-  }
+    document.getElementById("dash-count").innerText=dados.length;
+  }catch(e){showToast(e.message);}
+}
 
-  carregarJogos();
+function abrirModalEditar(id,jogo){
+  editingJogoId=id;
+  document.getElementById("modal-title").innerText="Editar Jogo";
+  document.getElementById("jogo-nome").value=jogo.nome;
+  document.getElementById("jogo-desc").value=jogo.descricao;
+  document.getElementById("jogo-preco").value=jogo.preco;
+  document.getElementById("jogo-estoque").value=jogo.estoque;
+  document.getElementById("jogo-categoria").value=jogo.categoria;
+  document.getElementById("jogo-imagem").value=jogo.imagem;
+  document.getElementById("modal-jogo").classList.add("active");
+}
 
-  // Minha Loja live preview
-  document.getElementById("nome-loja").addEventListener("input", e=>document.getElementById("nome-loja-preview").innerText=e.target.value);
-  document.getElementById("banner-loja").addEventListener("input", e=>document.getElementById("banner-preview").style.backgroundImage=`url(${e.target.value})`);
-  document.getElementById("logo-loja").addEventListener("input", e=>document.getElementById("logo-preview").src=e.target.value);
-  document.getElementById("politicas-loja").addEventListener("input", e=>document.getElementById("politicas-preview").innerText=e.target.value);
-  document.getElementById("cor-loja").addEventListener("input", e=>document.body.style.setProperty('--cor-primaria', e.target.value));
-  document.getElementById("fonte-loja").addEventListener("change", e=>document.body.style.fontFamily=e.target.value);
+async function salvarJogo(){
+  const nome=document.getElementById("jogo-nome").value;
+  const desc=document.getElementById("jogo-desc").value;
+  const preco=parseFloat(document.getElementById("jogo-preco").value);
+  const estoque=parseInt(document.getElementById("jogo-estoque").value);
+  const categoria=document.getElementById("jogo-categoria").value;
+  const imagem=document.getElementById("jogo-imagem").value;
+
+  const body={nome,descricao:desc,preco,estoque,categoria,imagem};
+
+  try{
+    if(editingJogoId){
+      await fetch(URL+"?id=eq."+editingJogoId,{method:"PATCH",headers:{"Content-Type":"application/json",...headers},body:JSON.stringify(body)});
+      showToast("Jogo atualizado!");
+    }else{
+      await fetch(URL,{method:"POST",headers:{"Content-Type":"application/json",...headers},body:JSON.stringify(body)});
+      showToast("Jogo adicionado!");
+    }
+    editingJogoId=null;
+    document.getElementById("modal-jogo").classList.remove("active");
+    carregarJogos();
+  }catch(e){showToast(e.message);}
+}
+
+async function excluirJogo(id){
+  if(!confirm("Deseja realmente excluir este jogo?")) return;
+  try{
+    await fetch(URL+"?id=eq."+id,{method:"DELETE",headers});
+    showToast("Jogo excluído!");
+    carregarJogos();
+  }catch(e){showToast(e.message);}
+}
+
+document.getElementById("btn-add-jogo").addEventListener("click",()=>{
+  editingJogoId=null;
+  document.getElementById("modal-title").innerText="Adicionar Jogo";
+  document.getElementById("jogo-nome").value="";
+  document.getElementById("jogo-desc").value="";
+  document.getElementById("jogo-preco").value="";
+  document.getElementById("jogo-estoque").value="";
+  document.getElementById("jogo-categoria").value="Ação";
+  document.getElementById("jogo-imagem").value="";
+  document.getElementById("modal-jogo").classList.add("active");
+});
+
+document.getElementById("modal-close").addEventListener("click",()=>document.getElementById("modal-jogo").classList.remove("active"));
+document.getElementById("salvar-jogo").addEventListener("click",salvarJogo);
+
+// Minha Loja live preview
+document.getElementById("nome-loja").addEventListener("input", e=>document.getElementById("nome-loja-preview").innerText=e.target.value);
+document.getElementById("banner-loja").addEventListener("input", e=>document.getElementById("banner-preview").style.backgroundImage=`url(${e.target.value})`);
+document.getElementById("logo-loja").addEventListener("input", e=>document.getElementById("logo-preview").src=e.target.value);
+document.getElementById("politicas-loja").addEventListener("input", e=>document.getElementById("politicas-preview").innerText=e.target.value);
+document.getElementById("cor-loja").addEventListener("input", e=>document.body.style.setProperty('--cor-primaria', e.target.value));
+document.getElementById("fonte-loja").addEventListener("change", e=>document.body.style.fontFamily=e.target.value);
+
+carregarJogos();
 </script>
 </body>
 </html>
